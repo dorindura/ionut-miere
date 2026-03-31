@@ -24,8 +24,8 @@ export default function AddToCartButton({ slug }: { slug: string }) {
         }
 
         if (!res.ok) {
-            const data = await res.json().catch(() => ({}));
-            setMsg(data?.error || "Eroare. Încearcă din nou.");
+            const data = (await res.json().catch(() => ({}))) as { error?: string };
+            setMsg(data.error || "Eroare. Încearcă din nou.");
             setLoading(false);
             return;
         }

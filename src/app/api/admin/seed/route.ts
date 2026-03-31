@@ -1,22 +1,31 @@
+import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { PrismaClient } from "../src/generated/prisma/client";
-import { PrismaD1 } from "@prisma/adapter-d1";
-import { products } from "../src/lib/products";
-import { getPlatformProxy } from "wrangler";
+import { getPrisma } from "@/lib/db";
+import { products } from "@/lib/products";
 
-async function main() {
-    const { env } = await getPlatformProxy<Cloudflare.Env>();
-    const prisma = new PrismaClient({
-        adapter: new PrismaD1(env.DB),
-        log: ["error"],
-    });
+type SeedBody = {
+    secret?: string;
+};
 
+export async function POST(request: Request) {
     try {
-        const email = env.ADMIN_EMAIL;
-        const password = env.ADMIN_PASSWORD;
+        const prisma = getPrisma();
+
+        const body = (await request.json().catch(() => ({}))) as SeedBody;
+        const secret = body.secret;
+
+        if (secret !== process.env.NEXTAUTH_SECRET) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        const email = process.env.ADMIN_EMAIL;
+        const password = process.env.ADMIN_PASSWORD;
 
         if (!email || !password) {
-            throw new Error("Missing ADMIN_EMAIL or ADMIN_PASSWORD");
+            return NextResponse.json(
+                { error: "Missing ADMIN_EMAIL or ADMIN_PASSWORD" },
+                { status: 500 }
+            );
         }
 
         const hash = await bcrypt.hash(password, 12);
@@ -26,8 +35,6 @@ async function main() {
             update: { password: hash, role: "ADMIN" },
             create: { email, password: hash, role: "ADMIN" },
         });
-
-        console.log("✅ Admin ready:", email);
 
         for (const p of products) {
             const created = await prisma.product.upsert({
@@ -74,15 +81,11 @@ async function main() {
                     productId: created.id,
                 })),
             });
-
-            console.log("✅ Seeded product:", created.slug);
         }
-    } finally {
-        await prisma.$disconnect();
+
+        return NextResponse.json({ ok: true });
+    } catch (error) {
+        console.error(error);
+        return NextResponse.json({ error: "Seed failed" }, { status: 500 });
     }
 }
-
-main().catch((e) => {
-    console.error(e);
-    process.exit(1);
-});

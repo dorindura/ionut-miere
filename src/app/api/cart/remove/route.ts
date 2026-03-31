@@ -1,18 +1,26 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
-import {getPrisma} from "@/lib/db";
+import { getPrisma } from "@/lib/db";
+
+type RemoveCartBody = {
+    productId?: string;
+};
 
 export async function POST(req: Request) {
     const prisma = getPrisma();
     const session = await getServerSession(authOptions);
+
     if (!session?.user?.email) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = await req.json().catch(() => null);
-    const productId = String(body?.productId || "");
-    if (!productId) return NextResponse.json({ error: "Missing productId" }, { status: 400 });
+    const body = (await req.json().catch(() => ({}))) as RemoveCartBody;
+    const productId = String(body.productId || "");
+
+    if (!productId) {
+        return NextResponse.json({ error: "Missing productId" }, { status: 400 });
+    }
 
     const user = await prisma.user.findUnique({
         where: { email: session.user.email },

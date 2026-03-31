@@ -4,6 +4,8 @@ import { authOptions } from "@/lib/authOptions";
 import { redirect, notFound } from "next/navigation";
 import {getPrisma} from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 export default async function OrderDetailsPage({
                                                    params,
                                                }: {
@@ -60,9 +62,9 @@ export default async function OrderDetailsPage({
                 </div>
 
                 <div className="mt-6 border-t border-yellow-500/10 pt-4 text-sm text-neutral-300">
-                    <p><span className="text-neutral-200 font-semibold">Nume:</span> {order.fullName}</p>
-                    <p><span className="text-neutral-200 font-semibold">Telefon:</span> {order.phone}</p>
-                    <p><span className="text-neutral-200 font-semibold">Adresă:</span> {order.address}</p>
+                    <p><span className="text-neutral-200 font-semibold">Nume:</span> {order?.fullName}</p>
+                    <p><span className="text-neutral-200 font-semibold">Telefon:</span> {order?.phone}</p>
+                    <p><span className="text-neutral-200 font-semibold">Adresă:</span> {order?.address}</p>
                 </div>
             </section>
 

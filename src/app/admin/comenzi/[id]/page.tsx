@@ -8,6 +8,8 @@ type OrderWithRelations = Prisma.OrderGetPayload<{
     include: { user: true; items: true };
 }>;
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminOrderPage({
                                                  params,
                                              }: {

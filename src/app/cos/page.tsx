@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import CartItemActions from "@/components/CartItemActions";
 import {getPrisma} from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 export default async function CartPage() {
     const prisma = getPrisma();
     const session = await getServerSession(authOptions);

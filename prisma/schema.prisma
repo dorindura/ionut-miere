@@ -94,6 +94,10 @@ model Order {
   status   OrderStatus @default(PENDING)
   totalRon Int
 
+  fullName String?
+  phone    String?
+  address  String?
+
   phoneConfirmed   Boolean   @default(false)
   phoneConfirmedAt DateTime?
   adminNotes       String?

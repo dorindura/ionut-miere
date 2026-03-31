@@ -1,10 +1,16 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import {getPrisma} from "@/lib/db";
+
+type RegisterBody = {
+    email?: string;
+    password?: string;
+    name?: string;
+};
 
 export async function POST(req: Request) {
     const prisma = getPrisma();
-    const body = await req.json().catch(() => null);
+    const body = (await req.json().catch(() => ({}))) as RegisterBody;
     if (!body) return NextResponse.json({ error: "Invalid body" }, { status: 400 });
 
     const email = String(body.email || "").toLowerCase().trim();

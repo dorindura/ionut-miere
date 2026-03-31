@@ -23,9 +23,9 @@ export default function RegisterPage() {
             body: JSON.stringify({ name, email, password }),
         });
 
-        const data = await res.json().catch(() => ({}));
+        const data = (await res.json().catch(() => ({}))) as { error?: string };
         if (!res.ok) {
-            setError(data?.error || "Eroare la înregistrare");
+            setError(data.error || "Eroare la înregistrare");
             return;
         }
 

@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import {getPrisma} from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminOrdersPage() {
     const prisma = getPrisma();
     const session = await getServerSession(authOptions);

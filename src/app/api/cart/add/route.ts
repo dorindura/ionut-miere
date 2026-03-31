@@ -3,13 +3,18 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import {getPrisma} from "@/lib/db";
 
+type AddCartBody = {
+    slug?: string;
+    qty?: number | string;
+};
+
 export async function POST(req: Request) {
     const prisma = getPrisma();
     const session = await getServerSession(authOptions);
     const email = session?.user?.email;
     if (!email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const body = await req.json().catch(() => ({}));
+    const body = (await req.json().catch(() => ({}))) as AddCartBody;
     const slug = String(body?.slug || "");
     const qty = Math.max(1, Number(body?.qty || 1) || 1);
 
