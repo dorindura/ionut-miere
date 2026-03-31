@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
-import { prisma } from "@/lib/prisma";
+import {getPrisma} from "@/lib/db";
 
 export async function POST(req: Request) {
+    const prisma = getPrisma();
     const body = await req.json().catch(() => null);
     if (!body) return NextResponse.json({ error: "Invalid body" }, { status: 400 });
 

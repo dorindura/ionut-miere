@@ -1,8 +1,8 @@
-import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
+import {getPrisma} from "@/lib/db";
 
 function toStringArray(x: unknown): string[] {
     if (Array.isArray(x)) return x.map((v) => String(v));
@@ -11,6 +11,7 @@ function toStringArray(x: unknown): string[] {
 
 export default async function AdminEditProductPage({ params }: { params: Promise<{ id: string }> }) {
     const session = await getServerSession(authOptions);
+    const prisma = getPrisma();
     if (!session || (session as any).role !== "ADMIN") redirect("/admin/login");
 
     const { id } = await params;

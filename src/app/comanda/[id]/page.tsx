@@ -1,9 +1,10 @@
-import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import {getPrisma} from "@/lib/db";
 
 export default async function OrderPlacedPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
+    const prisma = getPrisma();
 
     const order = await prisma.order.findUnique({
         where: { id },

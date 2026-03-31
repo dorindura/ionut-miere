@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
-import { prisma } from "@/lib/prisma";
+import {getPrisma} from "@/lib/db";
+
 
 export default async function CartBadge() {
+    const prisma = getPrisma();
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) return null;
 

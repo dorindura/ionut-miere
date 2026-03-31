@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
+import {getPrisma} from "@/lib/db";
 
 export default async function AdminProductsPage() {
     const session = await getServerSession(authOptions);
+    const prisma = getPrisma();
     if (!session || (session as any).role !== "ADMIN") redirect("/admin/login");
 
     const items = await prisma.product.findMany({

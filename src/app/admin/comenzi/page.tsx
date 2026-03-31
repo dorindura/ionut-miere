@@ -1,10 +1,11 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth";
-import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import {getPrisma} from "@/lib/db";
 
 export default async function AdminOrdersPage() {
+    const prisma = getPrisma();
     const session = await getServerSession(authOptions);
     if (!session || (session as any).role !== "ADMIN") {
         redirect("/admin/login");

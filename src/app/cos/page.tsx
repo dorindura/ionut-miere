@@ -2,10 +2,11 @@ import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
 import CartItemActions from "@/components/CartItemActions";
+import {getPrisma} from "@/lib/db";
 
 export default async function CartPage() {
+    const prisma = getPrisma();
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) redirect("/cont/login");
 

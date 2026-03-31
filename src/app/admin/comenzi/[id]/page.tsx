@@ -1,8 +1,8 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth";
-import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import type { Prisma } from "@prisma/client";
+import {getPrisma} from "@/lib/db";
 
 type OrderWithRelations = Prisma.OrderGetPayload<{
     include: { user: true; items: true };
@@ -13,6 +13,7 @@ export default async function AdminOrderPage({
                                              }: {
     params: { id: string };
 }) {
+    const prisma = getPrisma();
     const session = await getServerSession(authOptions);
     if (!session || (session as any).role !== "ADMIN") {
         redirect("/admin/login");

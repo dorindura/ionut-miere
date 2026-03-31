@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/db";
 import LogoutButton from "@/components/LogoutButton";
 
 type Props = {
@@ -16,6 +16,7 @@ export default async function Navbar({
                                          ctaLabel = "Comandă acum",
                                      }: Props) {
     const session = await getServerSession(authOptions);
+    const prisma = getPrisma();
 
     const email = session?.user?.email ?? null;
     const isLoggedIn = !!email;

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { redirect, notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
+import {getPrisma} from "@/lib/db";
 
 export default async function OrderDetailsPage({
                                                    params,
@@ -10,6 +10,7 @@ export default async function OrderDetailsPage({
     params: Promise<{ id: string }>;
 }) {
     const session = await getServerSession(authOptions);
+    const prisma = getPrisma();
     if (!session?.user?.email) redirect("/cont/login");
 
     const { id } = await params;

@@ -1,7 +1,7 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/db";
 
 export const authOptions: NextAuthOptions = {
     session: { strategy: "jwt" },
@@ -16,6 +16,8 @@ export const authOptions: NextAuthOptions = {
                 password: { label: "Parolă", type: "password" },
             },
             async authorize(credentials) {
+                const prisma = getPrisma();
+
                 const email = String(credentials?.email || "");
                 const password = String(credentials?.password || "");
                 if (!email || !password) return null;
