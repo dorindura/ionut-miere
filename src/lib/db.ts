@@ -1,7 +1,5 @@
-import { createPrisma } from "@/lib/prisma";
-import { getCloudflareEnv } from "@/lib/cloudflare";
+import { prisma } from "@/lib/prisma";
 
 export function getPrisma() {
-    const env = getCloudflareEnv();
-    return createPrisma(env.DB);
+    return prisma;
 }

@@ -1,11 +1,15 @@
-import { PrismaClient } from "@/generated/prisma/client";
-import { PrismaD1 } from "@prisma/adapter-d1";
+import { PrismaClient } from "@prisma/client";
 
-export function createPrisma(db: D1Database) {
-    const adapter = new PrismaD1(db);
+const globalForPrisma = globalThis as unknown as {
+    prisma?: PrismaClient;
+};
 
-    return new PrismaClient({
-        adapter,
+export const prisma =
+    globalForPrisma.prisma ??
+    new PrismaClient({
         log: ["error"],
     });
+
+if (process.env.NODE_ENV !== "production") {
+    globalForPrisma.prisma = prisma;
 }
