@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 const brand = {
-  name: "Mana Apuseană",
+  name: "Prisaca Apuseni",
   siteUrl: "https://exemplu.ro",
   phone: "+40 752 819 170",
   email: "ionutbucea@yahoo.com",
@@ -91,7 +91,7 @@ export default function Page() {
                 </h1>
 
                 <p className="mt-4 text-base leading-relaxed text-neutral-300">
-                  Sortiment curat (salcâm, tei, polifloră) + pachete cadou.
+                  Sortiment curat (salcâm, mană de brad, tei, polifloră) + pachete cadou.
                   Etichetare clară, livrare rapidă și suport prietenos.
                 </p>
 
@@ -243,16 +243,13 @@ export default function Page() {
               <div className="rounded-3xl border border-yellow-500/15 bg-neutral-900/30 p-6">
                 <h2 className="text-2xl font-black">Stupina noastră</h2>
                 <p className="mt-3 text-sm leading-relaxed text-neutral-300">
-                  Scrie 4–6 propoziții despre: zona, cum aveți grijă de albine,
-                  sezon, cum recoltați, ce vă diferențiază. Asta e aur pentru SEO
-                  + credibilitate.
+                  În comuna Bistra, în inima Munților Apuseni, avem grijă de albinele noastre
+                  ca de o familie. Lucrăm împreună, tată și fiu, cu respect pentru natură și
+                  tradiție, urmărind fiecare detaliu din stupină. Mierea este recoltată cu grijă,
+                  la momentul potrivit, pentru a păstra gustul și calitatea naturală. Fiecare
+                  borcan reflectă munca, răbdarea și pasiunea noastră pentru apicultură.
                 </p>
 
-                <ul className="mt-4 grid gap-2 text-sm text-neutral-300">
-                  <li>• Recoltare responsabilă</li>
-                  <li>• Ambalare sigură</li>
-                  <li>• Recomandări de consum</li>
-                </ul>
               </div>
 
               <div className="overflow-hidden rounded-3xl border border-yellow-500/15 bg-neutral-900/30">
@@ -260,8 +257,8 @@ export default function Page() {
                     src="/images/poza_cu_stupii_departare.jpg"
                     alt="Stupină și peisaj natural"
                     width={1000}
-                    height={600}
-                    className="h-[230px] w-full object-cover"
+                    height={500}
+                    className="h-[205px] w-full object-cover"
                     loading="lazy"
                 />
               </div>
