@@ -3,7 +3,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-const brandName = "Mana Apuseană";
+const brandName = "Prisaca Apuseni";
 
 export const metadata: Metadata = {
 };
