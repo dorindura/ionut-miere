@@ -64,7 +64,15 @@ export default async function OrderDetailsPage({
                 <div className="mt-6 border-t border-yellow-500/10 pt-4 text-sm text-neutral-300">
                     <p><span className="text-neutral-200 font-semibold">Nume:</span> {order?.fullName}</p>
                     <p><span className="text-neutral-200 font-semibold">Telefon:</span> {order?.phone}</p>
-                    <p><span className="text-neutral-200 font-semibold">Adresă:</span> {order?.address}</p>
+                    {order.deliveryMethod === "EASYBOX" ? (
+                        <>
+                            <p><span className="text-neutral-200 font-semibold">Livrare:</span> easybox</p>
+                            <p><span className="text-neutral-200 font-semibold">Easybox:</span> {order.easyboxName}</p>
+                            <p><span className="text-neutral-200 font-semibold">Adresă easybox:</span> {order.easyboxAddress}</p>
+                        </>
+                    ) : (
+                        <p><span className="text-neutral-200 font-semibold">Adresă:</span> {order.address}</p>
+                    )}
                 </div>
             </section>
 

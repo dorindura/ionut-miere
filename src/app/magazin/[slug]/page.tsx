@@ -75,13 +75,6 @@ export default async function ProductPage({
                             Înapoi la magazin
                         </Link>
                     </div>
-
-                    <div id="comanda" className="mt-8 rounded-2xl border border-yellow-500/15 p-4">
-                        <p className="text-sm text-neutral-300">
-                            Pentru început: “Comandă” poate fi WhatsApp / Telefon / Formular. După backend,
-                            îl legăm la coș + checkout.
-                        </p>
-                    </div>
                 </div>
             </div>
 
@@ -133,31 +126,31 @@ export default async function ProductPage({
             </section>
 
             {/* Comentarii (placeholder UI) */}
-            <section className="mt-10 rounded-3xl border border-yellow-500/15 bg-neutral-900/30 p-6">
-                <h2 className="text-xl font-black">Recenzii & comentarii</h2>
-                <p className="mt-2 text-sm text-neutral-300">
-                    Următorul pas: salvare în DB + moderare în admin.
-                </p>
+            {/*<section className="mt-10 rounded-3xl border border-yellow-500/15 bg-neutral-900/30 p-6">*/}
+            {/*    <h2 className="text-xl font-black">Recenzii & comentarii</h2>*/}
+            {/*    <p className="mt-2 text-sm text-neutral-300">*/}
+            {/*        Următorul pas: salvare în DB + moderare în admin.*/}
+            {/*    </p>*/}
 
-                <form className="mt-5 grid gap-3 md:max-w-xl">
-                    <input
-                        className="rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60"
-                        placeholder="Nume"
-                        name="name"
-                    />
-                    <textarea
-                        className="min-h-[110px] rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60"
-                        placeholder="Scrie un comentariu..."
-                        name="comment"
-                    />
-                    <button
-                        type="button"
-                        className="rounded-xl bg-yellow-500 px-5 py-3 text-sm font-semibold text-neutral-950 hover:bg-yellow-400 transition-colors"
-                    >
-                        Trimite (demo)
-                    </button>
-                </form>
-            </section>
+            {/*    <form className="mt-5 grid gap-3 md:max-w-xl">*/}
+            {/*        <input*/}
+            {/*            className="rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60"*/}
+            {/*            placeholder="Nume"*/}
+            {/*            name="name"*/}
+            {/*        />*/}
+            {/*        <textarea*/}
+            {/*            className="min-h-[110px] rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60"*/}
+            {/*            placeholder="Scrie un comentariu..."*/}
+            {/*            name="comment"*/}
+            {/*        />*/}
+            {/*        <button*/}
+            {/*            type="button"*/}
+            {/*            className="rounded-xl bg-yellow-500 px-5 py-3 text-sm font-semibold text-neutral-950 hover:bg-yellow-400 transition-colors"*/}
+            {/*        >*/}
+            {/*            Trimite (demo)*/}
+            {/*        </button>*/}
+            {/*    </form>*/}
+            {/*</section>*/}
         </main>
     );
 }

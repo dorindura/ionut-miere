@@ -3,6 +3,7 @@ import { authOptions } from "@/auth";
 import { redirect, notFound } from "next/navigation";
 import type { Prisma } from "@prisma/client";
 import {getPrisma} from "@/lib/db";
+import { revalidatePath } from "next/cache";
 
 type OrderWithRelations = Prisma.OrderGetPayload<{
     include: { user: true; items: true };
@@ -13,16 +14,19 @@ export const dynamic = "force-dynamic";
 export default async function AdminOrderPage({
                                                  params,
                                              }: {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }) {
     const prisma = getPrisma();
     const session = await getServerSession(authOptions);
+
     if (!session || (session as any).role !== "ADMIN") {
         redirect("/admin/login");
     }
 
+    const { id } = await params;
+
     const order: OrderWithRelations | null = await prisma.order.findUnique({
-        where: { id: params.id },
+        where: { id },
         include: { user: true, items: true },
     });
 
@@ -30,6 +34,8 @@ export default async function AdminOrderPage({
 
     async function updateOrder(formData: FormData) {
         "use server";
+
+        const prisma = getPrisma();
 
         const orderId = String(formData.get("orderId") || "");
         if (!orderId) return;
@@ -47,6 +53,9 @@ export default async function AdminOrderPage({
                 adminNotes: adminNotes || null,
             },
         });
+
+        revalidatePath(`/admin/comenzi/${orderId}`);
+        revalidatePath("/admin/comenzi");
     }
 
     return (
@@ -98,6 +107,7 @@ export default async function AdminOrderPage({
                 action={updateOrder}
                 className="mt-10 space-y-4 rounded-2xl border border-yellow-500/15 p-6"
             >
+                <input type="hidden" name="orderId" value={order.id} />
                 <label className="block">
                     Status:
                     <select

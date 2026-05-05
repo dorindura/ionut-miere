@@ -17,7 +17,7 @@ export default function ImageSlider({ images, alt }: { images: string[]; alt: st
                     src={safeImages[i]}
                     alt={alt}
                     fill
-                    className="object-cover"
+                    // className="object-cover"
                     sizes="(max-width: 768px) 100vw, 50vw"
                     priority
                 />
