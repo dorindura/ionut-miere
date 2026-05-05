@@ -30,6 +30,11 @@ export default async function AdminEditProductPage({ params }: { params: Promise
     async function save(formData: FormData) {
         "use server";
 
+        const prisma = getPrisma();
+
+        const productId = String(formData.get("productId") || "");
+        if (!productId) return;
+
         const name = String(formData.get("name") || "");
         const slug = String(formData.get("slug") || "");
         const shortDescription = String(formData.get("shortDescription") || "");
@@ -52,12 +57,10 @@ export default async function AdminEditProductPage({ params }: { params: Promise
         const characteristics = parseLines("characteristics");
         const benefits = parseLines("benefits");
         const consumption = parseLines("consumption");
-
-        // Imagini: 1 URL per linie
         const imageUrls = parseLines("images");
 
         await prisma.product.update({
-            where: { id },
+            where: { id: productId },
             data: {
                 name,
                 slug,
@@ -74,8 +77,9 @@ export default async function AdminEditProductPage({ params }: { params: Promise
             },
         });
 
-        // reset images then re-add
-        await prisma.productImage.deleteMany({ where: { productId: id } });
+        await prisma.productImage.deleteMany({
+            where: { productId },
+        });
 
         if (imageUrls.length) {
             await prisma.productImage.createMany({
@@ -83,7 +87,7 @@ export default async function AdminEditProductPage({ params }: { params: Promise
                     url,
                     alt: `${name} ${weight}`,
                     sortOrder: idx,
-                    productId: id,
+                    productId,
                 })),
             });
         }
@@ -115,6 +119,7 @@ export default async function AdminEditProductPage({ params }: { params: Promise
                 action={save}
                 className="mt-8 grid gap-4 rounded-3xl border border-yellow-500/15 bg-neutral-900/30 p-6"
             >
+                <input type="hidden" name="productId" value={p.id} />
                 <div className="grid gap-4 md:grid-cols-2">
                     <label className="grid gap-1 text-sm">
                         <span className="text-neutral-200">Nume</span>
