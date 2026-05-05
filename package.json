@@ -9,9 +9,6 @@
     "lint": "eslint",
     "postinstall": "prisma generate"
   },
-  "prisma": {
-    "seed": "ts-node --transpile-only prisma/seed.ts"
-  },
   "dependencies": {
     "@prisma/client": "^6.0.0",
     "bcryptjs": "^3.0.3",
@@ -22,7 +19,6 @@
   },
   "devDependencies": {
     "prisma": "^6.0.0",
-    "@opennextjs/cloudflare": "^1.18.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -32,7 +28,6 @@
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
-    "typescript": "^5",
-    "wrangler": "^4.79.0"
+    "typescript": "^5"
   }
 }
