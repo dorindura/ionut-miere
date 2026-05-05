@@ -3,18 +3,40 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { getPrisma } from "@/lib/db";
 
-
 export async function POST(req: Request) {
     const prisma = getPrisma();
     const session = await getServerSession(authOptions);
-    if (!session?.user?.email) return NextResponse.redirect(new URL("/cont/login", req.url));
+
+    if (!session?.user?.email) {
+        return NextResponse.redirect(new URL("/cont/login", req.url));
+    }
 
     const form = await req.formData();
+
     const fullName = String(form.get("fullName") || "").trim();
     const phone = String(form.get("phone") || "").trim();
     const address = String(form.get("address") || "").trim();
 
-    if (!fullName || !phone || !address) {
+    const deliveryMethod = String(form.get("deliveryMethod") || "ADDRESS");
+
+    const easyboxId = String(form.get("easyboxId") || "").trim();
+    const easyboxName = String(form.get("easyboxName") || "").trim();
+    const easyboxAddress = String(form.get("easyboxAddress") || "").trim();
+    const easyboxCity = String(form.get("easyboxCity") || "").trim();
+    const easyboxCounty = String(form.get("easyboxCounty") || "").trim();
+    const easyboxPostalCode = String(form.get("easyboxPostalCode") || "").trim();
+
+    const isEasybox = deliveryMethod === "EASYBOX";
+
+    if (!fullName || !phone) {
+        return NextResponse.redirect(new URL("/checkout", req.url));
+    }
+
+    if (!isEasybox && !address) {
+        return NextResponse.redirect(new URL("/checkout", req.url));
+    }
+
+    if (isEasybox && (!easyboxId || !easyboxName || !easyboxAddress)) {
         return NextResponse.redirect(new URL("/checkout", req.url));
     }
 
@@ -30,7 +52,10 @@ export async function POST(req: Request) {
     });
 
     const items = user?.cart?.items ?? [];
-    if (!user || items.length === 0) return NextResponse.redirect(new URL("/cos", req.url));
+
+    if (!user || items.length === 0) {
+        return NextResponse.redirect(new URL("/cos", req.url));
+    }
 
     const totalRon = items.reduce((sum, it) => sum + it.qty * it.product.priceRon, 0);
 
@@ -39,7 +64,14 @@ export async function POST(req: Request) {
             userId: user.id,
             fullName,
             phone,
-            address,
+            address: isEasybox ? null : address,
+            deliveryMethod: isEasybox ? "EASYBOX" : "ADDRESS",
+            easyboxId: isEasybox ? easyboxId : null,
+            easyboxName: isEasybox ? easyboxName : null,
+            easyboxAddress: isEasybox ? easyboxAddress : null,
+            easyboxCity: isEasybox ? easyboxCity : null,
+            easyboxCounty: isEasybox ? easyboxCounty : null,
+            easyboxPostalCode: isEasybox ? easyboxPostalCode : null,
             totalRon,
             status: "PENDING",
             items: {
@@ -54,7 +86,7 @@ export async function POST(req: Request) {
         },
         select: { id: true },
     });
-    
+
     if (user.cart?.id) {
         await prisma.cartItem.deleteMany({ where: { cartId: user.cart.id } });
     }

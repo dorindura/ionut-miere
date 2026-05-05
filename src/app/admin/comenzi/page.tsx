@@ -40,6 +40,11 @@ export default async function AdminOrdersPage() {
                                 <p className="text-lg font-bold">
                                     {o.totalRon} RON
                                 </p>
+                                <p className="mt-1 text-xs text-neutral-400">
+                                    {o.deliveryMethod === "EASYBOX"
+                                        ? `easybox: ${o.easyboxName ?? "nespecificat"}`
+                                        : "livrare la adresă"}
+                                </p>
                             </div>
 
                             <div className="text-right">

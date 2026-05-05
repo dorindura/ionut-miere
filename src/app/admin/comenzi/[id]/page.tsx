@@ -58,6 +58,28 @@ export default async function AdminOrderPage({
             <div className="mt-6 space-y-3">
                 <p>Email client: {order.user.email}</p>
                 <p>Total: {order.totalRon} RON</p>
+                <div className="rounded-2xl border border-yellow-500/15 bg-neutral-900/30 p-4">
+                    <p className="font-semibold text-yellow-300">Livrare</p>
+
+                    {order.deliveryMethod === "EASYBOX" ? (
+                        <div className="mt-2 text-sm text-neutral-300">
+                            <p>Metodă: easybox</p>
+                            <p>Easybox: {order.easyboxName}</p>
+                            <p>Adresă: {order.easyboxAddress}</p>
+                            <p>
+                                {[order.easyboxCity, order.easyboxCounty, order.easyboxPostalCode]
+                                    .filter(Boolean)
+                                    .join(", ")}
+                            </p>
+                            <p>ID easybox: {order.easyboxId}</p>
+                        </div>
+                    ) : (
+                        <div className="mt-2 text-sm text-neutral-300">
+                            <p>Metodă: livrare la adresă</p>
+                            <p>Adresă: {order.address}</p>
+                        </div>
+                    )}
+                </div>
             </div>
 
             <div className="mt-8 space-y-4">
