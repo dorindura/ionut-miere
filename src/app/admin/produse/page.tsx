@@ -24,12 +24,21 @@ export default async function AdminProductsPage() {
                     </p>
                 </div>
 
+                <div className="flex flex-col gap-3 md:flex-row">
                 <Link
                     href="/admin"
                     className="inline-flex rounded-xl border border-yellow-500/25 px-4 py-2 text-sm hover:border-yellow-400/60"
                 >
                     Înapoi la dashboard
                 </Link>
+
+                <Link
+                    href="/admin/produse/nou"
+                    className="inline-flex rounded-xl bg-yellow-500 px-4 py-2 text-sm font-semibold text-neutral-950 hover:bg-yellow-400"
+                >
+                    Adaugă produs
+                </Link>
+                </div>
             </div>
 
             <div className="mt-8 grid gap-4 md:grid-cols-3">

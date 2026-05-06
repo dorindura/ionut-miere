@@ -47,7 +47,6 @@ export default async function Navbar({
 
                 <nav className="hidden items-center gap-6 md:flex">
                     <Link href="/magazin" className="text-sm text-neutral-200 hover:text-yellow-300">Magazin</Link>
-                    <Link href="/#support" className="text-sm text-neutral-200 hover:text-yellow-300">Support</Link>
                     <Link href="/#contact" className="text-sm text-neutral-200 hover:text-yellow-300">Contact</Link>
 
                     {isAdmin && (

@@ -1,32 +1,8 @@
-import { products } from "@/lib/products";
 import ImageSlider from "@/components/ImageSlider";
 import { notFound } from "next/navigation";
 import AddToCartButton from "@/components/AddToCartButton";
 import Link from "next/link";
-
-export function generateStaticParams() {
-    return products.map((p) => ({ slug: p.slug }));
-}
-
-export async function generateMetadata({
-                                           params,
-                                       }: {
-    params: Promise<{ slug: string }>;
-}) {
-    const { slug } = await params;
-    const p = products.find((x) => x.slug === slug);
-    if (!p) return {};
-
-    return {
-        title: `${p.name} ${p.weight}`,
-        description: p.shortDescription,
-        openGraph: {
-            title: `${p.name} ${p.weight}`,
-            description: p.shortDescription,
-            images: p.images?.length ? [p.images[0]] : [],
-        },
-    };
-}
+import {getPrisma} from "@/lib/db";
 
 export default async function ProductPage({
                                               params,
@@ -35,8 +11,38 @@ export default async function ProductPage({
 }) {
     const { slug } = await params;
 
-    const p = products.find((x) => x.slug === slug);
-    if (!p) return notFound();
+    const prisma = getPrisma();
+
+    const product = await prisma.product.findUnique({
+        where: { slug },
+        include: {
+            images: {
+                orderBy: {
+                    sortOrder: "asc",
+                },
+            },
+        },
+    });
+
+    if (!product) return notFound();
+
+    const p = {
+        ...product,
+        images: product.images.map((x) => x.url),
+        details: {
+            origin: product.origin ?? undefined,
+            howItsMade: product.howItsMade ?? undefined,
+            characteristics: Array.isArray(product.characteristics)
+                ? product.characteristics.map(String)
+                : [],
+            benefits: Array.isArray(product.benefits)
+                ? product.benefits.map(String)
+                : [],
+            consumption: Array.isArray(product.consumption)
+                ? product.consumption.map(String)
+                : [],
+        },
+    };
 
     return (
         <main className="mx-auto max-w-6xl px-4 py-12">

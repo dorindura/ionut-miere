@@ -1,12 +1,14 @@
 // app/page.tsx
 import Image from "next/image";
 import Link from "next/link";
+import {getPrisma} from "@/lib/db";
+import ContactForm from "@/components/ContactForm";
 
 const brand = {
   name: "Prisaca Apuseni",
   siteUrl: "https://exemplu.ro",
   phone: "+40 752 819 170",
-  email: "ionutbucea@yahoo.com",
+  email: "buceadariusionut@gmail.com",
   address: "România (Comuna Bistra / Alba)",
 };
 
@@ -58,13 +60,25 @@ function JsonLd() {
   );
 }
 
-const navItems = [
-  { label: "Magazin", href: "/magazin" },
-  { label: "Support", href: "#support" },
-  { label: "Contact", href: "#contact" },
-];
+export default async function Page() {
 
-export default function Page() {
+  const prisma = getPrisma();
+
+  const featuredProducts = await prisma.product.findMany({
+    take: 3,
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      images: {
+        orderBy: {
+          sortOrder: "asc",
+        },
+        take: 1,
+      },
+    },
+  });
+
   return (
       <>
         <JsonLd />
@@ -114,7 +128,7 @@ export default function Page() {
                   {[
                     { k: "100%", v: "Natural" },
                     { k: "24–48h", v: "Livrare" },
-                    { k: "★ 4.9", v: "Recenzii" },
+                    { k: "★ 5.0", v: "Recenzii" },
                   ].map((x) => (
                       <div
                           key={x.v}
@@ -150,17 +164,6 @@ export default function Page() {
 
           {/* BENEFICII */}
           <section id="support" className="mx-auto max-w-6xl px-4 py-10">
-            {/*<div className="flex items-end justify-between gap-6">*/}
-            {/*  <div>*/}
-            {/*    <h2 className="text-2xl font-black">De ce de la noi</h2>*/}
-            {/*  </div>*/}
-            {/*  <a*/}
-            {/*      href="#contact"*/}
-            {/*      className="hidden md:inline-flex rounded-xl border border-yellow-500/25 px-4 py-2 text-sm hover:border-yellow-400/60"*/}
-            {/*  >*/}
-            {/*    Ai întrebări? Scrie-ne*/}
-            {/*  </a>*/}
-            {/*</div>*/}
 
             <div className="mt-6 grid gap-4 md:grid-cols-3">
               {[
@@ -193,43 +196,43 @@ export default function Page() {
             <h2 className="text-2xl font-black">Produse populare</h2>
 
             <div className="mt-6 grid gap-4 md:grid-cols-3">
-              {[
-                { name: "Miere de salcâm", grams: "500g", price: "45 Ron", image: "/images/miere-de-salcam-la-jumatate.jpeg", },
-                { name: "Miere de tei", grams: "500g", price: "50 Ron", image: "/images/miere-de-tei-la-jumatate.jpeg", },
-                { name: "Miere polifloră", grams: "1000g", price: "85 Ron", image: "/images/miere-poliflora-de-munte.jpeg", },
-              ].map((p) => (
+              {featuredProducts.map((p) => (
                   <article
-                      key={p.name}
+                      key={p.id}
                       className="group rounded-3xl border border-yellow-500/15 bg-neutral-900/30 overflow-hidden"
                   >
                     <div className="relative h-80">
                       <Image
-                          src={p.image}
-                          alt={`${p.name} ${p.grams}`}
+                          src={p.images?.[0]?.url || "/images/placeholder.jpg"}
+                          alt={`${p.name} ${p.weight}`}
                           width={1200}
                           height={900}
                           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                          loading="lazy"
                       />
+
                       <span className="absolute left-4 top-4 rounded-full bg-neutral-950/70 px-3 py-1 text-xs text-yellow-200 border border-yellow-500/20">
-                    {p.grams}
-                  </span>
+            {p.weight}
+        </span>
                     </div>
 
                     <div className="p-5">
                       <h3 className="text-lg font-bold">{p.name}</h3>
+
                       <p className="mt-1 text-sm text-neutral-300">
-                        Aromă naturală, perfectă pentru ceai, mic dejun sau cadou.
+                        {p.shortDescription}
                       </p>
 
                       <div className="mt-4 flex items-center justify-between">
-                        <span className="text-sm text-neutral-300">Preț: {p.price}</span>
-                        <a
-                            href="#contact"
+            <span className="text-sm text-neutral-300">
+                Preț: {p.priceRon} RON
+            </span>
+
+                        <Link
+                            href={`/magazin/${p.slug}`}
                             className="rounded-xl bg-yellow-500 px-4 py-2 text-sm font-semibold text-neutral-950 hover:bg-yellow-400 transition-colors"
                         >
-                          Comandă
-                        </a>
+                          Vezi produs
+                        </Link>
                       </div>
                     </div>
                   </article>
@@ -300,77 +303,50 @@ export default function Page() {
             </div>
           </section>
 
-          {/* CONTACT */}
-          {/*<section id="contact" className="mx-auto max-w-6xl px-4 py-12">*/}
-          {/*  <div className="rounded-[32px] border border-yellow-500/15 bg-neutral-900/30 p-6 md:p-10">*/}
-          {/*    <div className="grid gap-8 md:grid-cols-2">*/}
-          {/*      <div>*/}
-          {/*        <h2 className="text-2xl font-black">Contact</h2>*/}
-          {/*        <p className="mt-2 text-neutral-300">*/}
-          {/*          Lasă un mesaj și revenim rapid.*/}
-          {/*        </p>*/}
+          <section id="contact" className="mx-auto max-w-6xl px-4 py-12">
+            <div className="rounded-[32px] border border-yellow-500/15 bg-neutral-900/30 p-6 md:p-10">
+              <div className="grid gap-8 md:grid-cols-2">
+                <div>
+                  <h2 className="text-2xl font-black">Contact</h2>
+                  <p className="mt-2 mb-2 text-neutral-300">
+                    Lasă un mesaj și revenim rapid.
+                  </p>
 
-          {/*        <div className="mt-5 space-y-2 text-sm text-neutral-300">*/}
-          {/*          <p>*/}
-          {/*            <span className="text-yellow-200 font-semibold">Telefon:</span>{" "}*/}
-          {/*            {brand.phone}*/}
-          {/*          </p>*/}
-          {/*          <p>*/}
-          {/*            <span className="text-yellow-200 font-semibold">Email:</span>{" "}*/}
-          {/*            {brand.email}*/}
-          {/*          </p>*/}
-          {/*          <p>*/}
-          {/*            <span className="text-yellow-200 font-semibold">Adresă:</span>{" "}*/}
-          {/*            {brand.address}*/}
-          {/*          </p>*/}
-          {/*        </div>*/}
-          {/*      </div>*/}
+                  <div className="grid gap-3">
+                    <a
+                        href={`tel:${brand.phone.replace(/\s/g, "")}`}
+                        className="rounded-2xl border border-yellow-500/15 bg-neutral-950/50 p-4 hover:border-yellow-400/50 transition-colors"
+                    >
+                      <p className="text-xs text-neutral-400">Telefon</p>
+                      <p className="mt-1 text-lg font-bold text-yellow-300">
+                        {brand.phone}
+                      </p>
+                    </a>
 
-          {/*      <form className="grid gap-3">*/}
-          {/*        <label className="grid gap-1 text-sm">*/}
-          {/*          <span className="text-neutral-200">Nume</span>*/}
-          {/*          <input*/}
-          {/*              className="rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60"*/}
-          {/*              placeholder="Numele tău"*/}
-          {/*              name="name"*/}
-          {/*              autoComplete="name"*/}
-          {/*          />*/}
-          {/*        </label>*/}
+                    <a
+                        href={`mailto:${brand.email}`}
+                        className="rounded-2xl border border-yellow-500/15 bg-neutral-950/50 p-4 hover:border-yellow-400/50 transition-colors"
+                    >
+                      <p className="text-xs text-neutral-400">Email</p>
+                      <p className="mt-1 text-lg font-bold text-yellow-300">
+                        {brand.email}
+                      </p>
+                    </a>
 
-          {/*        <label className="grid gap-1 text-sm">*/}
-          {/*          <span className="text-neutral-200">Email</span>*/}
-          {/*          <input*/}
-          {/*              className="rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60"*/}
-          {/*              placeholder="email@exemplu.ro"*/}
-          {/*              name="email"*/}
-          {/*              type="email"*/}
-          {/*              autoComplete="email"*/}
-          {/*          />*/}
-          {/*        </label>*/}
+                    <div className="rounded-2xl border border-yellow-500/15 bg-neutral-950/50 p-4">
+                      <p className="text-xs text-neutral-400">Adresă</p>
 
-          {/*        <label className="grid gap-1 text-sm">*/}
-          {/*          <span className="text-neutral-200">Mesaj</span>*/}
-          {/*          <textarea*/}
-          {/*              className="min-h-[120px] rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60"*/}
-          {/*              placeholder="Spune-ne ce sortiment/gramaj te interesează…"*/}
-          {/*              name="message"*/}
-          {/*          />*/}
-          {/*        </label>*/}
+                      <p className="mt-1 text-lg font-bold text-yellow-300">
+                        {brand.address}
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-          {/*        <button*/}
-          {/*            type="button"*/}
-          {/*            className="mt-2 rounded-xl bg-yellow-500 px-5 py-3 text-sm font-semibold text-neutral-950 hover:bg-yellow-400 transition-colors"*/}
-          {/*        >*/}
-          {/*          Trimite (demo)*/}
-          {/*        </button>*/}
-
-          {/*        <p className="text-xs text-neutral-400">*/}
-          {/*          *În producție: reCAPTCHA, rate limiting, validare, email sender (Resend/SMTP).*/}
-          {/*        </p>*/}
-          {/*      </form>*/}
-          {/*    </div>*/}
-          {/*  </div>*/}
-          {/*</section>*/}
+                <ContactForm />
+              </div>
+            </div>
+          </section>
         </main>
       </>
   );
