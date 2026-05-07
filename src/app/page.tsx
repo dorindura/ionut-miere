@@ -105,7 +105,7 @@ export default async function Page() {
                 </h1>
 
                 <p className="mt-4 text-base leading-relaxed text-neutral-300">
-                  Sortiment curat (salcâm, mană de brad, tei, polifloră) + pachete cadou.
+                  Miere din Munții Apuseni (salcâm, mană de brad, tei, polifloră) + pachete cadou.
                   Etichetare clară, livrare rapidă și suport prietenos.
                 </p>
 
