@@ -1,7 +1,7 @@
 "use client";
 
 import Script from "next/script";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 type CartItemView = {
     id: string;
@@ -24,7 +24,18 @@ type Easybox = {
 
 declare global {
     interface Window {
-        LockerPlugin?: any;
+        LockerPlugin?: {
+            init: (options: {
+                clientId: string;
+                apiUsername: string;
+                countryCode: string;
+                langCode: string;
+            }) => void;
+            getInstance: () => {
+                subscribe: (callback: (locker: Easybox) => void) => void;
+                open: () => void;
+            } | undefined;
+        };
     }
 }
 
@@ -37,6 +48,7 @@ export default function CheckoutForm({
 }) {
     const [deliveryMethod, setDeliveryMethod] = useState<"ADDRESS" | "EASYBOX">("ADDRESS");
     const [easybox, setEasybox] = useState<Easybox | null>(null);
+    const isLockerPluginSubscribed = useRef(false);
 
     const openEasyboxPicker = () => {
         if (!window.LockerPlugin) {
@@ -44,16 +56,37 @@ export default function CheckoutForm({
             return;
         }
 
-        const plugin = window.LockerPlugin.init({
-            clientId: process.env.NEXT_PUBLIC_SAMEDAY_CLIENT_ID,
+        const clientId = process.env.NEXT_PUBLIC_SAMEDAY_CLIENT_ID;
+        const apiUsername = process.env.NEXT_PUBLIC_SAMEDAY_API_USERNAME;
+
+        if (!clientId || !apiUsername) {
+            alert("Configurarea easybox este incompletă. Verifică variabilele NEXT_PUBLIC_SAMEDAY_CLIENT_ID și NEXT_PUBLIC_SAMEDAY_API_USERNAME.");
+            return;
+        }
+
+        window.LockerPlugin.init({
+            clientId,
+            apiUsername,
             countryCode: "RO",
             langCode: "ro",
         });
 
-        plugin.open((locker: Easybox) => {
-            setEasybox(locker);
-            setDeliveryMethod("EASYBOX");
-        });
+        const plugin = window.LockerPlugin.getInstance();
+
+        if (!plugin) {
+            alert("Harta easybox nu a putut fi inițializată. Încearcă din nou în câteva secunde.");
+            return;
+        }
+
+        if (!isLockerPluginSubscribed.current) {
+            plugin.subscribe((locker: Easybox) => {
+                setEasybox(locker);
+                setDeliveryMethod("EASYBOX");
+            });
+            isLockerPluginSubscribed.current = true;
+        }
+
+        plugin.open();
     };
 
     return (
