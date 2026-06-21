@@ -150,31 +150,49 @@ export async function sendOrderEmails(order: OrderEmailData): Promise<void> {
         order,
     );
 
-    const tasks: Promise<unknown>[] = [
-        client.emails.send({
-            from: FROM,
-            to: [OWNER_EMAIL],
-            replyTo: order.email || undefined,
-            subject: `Comandă nouă #${order.id.slice(-6)} - ${order.totalRon} RON`,
-            html: ownerHtml,
-        }),
+    // un singur apel: notificare proprietar + confirmare client (dacă emailul e valid)
+    const recipients = [OWNER_EMAIL];
+    const sendCustomer =
+        order.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(order.email) && order.email !== OWNER_EMAIL;
+
+    const tasks: Array<{ label: string; run: () => Promise<{ data: unknown; error: unknown }> }> = [
+        {
+            label: "proprietar",
+            run: () =>
+                client.emails.send({
+                    from: FROM,
+                    to: recipients,
+                    replyTo: order.email || undefined,
+                    subject: `Comandă nouă #${order.id.slice(-6)} - ${order.totalRon} RON`,
+                    html: ownerHtml,
+                }),
+        },
     ];
 
-    if (order.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(order.email)) {
-        tasks.push(
-            client.emails.send({
-                from: FROM,
-                to: [order.email],
-                subject: `Confirmare comandă #${order.id.slice(-6)} - Prisaca Apuseni`,
-                html: customerHtml,
-            }),
-        );
+    if (sendCustomer) {
+        tasks.push({
+            label: "client",
+            run: () =>
+                client.emails.send({
+                    from: FROM,
+                    to: [order.email],
+                    subject: `Confirmare comandă #${order.id.slice(-6)} - Prisaca Apuseni`,
+                    html: customerHtml,
+                }),
+        });
     }
 
-    const results = await Promise.allSettled(tasks);
-    results.forEach((r) => {
-        if (r.status === "rejected") {
-            console.error("[email] eroare trimitere email comandă", order.id, r.reason);
+    for (const task of tasks) {
+        try {
+            const { data, error } = await task.run();
+            if (error) {
+                // Resend NU aruncă excepție la refuz - eroarea vine în câmpul `error`
+                console.error(`[email] Resend a respins emailul (${task.label}) pentru comanda ${order.id}:`, error);
+            } else {
+                console.log(`[email] trimis ok (${task.label}) pentru comanda ${order.id}:`, data);
+            }
+        } catch (e) {
+            console.error(`[email] excepție la trimitere (${task.label}) pentru comanda ${order.id}:`, e);
         }
-    });
+    }
 }
