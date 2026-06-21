@@ -41,6 +41,12 @@ export default async function AdminOrderPage({
     async function updateOrder(formData: FormData) {
         "use server";
 
+        // server action = endpoint public -> verificăm rolul admin aici
+        const session = await getServerSession(authOptions);
+        if (!session || (session as any).role !== "ADMIN") {
+            redirect("/admin/login");
+        }
+
         const prisma = getPrisma();
 
         const orderId = String(formData.get("orderId") || "");
@@ -62,6 +68,10 @@ export default async function AdminOrderPage({
 
         revalidatePath(`/admin/comenzi/${orderId}`);
         revalidatePath("/admin/comenzi");
+
+        // navigare nouă -> pagina se re-randează cu datele actualizate
+        // (altfel router cache-ul client afișează datele dinainte de update)
+        redirect(`/admin/comenzi/${orderId}`);
     }
 
     return (
@@ -121,6 +131,7 @@ export default async function AdminOrderPage({
             </div>
 
             <form
+                key={order.updatedAt.getTime()}
                 action={updateOrder}
                 className="mt-10 space-y-4 rounded-2xl border border-yellow-500/15 p-6"
             >
