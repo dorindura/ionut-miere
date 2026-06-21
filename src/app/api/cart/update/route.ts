@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/authOptions";
 import { getPrisma } from "@/lib/db";
+import { getOrCreateCart } from "@/lib/cart";
 
 type UpdateCartBody = {
     productId?: string;
@@ -9,12 +8,7 @@ type UpdateCartBody = {
 };
 
 export async function POST(req: Request) {
-    const session = await getServerSession(authOptions);
     const prisma = getPrisma();
-
-    if (!session?.user?.email) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
 
     const body = (await req.json().catch(() => ({}))) as UpdateCartBody;
     const productId = String(body.productId || "");
@@ -26,24 +20,16 @@ export async function POST(req: Request) {
 
     const qty = Math.max(0, Math.floor(qtyRaw));
 
-    const user = await prisma.user.findUnique({
-        where: { email: session.user.email },
-        include: { cart: true },
-    });
-
-    if (!user?.cart?.id) return NextResponse.json({ ok: true });
-
-    const cartId = user.cart.id;
+    const cart = await getOrCreateCart(false);
+    if (!cart) return NextResponse.json({ ok: true });
 
     if (qty === 0) {
-        await prisma.cartItem.deleteMany({
-            where: { cartId, productId },
-        });
+        await prisma.cartItem.deleteMany({ where: { cartId: cart.id, productId } });
         return NextResponse.json({ ok: true });
     }
 
     await prisma.cartItem.updateMany({
-        where: { cartId, productId },
+        where: { cartId: cart.id, productId },
         data: { qty },
     });
 

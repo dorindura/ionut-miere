@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth";
 import { getPrisma } from "@/lib/db";
+import { getOrCreateCart } from "@/lib/cart";
 import LogoutButton from "@/components/LogoutButton";
 
 type Props = {
@@ -23,14 +24,11 @@ export default async function Navbar({
     const isAdmin =
         (session as any)?.role === "ADMIN" || (session?.user as any)?.role === "ADMIN";
 
-    let cartCount = 0;
-    if (email) {
-        const user = await prisma.user.findUnique({
-            where: { email },
-            include: { cart: { include: { items: true } } },
-        });
-        cartCount = user?.cart?.items?.reduce((sum, it) => sum + it.qty, 0) ?? 0;
-    }
+    const cart = await getOrCreateCart(false);
+    const cartItems = cart
+        ? await prisma.cartItem.findMany({ where: { cartId: cart.id }, select: { qty: true } })
+        : [];
+    const cartCount = cartItems.reduce((sum, it) => sum + it.qty, 0);
 
     return (
         <header className="sticky top-0 z-50 border-b border-yellow-500/15 bg-neutral-950/70 backdrop-blur">
@@ -57,19 +55,17 @@ export default async function Navbar({
                 </nav>
 
                 <div className="flex items-center gap-2">
-                    {isLoggedIn && (
-                        <Link
-                            href="/cos"
-                            className="hidden sm:inline-flex items-center rounded-xl border border-yellow-500/25 px-3 py-2 text-sm hover:border-yellow-400/60"
-                        >
-                            Coș
-                            {cartCount > 0 && (
-                                <span className="ml-2 rounded-full bg-yellow-500 px-2 py-0.5 text-xs font-black text-neutral-950">
+                    <Link
+                        href="/cos"
+                        className="inline-flex items-center rounded-xl border border-yellow-500/25 px-3 py-2 text-sm hover:border-yellow-400/60"
+                    >
+                        Coș
+                        {cartCount > 0 && (
+                            <span className="ml-2 rounded-full bg-yellow-500 px-2 py-0.5 text-xs font-black text-neutral-950">
                   {cartCount}
                 </span>
-                            )}
-                        </Link>
-                    )}
+                        )}
+                    </Link>
 
                     {!isLoggedIn ? (
                         <Link

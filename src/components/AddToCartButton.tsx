@@ -18,11 +18,6 @@ export default function AddToCartButton({ slug }: { slug: string }) {
             body: JSON.stringify({ slug, qty: 1 }),
         });
 
-        if (res.status === 401) {
-            router.push("/cont/login");
-            return;
-        }
-
         if (!res.ok) {
             const data = (await res.json().catch(() => ({}))) as { error?: string };
             setMsg(data.error || "Eroare. Încearcă din nou.");

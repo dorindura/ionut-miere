@@ -1,32 +1,21 @@
 import Link from "next/link";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/authOptions";
-import { redirect } from "next/navigation";
 import CartItemActions from "@/components/CartItemActions";
-import {getPrisma} from "@/lib/db";
+import { getPrisma } from "@/lib/db";
+import { getOrCreateCart } from "@/lib/cart";
 
 export const dynamic = "force-dynamic";
 
 export default async function CartPage() {
     const prisma = getPrisma();
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) redirect("/cont/login");
+    const cart = await getOrCreateCart(false);
 
-    const user = await prisma.user.findUnique({
-        where: { email: session.user.email },
-        include: {
-            cart: {
-                include: {
-                    items: {
-                        include: { product: { include: { images: { orderBy: { sortOrder: "asc" }, take: 1 } } } },
-                        orderBy: { updatedAt: "desc" },
-                    },
-                },
-            },
-        },
-    });
-
-    const items = user?.cart?.items ?? [];
+    const items = cart
+        ? await prisma.cartItem.findMany({
+              where: { cartId: cart.id },
+              include: { product: { include: { images: { orderBy: { sortOrder: "asc" }, take: 1 } } } },
+              orderBy: { updatedAt: "desc" },
+          })
+        : [];
 
     const totalRon = items.reduce((sum, it) => sum + it.qty * it.product.priceRon, 0);
 

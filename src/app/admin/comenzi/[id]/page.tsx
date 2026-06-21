@@ -32,6 +32,12 @@ export default async function AdminOrderPage({
 
     if (!order) return notFound();
 
+    const dateFmt = new Intl.DateTimeFormat("ro-RO", {
+        dateStyle: "long",
+        timeStyle: "short",
+        timeZone: "Europe/Bucharest",
+    });
+
     async function updateOrder(formData: FormData) {
         "use server";
 
@@ -63,9 +69,20 @@ export default async function AdminOrderPage({
             <h1 className="text-3xl font-black">
                 Comandă #{order.id.slice(-6)}
             </h1>
+            <p className="mt-1 text-sm text-yellow-300/90">
+                Plasată: {dateFmt.format(order.createdAt)}
+            </p>
 
             <div className="mt-6 space-y-3">
-                <p>Email client: {order.user.email}</p>
+                <div className="rounded-2xl border border-yellow-500/15 bg-neutral-900/30 p-4 text-sm">
+                    <p className="font-semibold text-yellow-300">Date client</p>
+                    <p className="mt-2 text-neutral-300">Nume: {order.fullName ?? "—"}</p>
+                    <p className="text-neutral-300">Email: {order.email}</p>
+                    <p className="text-neutral-300">Telefon: {order.phone ?? "—"}</p>
+                    <p className="mt-1 text-xs text-neutral-500">
+                        {order.user ? `Cont: ${order.user.email}` : "Comandă fără cont (guest)"}
+                    </p>
+                </div>
                 <p>Total: {order.totalRon} RON</p>
                 <div className="rounded-2xl border border-yellow-500/15 bg-neutral-900/30 p-4">
                     <p className="font-semibold text-yellow-300">Livrare</p>

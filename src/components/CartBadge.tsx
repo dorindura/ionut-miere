@@ -1,20 +1,16 @@
 import Link from "next/link";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/authOptions";
-import {getPrisma} from "@/lib/db";
-
+import { getPrisma } from "@/lib/db";
+import { getOrCreateCart } from "@/lib/cart";
 
 export default async function CartBadge() {
     const prisma = getPrisma();
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) return null;
+    const cart = await getOrCreateCart(false);
 
-    const user = await prisma.user.findUnique({
-        where: { email: session.user.email },
-        include: { cart: { include: { items: true } } },
-    });
+    const items = cart
+        ? await prisma.cartItem.findMany({ where: { cartId: cart.id }, select: { qty: true } })
+        : [];
 
-    const count = user?.cart?.items?.reduce((sum, it) => sum + it.qty, 0) ?? 0;
+    const count = items.reduce((sum, it) => sum + it.qty, 0);
 
     return (
         <Link

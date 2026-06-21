@@ -26,8 +26,9 @@ enum Role {
 
 model Cart {
   id        String     @id @default(cuid())
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String     @unique
+  user      User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String?    @unique
+  sessionId String?    @unique // coș anonim (guest) identificat prin cookie
   items     CartItem[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
@@ -86,9 +87,12 @@ model ProductImage {
 }
 
 model Order {
-  id     String @id @default(cuid())
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  id     String  @id @default(cuid())
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  // email de facturare (obligatoriu) - disponibil și pentru comenzi fără cont
+  email String
 
   status   OrderStatus @default(PENDING)
   totalRon Int

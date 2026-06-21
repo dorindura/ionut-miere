@@ -21,6 +21,12 @@ export default async function AdminOrdersPage() {
         },
     });
 
+    const dateFmt = new Intl.DateTimeFormat("ro-RO", {
+        dateStyle: "medium",
+        timeStyle: "short",
+        timeZone: "Europe/Bucharest",
+    });
+
     return (
         <main className="mx-auto max-w-6xl px-4 py-12">
             <h1 className="text-3xl font-black">Comenzi</h1>
@@ -34,8 +40,12 @@ export default async function AdminOrdersPage() {
                     >
                         <div className="flex justify-between">
                             <div>
-                                <p className="text-sm text-neutral-400">
-                                    {o.user.email}
+                                <p className="text-sm font-semibold text-yellow-300/90">
+                                    {dateFmt.format(o.createdAt)}
+                                </p>
+                                <p className="mt-0.5 text-sm text-neutral-400">
+                                    {o.email}
+                                    {o.user ? "" : " • fără cont"}
                                 </p>
                                 <p className="text-lg font-bold">
                                     {o.totalRon} RON

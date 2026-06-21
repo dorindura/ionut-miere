@@ -42,9 +42,13 @@ declare global {
 export default function CheckoutForm({
                                          items,
                                          totalRon,
+                                         defaultEmail = "",
+                                         errorMessage = "",
                                      }: {
     items: CartItemView[];
     totalRon: number;
+    defaultEmail?: string;
+    errorMessage?: string;
 }) {
     const [deliveryMethod, setDeliveryMethod] = useState<"ADDRESS" | "EASYBOX">("ADDRESS");
     const [easybox, setEasybox] = useState<Easybox | null>(null);
@@ -111,20 +115,47 @@ export default function CheckoutForm({
                     <input type="hidden" name="easyboxCounty" value={easybox?.county ?? ""} />
                     <input type="hidden" name="easyboxPostalCode" value={easybox?.postalCode ?? ""} />
 
+                    {errorMessage ? (
+                        <p className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+                            {errorMessage}
+                        </p>
+                    ) : null}
+
+                    <p className="text-xs font-semibold uppercase tracking-wide text-yellow-300/80">
+                        Date facturare
+                    </p>
+
                     <label className="grid gap-1 text-sm">
-                        <span className="text-neutral-200">Nume complet</span>
+                        <span className="text-neutral-200">Nume complet *</span>
                         <input
                             name="fullName"
                             required
+                            autoComplete="name"
                             className="rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60"
                         />
                     </label>
 
                     <label className="grid gap-1 text-sm">
-                        <span className="text-neutral-200">Telefon</span>
+                        <span className="text-neutral-200">Email *</span>
+                        <input
+                            name="email"
+                            type="email"
+                            required
+                            autoComplete="email"
+                            defaultValue={defaultEmail}
+                            placeholder="exemplu@email.com"
+                            className="rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60"
+                        />
+                    </label>
+
+                    <label className="grid gap-1 text-sm">
+                        <span className="text-neutral-200">Telefon *</span>
                         <input
                             name="phone"
+                            type="tel"
                             required
+                            autoComplete="tel"
+                            placeholder="07xx xxx xxx"
                             className="rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60"
                         />
                     </label>

@@ -1,10 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 import {getPrisma} from "@/lib/db";
 
 export default async function OrderPlacedPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     const prisma = getPrisma();
+    const session = await getServerSession(authOptions);
+    const isLoggedIn = !!session?.user?.email;
 
     const order = await prisma.order.findUnique({
         where: { id },
@@ -40,6 +44,7 @@ export default async function OrderPlacedPage({ params }: { params: Promise<{ id
 
                 <p className="mt-3 text-xs text-neutral-400">
                     Plată ramburs la livrare. Te contactăm pentru confirmare.
+                    {order.email ? ` Am trimis un email de confirmare la ${order.email}.` : ""}
                 </p>
             </div>
 
@@ -50,12 +55,14 @@ export default async function OrderPlacedPage({ params }: { params: Promise<{ id
                 >
                     Înapoi la magazin
                 </Link>
-                <Link
-                    href="/cont/comenzi"
-                    className="rounded-xl border border-yellow-500/25 px-6 py-3 text-sm font-semibold hover:border-yellow-400/60"
-                >
-                    Comenzile mele
-                </Link>
+                {isLoggedIn ? (
+                    <Link
+                        href="/cont/comenzi"
+                        className="rounded-xl border border-yellow-500/25 px-6 py-3 text-sm font-semibold hover:border-yellow-400/60"
+                    >
+                        Comenzile mele
+                    </Link>
+                ) : null}
             </div>
         </main>
     );

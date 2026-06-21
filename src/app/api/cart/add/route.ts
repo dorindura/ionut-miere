@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/authOptions";
-import {getPrisma} from "@/lib/db";
+import { getPrisma } from "@/lib/db";
+import { getOrCreateCart } from "@/lib/cart";
 
 type AddCartBody = {
     slug?: string;
@@ -10,9 +9,6 @@ type AddCartBody = {
 
 export async function POST(req: Request) {
     const prisma = getPrisma();
-    const session = await getServerSession(authOptions);
-    const email = session?.user?.email;
-    if (!email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const body = (await req.json().catch(() => ({}))) as AddCartBody;
     const slug = String(body?.slug || "");
@@ -23,14 +19,8 @@ export async function POST(req: Request) {
     const product = await prisma.product.findUnique({ where: { slug } });
     if (!product) return NextResponse.json({ error: "Product not found" }, { status: 404 });
 
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
-
-    const cart = await prisma.cart.upsert({
-        where: { userId: user.id },
-        create: { userId: user.id },
-        update: {},
-    });
+    const cart = await getOrCreateCart(true);
+    if (!cart) return NextResponse.json({ error: "Cart error" }, { status: 500 });
 
     await prisma.cartItem.upsert({
         where: { cartId_productId: { cartId: cart.id, productId: product.id } },
