@@ -6,7 +6,7 @@ import ContactForm from "@/components/ContactForm";
 
 const brand = {
   name: "Prisaca Apuseni",
-  siteUrl: "https://exemplu.ro",
+  siteUrl: "https://prisaca-apuseni.com",
   phone: "+40 752 819 170",
   email: "buceadariusionut@gmail.com",
   address: "România (Comuna Bistra / Alba)",
@@ -25,7 +25,7 @@ function JsonLd() {
       addressCountry: "RO",
       streetAddress: brand.address,
     },
-    image: `${brand.siteUrl}/og.jpg`,
+    image: `${brand.siteUrl}/images/horica_bucea.jpg`,
     sameAs: [
       // adaugă aici link-uri reale când le aveți
       // "https://www.facebook.com/....",
@@ -150,6 +150,7 @@ export default async function Page() {
                       width={1200}
                       height={900}
                       priority
+                      sizes="(max-width: 768px) 100vw, 50vw"
                       className="h-[440px] w-full object-cover"
                   />
                   <div className="absolute bottom-4 left-4 right-4 rounded-1xl border border-yellow-500/20 bg-neutral-950/70 p-4 backdrop-blur">
@@ -164,6 +165,7 @@ export default async function Page() {
 
           {/* BENEFICII */}
           <section id="support" className="mx-auto max-w-6xl px-4 py-10">
+            <h2 className="text-2xl font-black">De ce Prisaca Apuseni</h2>
 
             <div className="mt-6 grid gap-4 md:grid-cols-3">
               {[
@@ -207,6 +209,7 @@ export default async function Page() {
                           alt={`${p.name} ${p.weight}`}
                           width={1200}
                           height={900}
+                          sizes="(max-width: 768px) 100vw, 33vw"
                           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
                       />
 
@@ -261,6 +264,7 @@ export default async function Page() {
                     alt="Stupină și peisaj natural"
                     width={1000}
                     height={500}
+                    sizes="(max-width: 768px) 100vw, 50vw"
                     className="h-[205px] w-full object-cover"
                     loading="lazy"
                 />
