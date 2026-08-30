@@ -2,6 +2,7 @@
 
 import Script from "next/script";
 import { useRef, useState } from "react";
+import { SHIPPING_RON } from "@/lib/shipping";
 
 type CartItemView = {
     id: string;
@@ -41,18 +42,21 @@ declare global {
 
 export default function CheckoutForm({
                                          items,
-                                         totalRon,
+                                         subtotalRon,
                                          defaultEmail = "",
                                          errorMessage = "",
                                      }: {
     items: CartItemView[];
-    totalRon: number;
+    subtotalRon: number;
     defaultEmail?: string;
     errorMessage?: string;
 }) {
     const [deliveryMethod, setDeliveryMethod] = useState<"ADDRESS" | "EASYBOX">("ADDRESS");
     const [easybox, setEasybox] = useState<Easybox | null>(null);
     const isLockerPluginSubscribed = useRef(false);
+
+    const shippingRon = SHIPPING_RON[deliveryMethod];
+    const totalRon = subtotalRon + shippingRon;
 
     const openEasyboxPicker = () => {
         if (!window.LockerPlugin) {
@@ -172,7 +176,7 @@ export default function CheckoutForm({
                                     setEasybox(null);
                                 }}
                             />
-                            Livrare la adresă
+                            Livrare la adresă (+{SHIPPING_RON.ADDRESS} RON)
                         </label>
 
                         <label className="flex items-center gap-2 text-sm text-neutral-200">
@@ -181,7 +185,7 @@ export default function CheckoutForm({
                                 checked={deliveryMethod === "EASYBOX"}
                                 onChange={() => setDeliveryMethod("EASYBOX")}
                             />
-                            Livrare la easybox
+                            Livrare la easybox (+{SHIPPING_RON.EASYBOX} RON)
                         </label>
                     </div>
 
@@ -255,9 +259,26 @@ export default function CheckoutForm({
                         ))}
                     </div>
 
-                    <div className="mt-6 border-t border-yellow-500/10 pt-4 flex items-center justify-between">
-                        <p className="text-sm text-neutral-300">Total</p>
-                        <p className="text-2xl font-black text-yellow-300">{totalRon} RON</p>
+                    <div className="mt-6 grid gap-2 border-t border-yellow-500/10 pt-4">
+                        <div className="flex items-center justify-between text-sm text-neutral-300">
+                            <p>Subtotal produse</p>
+                            <p className="font-semibold text-neutral-100">{subtotalRon} RON</p>
+                        </div>
+
+                        <div className="flex items-center justify-between text-sm text-neutral-300">
+                            <p>
+                                Livrare{" "}
+                                <span className="text-neutral-400">
+                                    ({deliveryMethod === "EASYBOX" ? "easybox" : "la adresă"})
+                                </span>
+                            </p>
+                            <p className="font-semibold text-neutral-100">{shippingRon} RON</p>
+                        </div>
+
+                        <div className="mt-2 flex items-center justify-between border-t border-yellow-500/10 pt-3">
+                            <p className="text-sm text-neutral-300">Total</p>
+                            <p className="text-2xl font-black text-yellow-300">{totalRon} RON</p>
+                        </div>
                     </div>
                 </aside>
             </div>

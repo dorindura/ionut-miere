@@ -2,6 +2,7 @@ import Link from "next/link";
 import CartItemActions from "@/components/CartItemActions";
 import { getPrisma } from "@/lib/db";
 import { getOrCreateCart } from "@/lib/cart";
+import { SHIPPING_RON } from "@/lib/shipping";
 
 export const dynamic = "force-dynamic";
 
@@ -72,9 +73,12 @@ export default async function CartPage() {
 
                     <div className="mt-8 flex flex-col gap-3 rounded-3xl border border-yellow-500/15 bg-neutral-900/30 p-6 md:flex-row md:items-center md:justify-between">
                         <div>
-                            <p className="text-sm text-neutral-300">Total</p>
+                            <p className="text-sm text-neutral-300">Subtotal produse</p>
                             <p className="text-2xl font-black text-yellow-300">{totalRon} RON</p>
-                            <p className="mt-1 text-xs text-neutral-400">Plată ramburs la livrare.</p>
+                            <p className="mt-1 text-xs text-neutral-400">
+                                Plată ramburs la livrare. Taxa de livrare se adaugă la checkout:{" "}
+                                {SHIPPING_RON.EASYBOX} RON easybox, {SHIPPING_RON.ADDRESS} RON la adresă.
+                            </p>
                         </div>
 
                         <Link

@@ -58,6 +58,7 @@ export default async function OrderDetailsPage({
                     <div className="text-right">
                         <p className="text-xs text-neutral-400">Total</p>
                         <p className="text-2xl font-black text-yellow-300">{order.totalRon} RON</p>
+                        <p className="text-xs text-neutral-400">include {order.shippingRon} RON livrare</p>
                     </div>
                 </div>
 
@@ -66,12 +67,15 @@ export default async function OrderDetailsPage({
                     <p><span className="text-neutral-200 font-semibold">Telefon:</span> {order?.phone}</p>
                     {order.deliveryMethod === "EASYBOX" ? (
                         <>
-                            <p><span className="text-neutral-200 font-semibold">Livrare:</span> easybox</p>
+                            <p><span className="text-neutral-200 font-semibold">Livrare:</span> easybox ({order.shippingRon} RON)</p>
                             <p><span className="text-neutral-200 font-semibold">Easybox:</span> {order.easyboxName}</p>
                             <p><span className="text-neutral-200 font-semibold">Adresă easybox:</span> {order.easyboxAddress}</p>
                         </>
                     ) : (
-                        <p><span className="text-neutral-200 font-semibold">Adresă:</span> {order.address}</p>
+                        <>
+                            <p><span className="text-neutral-200 font-semibold">Livrare:</span> la adresă ({order.shippingRon} RON)</p>
+                            <p><span className="text-neutral-200 font-semibold">Adresă:</span> {order.address}</p>
+                        </>
                     )}
                 </div>
             </section>

@@ -39,7 +39,7 @@ export default async function Navbar({
           </span>
                     <span className="text-sm font-semibold tracking-wide">
             {brandName}
-                        <span className="block text-[11px] text-neutral-300/80">miere naturală • România</span>
+                        <span className="block text-[11px] text-neutral-300/80">Miere din Munții Apuseni • România</span>
           </span>
                 </Link>
 

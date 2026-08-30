@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/authOptions";
 import { getPrisma } from "@/lib/db";
 import { getOrCreateCart } from "@/lib/cart";
 import { sendOrderEmails } from "@/lib/email";
+import { shippingRonFor } from "@/lib/shipping";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -60,7 +61,9 @@ export async function POST(req: Request) {
         return NextResponse.redirect(new URL("/cos", req.url), 303);
     }
 
-    const totalRon = items.reduce((sum, it) => sum + it.qty * it.product.priceRon, 0);
+    const subtotalRon = items.reduce((sum, it) => sum + it.qty * it.product.priceRon, 0);
+    const shippingRon = shippingRonFor(isEasybox ? "EASYBOX" : "ADDRESS");
+    const totalRon = subtotalRon + shippingRon;
 
     const order = await prisma.order.create({
         data: {
@@ -77,6 +80,7 @@ export async function POST(req: Request) {
             easyboxCounty: isEasybox ? easyboxCounty : null,
             easyboxPostalCode: isEasybox ? easyboxPostalCode : null,
             totalRon,
+            shippingRon,
             status: "PENDING",
             items: {
                 create: items.map((it) => ({
@@ -94,6 +98,7 @@ export async function POST(req: Request) {
             fullName: true,
             phone: true,
             totalRon: true,
+            shippingRon: true,
             createdAt: true,
             deliveryMethod: true,
             address: true,
@@ -117,6 +122,7 @@ export async function POST(req: Request) {
             fullName: order.fullName ?? "",
             phone: order.phone ?? "",
             totalRon: order.totalRon,
+            shippingRon: order.shippingRon,
             createdAt: order.createdAt,
             deliveryMethod: order.deliveryMethod,
             address: order.address,

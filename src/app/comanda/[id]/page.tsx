@@ -37,9 +37,18 @@ export default async function OrderPlacedPage({ params }: { params: Promise<{ id
                     ))}
                 </div>
 
-                <div className="mt-6 border-t border-yellow-500/10 pt-4 flex items-center justify-between">
-                    <span className="text-neutral-300">Total</span>
-                    <span className="text-2xl font-black text-yellow-300">{order.totalRon} RON</span>
+                <div className="mt-6 grid gap-2 border-t border-yellow-500/10 pt-4">
+                    <div className="flex justify-between gap-4 text-sm">
+                        <span className="text-neutral-300">Livrare</span>
+                        <span className="text-neutral-200 font-semibold">
+                            {order.deliveryMethod === "EASYBOX" ? "easybox" : "la adresă"} • {order.shippingRon} RON
+                        </span>
+                    </div>
+
+                    <div className="mt-1 flex items-center justify-between border-t border-yellow-500/10 pt-3">
+                        <span className="text-neutral-300">Total</span>
+                        <span className="text-2xl font-black text-yellow-300">{order.totalRon} RON</span>
+                    </div>
                 </div>
 
                 <p className="mt-3 text-xs text-neutral-400">

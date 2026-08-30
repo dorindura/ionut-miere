@@ -101,7 +101,7 @@ export default async function Page() {
 
                 <h1 className="mt-4 text-4xl font-black leading-tight md:text-5xl">
                   Miere naturală, autentică —{" "}
-                  <span className="text-yellow-400">direct de la apicultor</span>.
+                  <span className="text-yellow-400">direct din inima Munților Apuseni</span>.
                 </h1>
 
                 <p className="mt-4 text-base leading-relaxed text-neutral-300">

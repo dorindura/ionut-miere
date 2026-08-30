@@ -34,7 +34,7 @@ export default async function CheckoutPage({
 
     if (items.length === 0) redirect("/cos");
 
-    const totalRon = items.reduce((sum, it) => sum + it.qty * it.product.priceRon, 0);
+    const subtotalRon = items.reduce((sum, it) => sum + it.qty * it.product.priceRon, 0);
 
     return (
         <main className="mx-auto max-w-6xl px-4 py-12">
@@ -53,7 +53,7 @@ export default async function CheckoutPage({
                     },
                     qty: it.qty,
                 }))}
-                totalRon={totalRon}
+                subtotalRon={subtotalRon}
                 defaultEmail={session?.user?.email ?? ""}
                 errorMessage={error ? ERROR_MESSAGES[error] ?? "Verifică datele introduse." : ""}
             />

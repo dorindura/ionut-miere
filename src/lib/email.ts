@@ -32,6 +32,7 @@ export type OrderEmailData = {
     fullName: string;
     phone: string;
     totalRon: number;
+    shippingRon: number;
     createdAt: Date;
     deliveryMethod: "ADDRESS" | "EASYBOX";
     address?: string | null;
@@ -96,6 +97,10 @@ function shellHtml(title: string, intro: string, order: OrderEmailData): string 
 
         <table style="width:100%;border-collapse:collapse;margin:8px 0 16px;">
           ${itemsRowsHtml(order)}
+          <tr>
+            <td style="padding:12px 0 0;color:#d4d4d4;">Livrare (${order.deliveryMethod === "EASYBOX" ? "easybox" : "la adresă"})</td>
+            <td style="padding:12px 0 0;text-align:right;color:#e5e5e5;font-weight:700;white-space:nowrap;">${order.shippingRon} RON</td>
+          </tr>
           <tr>
             <td style="padding:14px 0 0;color:#fafafa;font-weight:700;">Total</td>
             <td style="padding:14px 0 0;text-align:right;color:#f5c518;font-size:18px;font-weight:800;">${order.totalRon} RON</td>

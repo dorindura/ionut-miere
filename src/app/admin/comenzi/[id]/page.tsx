@@ -93,13 +93,13 @@ export default async function AdminOrderPage({
                         {order.user ? `Cont: ${order.user.email}` : "Comandă fără cont (guest)"}
                     </p>
                 </div>
-                <p>Total: {order.totalRon} RON</p>
+                <p>Total: {order.totalRon} RON (din care livrare: {order.shippingRon} RON)</p>
                 <div className="rounded-2xl border border-yellow-500/15 bg-neutral-900/30 p-4">
                     <p className="font-semibold text-yellow-300">Livrare</p>
 
                     {order.deliveryMethod === "EASYBOX" ? (
                         <div className="mt-2 text-sm text-neutral-300">
-                            <p>Metodă: easybox</p>
+                            <p>Metodă: easybox • {order.shippingRon} RON</p>
                             <p>Easybox: {order.easyboxName}</p>
                             <p>Adresă: {order.easyboxAddress}</p>
                             <p>
@@ -111,7 +111,7 @@ export default async function AdminOrderPage({
                         </div>
                     ) : (
                         <div className="mt-2 text-sm text-neutral-300">
-                            <p>Metodă: livrare la adresă</p>
+                            <p>Metodă: livrare la adresă • {order.shippingRon} RON</p>
                             <p>Adresă: {order.address}</p>
                         </div>
                     )}
