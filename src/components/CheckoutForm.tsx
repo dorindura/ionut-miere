@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Script from "next/script";
 import { useRef, useState } from "react";
 import { EASYBOX_CARD_ONLY_NOTE, SHIPPING_RON } from "@/lib/shipping";
@@ -321,6 +322,13 @@ export default function CheckoutForm({
                     >
                         {isCard ? "Continuă spre plata cu cardul" : "Plasează comanda"}
                     </button>
+
+                    <p className="text-xs text-neutral-400">
+                        Prin plasarea comenzii confirmi că ai citit{" "}
+                        <Link href="/termeni" target="_blank" className="text-yellow-300 underline">Termenii și condițiile</Link>
+                        {" "}și{" "}
+                        <Link href="/confidentialitate" target="_blank" className="text-yellow-300 underline">Politica de confidențialitate</Link>.
+                    </p>
 
                     <p className="text-xs text-neutral-400">
                         {isCard

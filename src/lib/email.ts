@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { EASYBOX_CARD_ONLY_NOTE } from "@/lib/shipping";
+import { COMPANY } from "@/lib/company";
 
 const FROM = "Prisaca Apuseni <contact@prisaca-apuseni.com>";
 const OWNER_EMAIL = "buceadariusionut@gmail.com";
@@ -242,4 +243,103 @@ export async function sendOrderEmails(order: OrderEmailData): Promise<void> {
             console.error(`[email] excepție la trimitere (${task.label}) pentru comanda ${order.id}:`, e);
         }
     }
+}
+
+export type WithdrawalRequest = {
+    fullName: string;
+    email: string;
+    phone: string;
+    orderId: string;
+    products: string;
+    receivedDate: string;
+    iban: string;
+    details: string;
+};
+
+function simpleShellHtml(title: string, bodyHtml: string): string {
+    return `
+  <div style="background:#0a0a0a;padding:24px;font-family:Arial,Helvetica,sans-serif;">
+    <div style="max-width:560px;margin:0 auto;background:#141414;border:1px solid rgba(245,197,24,0.18);border-radius:20px;overflow:hidden;">
+      <div style="padding:24px 28px;border-bottom:1px solid rgba(245,197,24,0.12);">
+        <p style="margin:0;color:#f5c518;font-size:13px;letter-spacing:2px;text-transform:uppercase;">Prisaca Apuseni</p>
+        <h1 style="margin:6px 0 0;color:#fafafa;font-size:22px;">${escapeHtml(title)}</h1>
+      </div>
+      <div style="padding:24px 28px;color:#d4d4d4;font-size:14px;line-height:1.6;">${bodyHtml}</div>
+    </div>
+  </div>`;
+}
+
+/**
+ * Cerere de retragere (OUG 34/2014): notificare către proprietar + confirmare de primire către
+ * client pe suport durabil (email) - obligatorie când cererea vine prin formularul online.
+ * Întoarce false dacă notificarea către proprietar nu a putut fi trimisă.
+ */
+export async function sendWithdrawalEmails(req: WithdrawalRequest): Promise<boolean> {
+    const client = getResend();
+    if (!client) {
+        console.warn("[email] RESEND_API_KEY lipsește - cererea de retragere nu poate fi trimisă");
+        return false;
+    }
+
+    const receivedAt = dateFmt.format(new Date());
+    const rows = (
+        [
+            ["Nume", req.fullName],
+            ["Email", req.email],
+            ["Telefon", req.phone || "—"],
+            ["ID comandă", req.orderId],
+            ["Produse returnate", req.products],
+            ["Data primirii coletului", req.receivedDate || "—"],
+            ["IBAN (ramburs)", req.iban || "—"],
+            ["Alte detalii", req.details || "—"],
+        ] as const
+    )
+        .map(
+            ([label, value]) => `
+        <tr>
+          <td style="padding:6px 12px 6px 0;color:#9a9a9a;vertical-align:top;white-space:nowrap;">${label}</td>
+          <td style="padding:6px 0;color:#e5e5e5;">${escapeHtml(value).replace(/\n/g, "<br/>")}</td>
+        </tr>`,
+        )
+        .join("");
+    const table = `<table style="width:100%;border-collapse:collapse;margin:8px 0 0;">${rows}</table>`;
+
+    try {
+        const { error } = await client.emails.send({
+            from: FROM,
+            to: [OWNER_EMAIL],
+            replyTo: req.email,
+            subject: `Cerere de retragere - comanda ${req.orderId}`,
+            html: simpleShellHtml(
+                "Cerere de retragere din contract",
+                `<p style="margin:0 0 12px;">Un client a trimis o cerere de retragere prin formularul de pe site, la ${escapeHtml(receivedAt)}. Rambursarea trebuie făcută în cel mult 14 zile de la această dată.</p>${table}`,
+            ),
+        });
+        if (error) {
+            console.error("[email] Resend a respins cererea de retragere:", error);
+            return false;
+        }
+    } catch (e) {
+        console.error("[email] excepție la trimiterea cererii de retragere:", e);
+        return false;
+    }
+
+    try {
+        const { error } = await client.emails.send({
+            from: FROM,
+            to: [req.email],
+            subject: `Confirmare cerere de retragere - comanda ${req.orderId}`,
+            html: simpleShellHtml(
+                "Am primit cererea ta de retragere",
+                `<p style="margin:0 0 12px;">Confirmăm că am primit, la ${escapeHtml(receivedAt)}, cererea ta de retragere din contract pentru comanda <strong>${escapeHtml(req.orderId)}</strong>.</p>
+                 <p style="margin:0 0 12px;">Te rugăm să trimiți produsele în cel mult 14 zile la adresa: <strong>${escapeHtml(COMPANY.returnAddress)}</strong>. Îți returnăm banii în cel mult 14 zile de la primirea cererii; putem amâna rambursarea până primim produsele sau dovada expedierii.</p>
+                 <p style="margin:0 0 4px;color:#f5c518;font-weight:700;">Datele trimise</p>${table}`,
+            ),
+        });
+        if (error) console.error("[email] Resend a respins confirmarea de retragere către client:", error);
+    } catch (e) {
+        console.error("[email] excepție la trimiterea confirmării de retragere către client:", e);
+    }
+
+    return true;
 }
