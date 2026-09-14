@@ -3,14 +3,16 @@ import { authOptions } from "@/lib/authOptions";
 import { redirect } from "next/navigation";
 import { getPrisma } from "@/lib/db";
 import { getOrCreateCart } from "@/lib/cart";
+import { isCardPaymentEnabled } from "@/lib/netopia";
 import CheckoutForm from "@/components/CheckoutForm";
 
 export const dynamic = "force-dynamic";
 
 const ERROR_MESSAGES: Record<string, string> = {
     date: "Completează email-ul, numele și telefonul (toate obligatorii).",
-    adresa: "Completează adresa de livrare.",
+    adresa: "Completează adresa de livrare, localitatea și județul.",
     easybox: "Selectează un easybox pentru livrare.",
+    card: "Plata cu cardul nu este disponibilă momentan. Te rugăm să alegi plata ramburs.",
 };
 
 export default async function CheckoutPage({
@@ -35,12 +37,14 @@ export default async function CheckoutPage({
     if (items.length === 0) redirect("/cos");
 
     const subtotalRon = items.reduce((sum, it) => sum + it.qty * it.product.priceRon, 0);
+    const cardEnabled = isCardPaymentEnabled();
 
     return (
         <main className="mx-auto max-w-6xl px-4 py-12">
             <h1 className="text-3xl font-black">Finalizare comandă</h1>
             <p className="mt-2 text-neutral-300">
-                Plată ramburs la livrare. Nu ai nevoie de cont pentru a comanda.
+                {cardEnabled ? "Plătești online cu cardul sau ramburs la livrare." : "Plată ramburs la livrare."}{" "}
+                Nu ai nevoie de cont pentru a comanda.
             </p>
 
             <CheckoutForm
@@ -56,6 +60,7 @@ export default async function CheckoutPage({
                 subtotalRon={subtotalRon}
                 defaultEmail={session?.user?.email ?? ""}
                 errorMessage={error ? ERROR_MESSAGES[error] ?? "Verifică datele introduse." : ""}
+                cardEnabled={cardEnabled}
             />
         </main>
     );

@@ -7,9 +7,8 @@ export default async function MagazinPage() {
     const prisma = getPrisma();
 
     const products = await prisma.product.findMany({
-        orderBy: {
-            createdAt: "desc",
-        },
+        // produsele marcate "popular" primele
+        orderBy: [{ popular: "desc" }, { createdAt: "desc" }],
         include: {
             images: {
                 orderBy: {

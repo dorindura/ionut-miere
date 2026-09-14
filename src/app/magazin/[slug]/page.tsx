@@ -1,6 +1,7 @@
 import ImageSlider from "@/components/ImageSlider";
 import { notFound } from "next/navigation";
 import AddToCartButton from "@/components/AddToCartButton";
+import PopularBadge from "@/components/PopularBadge";
 import Link from "next/link";
 import {getPrisma} from "@/lib/db";
 
@@ -50,6 +51,7 @@ export default async function ProductPage({
                 <ImageSlider images={p.images} alt={`${p.name} ${p.weight}`} />
 
                 <div className="rounded-3xl border border-yellow-500/15 bg-neutral-900/30 p-6">
+                    {p.popular ? <PopularBadge className="mb-3" /> : null}
                     <h1 className="text-3xl font-black">{p.name}</h1>
                     <p className="mt-2 text-neutral-300">{p.shortDescription}</p>
 

@@ -4,6 +4,7 @@ import { redirect, notFound } from "next/navigation";
 import type { Prisma } from "@prisma/client";
 import {getPrisma} from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { paymentLabel } from "@/components/PaymentBadge";
 
 type OrderWithRelations = Prisma.OrderGetPayload<{
     include: { user: true; items: true };
@@ -84,6 +85,40 @@ export default async function AdminOrderPage({
             </p>
 
             <div className="mt-6 space-y-3">
+                {order.paymentMethod === "CARD" ? (
+                    order.paymentStatus === "PAID" ? (
+                        <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm text-emerald-200">
+                            <p className="text-base font-bold">✅ Plătită online cu cardul — NU pune ramburs la AWB</p>
+                            <p className="mt-1">
+                                Easybox / curier: valoare ramburs 0 RON.
+                                {order.paidAt ? ` Plătită: ${dateFmt.format(order.paidAt)}.` : ""}
+                            </p>
+                            {order.netopiaNtpId ? (
+                                <p className="mt-1 text-xs text-emerald-300/70">
+                                    ID tranzacție NETOPIA: {order.netopiaNtpId}
+                                </p>
+                            ) : null}
+                        </div>
+                    ) : (
+                        <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200">
+                            <p className="text-base font-bold">
+                                ⚠️ Comandă cu cardul NEPLĂTITĂ ({paymentLabel(order.paymentMethod, order.paymentStatus).label})
+                            </p>
+                            <p className="mt-1">Nu expedia până nu apare plata confirmată.</p>
+                        </div>
+                    )
+                ) : (
+                    <div className="rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-100">
+                        <p className="text-base font-bold">💵 Ramburs — încasează {order.totalRon} RON la livrare</p>
+                        <p className="mt-1">
+                            Setează rambursul la AWB.
+                            {order.deliveryMethod === "EASYBOX"
+                                ? " La easybox clientul plătește rambursul doar cu cardul, la locker."
+                                : ""}
+                        </p>
+                    </div>
+                )}
+
                 <div className="rounded-2xl border border-yellow-500/15 bg-neutral-900/30 p-4 text-sm">
                     <p className="font-semibold text-yellow-300">Date client</p>
                     <p className="mt-2 text-neutral-300">Nume: {order.fullName ?? "—"}</p>
@@ -113,6 +148,11 @@ export default async function AdminOrderPage({
                         <div className="mt-2 text-sm text-neutral-300">
                             <p>Metodă: livrare la adresă • {order.shippingRon} RON</p>
                             <p>Adresă: {order.address}</p>
+                            <p>
+                                {[order.city, order.county, order.postalCode]
+                                    .filter(Boolean)
+                                    .join(", ")}
+                            </p>
                         </div>
                     )}
                 </div>

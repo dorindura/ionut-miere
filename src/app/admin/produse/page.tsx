@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import {getPrisma} from "@/lib/db";
+import PopularBadge from "@/components/PopularBadge";
 
 export default async function AdminProductsPage() {
     const session = await getServerSession(authOptions);
@@ -58,6 +59,7 @@ export default async function AdminProductsPage() {
                   </span>
                                 </p>
                                 <p className="mt-2 text-xs text-neutral-400">{p.slug}</p>
+                                {p.popular ? <PopularBadge className="mt-2" /> : null}
                             </div>
 
                             <span

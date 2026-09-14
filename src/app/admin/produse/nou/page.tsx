@@ -29,6 +29,7 @@ export default async function AdminCreateProductPage() {
         const priceRon = Number(formData.get("priceRon") || 0);
 
         const inStock = String(formData.get("inStock") || "") === "on";
+        const popular = String(formData.get("popular") || "") === "on";
 
         const parseLines = (key: string) =>
             String(formData.get(key) || "")
@@ -50,6 +51,7 @@ export default async function AdminCreateProductPage() {
                 priceRon,
                 weight,
                 inStock,
+                popular,
                 origin: origin || null,
                 howItsMade: howItsMade || null,
                 characteristics,
@@ -140,6 +142,11 @@ export default async function AdminCreateProductPage() {
                     <label className="flex items-center gap-3 rounded-2xl border border-yellow-500/15 bg-neutral-950/40 px-4 py-3 text-sm">
                         <input type="checkbox" name="inStock" defaultChecked />
                         <span>În stoc</span>
+                    </label>
+
+                    <label className="flex items-center gap-3 rounded-2xl border border-yellow-500/15 bg-neutral-950/40 px-4 py-3 text-sm">
+                        <input type="checkbox" name="popular" />
+                        <span>Produs popular (badge + afișat primul)</span>
                     </label>
                 </div>
 

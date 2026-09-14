@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import {getPrisma} from "@/lib/db";
 import DeleteOrderButton from "@/components/DeleteOrderButton";
+import PaymentBadge from "@/components/PaymentBadge";
 
 export const dynamic = "force-dynamic";
 
@@ -80,6 +81,9 @@ export default async function AdminOrdersPage() {
 
                                 <div className="text-right">
                                     <p className="text-sm">{o.status}</p>
+                                    <div className="mt-1">
+                                        <PaymentBadge method={o.paymentMethod} status={o.paymentStatus} />
+                                    </div>
                                     {o.phoneConfirmed && (
                                         <p className="text-xs text-yellow-300">
                                             Confirmat telefonic

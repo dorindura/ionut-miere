@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { EASYBOX_CARD_ONLY_NOTE } from "@/lib/shipping";
 
 const FROM = "Prisaca Apuseni <contact@prisaca-apuseni.com>";
 const OWNER_EMAIL = "buceadariusionut@gmail.com";
@@ -35,7 +36,11 @@ export type OrderEmailData = {
     shippingRon: number;
     createdAt: Date;
     deliveryMethod: "ADDRESS" | "EASYBOX";
+    paymentMethod: "CASH_ON_DELIVERY" | "CARD";
     address?: string | null;
+    city?: string | null;
+    county?: string | null;
+    postalCode?: string | null;
     easyboxName?: string | null;
     easyboxAddress?: string | null;
     easyboxCity?: string | null;
@@ -43,6 +48,8 @@ export type OrderEmailData = {
     easyboxPostalCode?: string | null;
     items: OrderEmailItem[];
 };
+
+type Audience = "owner" | "customer";
 
 const dateFmt = new Intl.DateTimeFormat("ro-RO", {
     dateStyle: "long",
@@ -64,7 +71,29 @@ function deliveryHtml(order: OrderEmailData): string {
             .join("<br/>");
         return `<strong>Easybox</strong><br/>${lines}`;
     }
-    return `<strong>Livrare la adresă</strong><br/>${escapeHtml(order.address || "")}`;
+    const lines = [order.address, [order.city, order.county, order.postalCode].filter(Boolean).join(", ")]
+        .filter(Boolean)
+        .map((l) => escapeHtml(String(l)))
+        .join("<br/>");
+    return `<strong>Livrare la adresă</strong><br/>${lines}`;
+}
+
+function paymentHtml(order: OrderEmailData, audience: Audience): string {
+    if (order.paymentMethod === "CARD") {
+        return audience === "owner"
+            ? `<strong style="color:#4ade80;">Plătită online cu cardul.</strong><br/>NU pune ramburs la AWB (easybox / curier).`
+            : `<strong style="color:#4ade80;">Plătită online cu cardul.</strong><br/>Nu mai ai nimic de plătit la livrare.`;
+    }
+
+    const toCollect =
+        audience === "owner"
+            ? `<strong>Ramburs:</strong> încasează ${order.totalRon} RON la livrare (setează rambursul la AWB).`
+            : `<strong>Ramburs la livrare:</strong> ${order.totalRon} RON.`;
+    const easyboxNote =
+        order.deliveryMethod === "EASYBOX"
+            ? `<br/><span style="color:#f5c518;">${EASYBOX_CARD_ONLY_NOTE}</span>`
+            : "";
+    return toCollect + easyboxNote;
 }
 
 function itemsRowsHtml(order: OrderEmailData): string {
@@ -84,7 +113,7 @@ function itemsRowsHtml(order: OrderEmailData): string {
         .join("");
 }
 
-function shellHtml(title: string, intro: string, order: OrderEmailData): string {
+function shellHtml(title: string, intro: string, order: OrderEmailData, audience: Audience): string {
     return `
   <div style="background:#0a0a0a;padding:24px;font-family:Arial,Helvetica,sans-serif;">
     <div style="max-width:560px;margin:0 auto;background:#141414;border:1px solid rgba(245,197,24,0.18);border-radius:20px;overflow:hidden;">
@@ -108,6 +137,11 @@ function shellHtml(title: string, intro: string, order: OrderEmailData): string 
         </table>
 
         <div style="background:#0f0f0f;border:1px solid rgba(245,197,24,0.12);border-radius:14px;padding:16px;margin-top:8px;">
+          <p style="margin:0 0 8px;color:#f5c518;font-weight:700;font-size:13px;">Plată</p>
+          <p style="margin:0;color:#d4d4d4;">${paymentHtml(order, audience)}</p>
+        </div>
+
+        <div style="background:#0f0f0f;border:1px solid rgba(245,197,24,0.12);border-radius:14px;padding:16px;margin-top:12px;">
           <p style="margin:0 0 8px;color:#f5c518;font-weight:700;font-size:13px;">Detalii livrare</p>
           <p style="margin:0;color:#d4d4d4;">${deliveryHtml(order)}</p>
         </div>
@@ -122,7 +156,7 @@ function shellHtml(title: string, intro: string, order: OrderEmailData): string 
         </div>
 
         <p style="margin:18px 0 0;color:#8a8a8a;font-size:12px;">
-          Comandă #${escapeHtml(order.id.slice(-6))} • ${escapeHtml(dateFmt.format(order.createdAt))} • Plată ramburs la livrare.
+          Comandă #${escapeHtml(order.id.slice(-6))} • ${escapeHtml(dateFmt.format(order.createdAt))} • ${order.paymentMethod === "CARD" ? "Plătită cu cardul." : "Plată ramburs la livrare."}
         </p>
       </div>
     </div>
@@ -143,16 +177,24 @@ export async function sendOrderEmails(order: OrderEmailData): Promise<void> {
         return;
     }
 
+    const isCard = order.paymentMethod === "CARD";
+
     const ownerHtml = shellHtml(
-        "Comandă nouă",
-        `Ai primit o comandă nouă în valoare de <strong style="color:#f5c518;">${order.totalRon} RON</strong>. Detaliile sunt mai jos.`,
+        isCard ? "Comandă nouă - plătită cu cardul" : "Comandă nouă - ramburs",
+        isCard
+            ? `Ai primit o comandă nouă, <strong style="color:#4ade80;">plătită online cu cardul</strong>, în valoare de <strong style="color:#f5c518;">${order.totalRon} RON</strong>. Detaliile sunt mai jos.`
+            : `Ai primit o comandă nouă cu plata ramburs, în valoare de <strong style="color:#f5c518;">${order.totalRon} RON</strong>. Detaliile sunt mai jos.`,
         order,
+        "owner",
     );
 
     const customerHtml = shellHtml(
         "Îți mulțumim pentru comandă!",
-        `Am înregistrat comanda ta. Te vom contacta telefonic pentru confirmare. Mai jos găsești sumarul.`,
+        isCard
+            ? `Plata cu cardul a fost confirmată și am înregistrat comanda ta. Mai jos găsești sumarul.`
+            : `Am înregistrat comanda ta. Te vom contacta telefonic pentru confirmare. Mai jos găsești sumarul.`,
         order,
+        "customer",
     );
 
     // un singur apel: notificare proprietar + confirmare client (dacă emailul e valid)
@@ -168,7 +210,7 @@ export async function sendOrderEmails(order: OrderEmailData): Promise<void> {
                     from: FROM,
                     to: recipients,
                     replyTo: order.email || undefined,
-                    subject: `Comandă nouă #${order.id.slice(-6)} - ${order.totalRon} RON`,
+                    subject: `Comandă nouă #${order.id.slice(-6)} - ${order.totalRon} RON - ${isCard ? "PLĂTITĂ CU CARDUL" : "RAMBURS"}`,
                     html: ownerHtml,
                 }),
         },

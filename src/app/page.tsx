@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {getPrisma} from "@/lib/db";
 import ContactForm from "@/components/ContactForm";
+import PopularBadge from "@/components/PopularBadge";
 
 const brand = {
   name: "Prisaca Apuseni",
@@ -66,9 +67,8 @@ export default async function Page() {
 
   const featuredProducts = await prisma.product.findMany({
     take: 3,
-    orderBy: {
-      createdAt: "desc",
-    },
+    // produsele marcate "popular" primele
+    orderBy: [{ popular: "desc" }, { createdAt: "desc" }],
     include: {
       images: {
         orderBy: {
@@ -216,6 +216,7 @@ export default async function Page() {
                       <span className="absolute left-4 top-4 rounded-full bg-neutral-950/70 px-3 py-1 text-xs text-yellow-200 border border-yellow-500/20">
             {p.weight}
         </span>
+                      {p.popular ? <PopularBadge className="absolute right-4 top-4" /> : null}
                     </div>
 
                     <div className="p-5">

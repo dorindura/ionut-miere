@@ -59,6 +59,8 @@ model Product {
   priceRon         Int
   weight           String
   inStock          Boolean @default(true)
+  // afișat cu badge "Popular" și primul în listări
+  popular          Boolean @default(false)
 
   origin          String?
   howItsMade      String?
@@ -103,6 +105,10 @@ model Order {
   fullName String?
   phone    String?
   address  String?
+  // localitate / județ / cod poștal (livrare la adresă)
+  city       String?
+  county     String?
+  postalCode String?
 
   deliveryMethod DeliveryMethod @default(ADDRESS)
 
@@ -112,6 +118,13 @@ model Order {
   easyboxCity       String?
   easyboxCounty     String?
   easyboxPostalCode String?
+
+  paymentMethod PaymentMethod @default(CASH_ON_DELIVERY)
+  paymentStatus PaymentStatus @default(UNPAID)
+  // ultima încercare de plată cu cardul (NETOPIA)
+  netopiaOrderId String?
+  netopiaNtpId   String?
+  paidAt         DateTime?
 
   phoneConfirmed   Boolean   @default(false)
   phoneConfirmedAt DateTime?
@@ -126,6 +139,20 @@ model Order {
 enum DeliveryMethod {
   ADDRESS
   EASYBOX
+}
+
+enum PaymentMethod {
+  CASH_ON_DELIVERY
+  CARD
+}
+
+enum PaymentStatus {
+  UNPAID // ramburs - se încasează la livrare
+  PENDING // card - plată începută, neconfirmată încă
+  PAID
+  FAILED
+  CANCELLED
+  REFUNDED
 }
 
 enum OrderStatus {

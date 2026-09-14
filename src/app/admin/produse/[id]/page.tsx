@@ -47,6 +47,7 @@ export default async function AdminEditProductPage({ params }: { params: Promise
         const priceRon = Number.isFinite(Number(priceRonRaw)) ? Number(priceRonRaw) : 0;
 
         const inStock = String(formData.get("inStock") || "") === "on";
+        const popular = String(formData.get("popular") || "") === "on";
 
         const parseLines = (key: string) =>
             String(formData.get(key) || "")
@@ -69,6 +70,7 @@ export default async function AdminEditProductPage({ params }: { params: Promise
                 priceRon,
                 weight,
                 inStock,
+                popular,
                 origin: origin || null,
                 howItsMade: howItsMade || null,
                 characteristics,
@@ -161,6 +163,11 @@ export default async function AdminEditProductPage({ params }: { params: Promise
                     <label className="flex items-center gap-3 rounded-2xl border border-yellow-500/15 bg-neutral-950/40 px-4 py-3 text-sm">
                         <input type="checkbox" name="inStock" defaultChecked={p.inStock} />
                         <span>În stoc</span>
+                    </label>
+
+                    <label className="flex items-center gap-3 rounded-2xl border border-yellow-500/15 bg-neutral-950/40 px-4 py-3 text-sm">
+                        <input type="checkbox" name="popular" defaultChecked={p.popular} />
+                        <span>Produs popular (badge + afișat primul)</span>
                     </label>
                 </div>
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Products } from "@/lib/products";
+import PopularBadge from "@/components/PopularBadge";
 
 export default function ProductCard({ p }: { p: Products }) {
     return (
@@ -16,6 +17,7 @@ export default function ProductCard({ p }: { p: Products }) {
                 <span className="absolute left-4 top-4 rounded-full bg-neutral-950/70 px-3 py-1 text-xs text-yellow-200 border border-yellow-500/20">
           {p.weight}
         </span>
+                {p.popular ? <PopularBadge className="absolute right-4 top-4" /> : null}
             </div>
 
             <div className="p-5">

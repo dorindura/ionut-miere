@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { redirect } from "next/navigation";
 import { getPrisma } from "@/lib/db";
+import PaymentBadge from "@/components/PaymentBadge";
 
 export const metadata = {
     title: "Comenzile mele",
@@ -33,7 +34,7 @@ export default async function MyOrdersPage() {
             <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
                 <div>
                     <h1 className="text-3xl font-black">Comenzile mele</h1>
-                    <p className="mt-2 text-neutral-300">Istoric comenzi ramburs.</p>
+                    <p className="mt-2 text-neutral-300">Istoric comenzi.</p>
                 </div>
 
                 <Link
@@ -75,6 +76,9 @@ export default async function MyOrdersPage() {
                                     <div>
                                         <p className="text-xs text-neutral-400">Status</p>
                                         <p className="text-sm font-semibold">{o.status}</p>
+                                        <div className="mt-1">
+                                            <PaymentBadge method={o.paymentMethod} status={o.paymentStatus} />
+                                        </div>
                                     </div>
 
                                     <div className="text-right">

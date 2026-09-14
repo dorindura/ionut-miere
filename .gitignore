@@ -39,6 +39,13 @@ dev.db
 # vercel
 .vercel
 
+# cloudflare / opennext (build output + local wrangler state)
+/.open-next/
+/.wrangler/
+
+# local Claude Code config
+/.claude/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

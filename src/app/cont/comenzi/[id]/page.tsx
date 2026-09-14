@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { redirect, notFound } from "next/navigation";
 import {getPrisma} from "@/lib/db";
+import PaymentBadge from "@/components/PaymentBadge";
 
 export const dynamic = "force-dynamic";
 
@@ -54,6 +55,9 @@ export default async function OrderDetailsPage({
                     <div>
                         <p className="text-xs text-neutral-400">Status</p>
                         <p className="text-sm font-semibold">{order.status}</p>
+                        <div className="mt-1">
+                            <PaymentBadge method={order.paymentMethod} status={order.paymentStatus} />
+                        </div>
                     </div>
                     <div className="text-right">
                         <p className="text-xs text-neutral-400">Total</p>
@@ -74,7 +78,7 @@ export default async function OrderDetailsPage({
                     ) : (
                         <>
                             <p><span className="text-neutral-200 font-semibold">Livrare:</span> la adresă ({order.shippingRon} RON)</p>
-                            <p><span className="text-neutral-200 font-semibold">Adresă:</span> {order.address}</p>
+                            <p><span className="text-neutral-200 font-semibold">Adresă:</span> {[order.address, order.city, order.county, order.postalCode].filter(Boolean).join(", ")}</p>
                         </>
                     )}
                 </div>
@@ -97,7 +101,12 @@ export default async function OrderDetailsPage({
             </section>
 
             <p className="mt-4 text-xs text-neutral-400">
-                *Plată ramburs la livrare. Pentru modificări, contactează suportul.
+                {order.paymentMethod === "CARD"
+                    ? order.paymentStatus === "PAID"
+                        ? "*Plătită online cu cardul."
+                        : "*Plata cu cardul nu este confirmată."
+                    : "*Plată ramburs la livrare."}{" "}
+                Pentru modificări, contactează suportul.
             </p>
         </main>
     );

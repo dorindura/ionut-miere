@@ -3,8 +3,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { getPrisma } from "@/lib/db";
 import { getOrCreateCart } from "@/lib/cart";
-import { sendOrderEmails } from "@/lib/email";
 import { shippingRonFor } from "@/lib/shipping";
+import { isCardPaymentEnabled } from "@/lib/netopia";
+import { sendOrderEmailsById, startOrderCardPayment } from "@/lib/orders";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -18,8 +19,12 @@ export async function POST(req: Request) {
     const fullName = String(form.get("fullName") || "").trim();
     const phone = String(form.get("phone") || "").trim();
     const address = String(form.get("address") || "").trim();
+    const city = String(form.get("city") || "").trim();
+    const county = String(form.get("county") || "").trim();
+    const postalCode = String(form.get("postalCode") || "").trim();
 
     const deliveryMethod = String(form.get("deliveryMethod") || "ADDRESS");
+    const isCard = String(form.get("paymentMethod") || "") === "CARD";
 
     const easyboxId = String(form.get("easyboxId") || "").trim();
     const easyboxName = String(form.get("easyboxName") || "").trim();
@@ -35,12 +40,16 @@ export async function POST(req: Request) {
         return NextResponse.redirect(new URL("/checkout?error=date", req.url), 303);
     }
 
-    if (!isEasybox && !address) {
+    if (!isEasybox && (!address || !city || !county)) {
         return NextResponse.redirect(new URL("/checkout?error=adresa", req.url), 303);
     }
 
     if (isEasybox && (!easyboxId || !easyboxName || !easyboxAddress)) {
         return NextResponse.redirect(new URL("/checkout?error=easybox", req.url), 303);
+    }
+
+    if (isCard && !isCardPaymentEnabled()) {
+        return NextResponse.redirect(new URL("/checkout?error=card", req.url), 303);
     }
 
     // utilizatorul logat (dacă există) - comanda se leagă de cont
@@ -72,6 +81,9 @@ export async function POST(req: Request) {
             fullName,
             phone,
             address: isEasybox ? null : address,
+            city: isEasybox ? null : city,
+            county: isEasybox ? null : county,
+            postalCode: isEasybox ? null : postalCode || null,
             deliveryMethod: isEasybox ? "EASYBOX" : "ADDRESS",
             easyboxId: isEasybox ? easyboxId : null,
             easyboxName: isEasybox ? easyboxName : null,
@@ -79,6 +91,8 @@ export async function POST(req: Request) {
             easyboxCity: isEasybox ? easyboxCity : null,
             easyboxCounty: isEasybox ? easyboxCounty : null,
             easyboxPostalCode: isEasybox ? easyboxPostalCode : null,
+            paymentMethod: isCard ? "CARD" : "CASH_ON_DELIVERY",
+            paymentStatus: isCard ? "PENDING" : "UNPAID",
             totalRon,
             shippingRon,
             status: "PENDING",
@@ -92,50 +106,23 @@ export async function POST(req: Request) {
                 })),
             },
         },
-        select: {
-            id: true,
-            email: true,
-            fullName: true,
-            phone: true,
-            totalRon: true,
-            shippingRon: true,
-            createdAt: true,
-            deliveryMethod: true,
-            address: true,
-            easyboxName: true,
-            easyboxAddress: true,
-            easyboxCity: true,
-            easyboxCounty: true,
-            easyboxPostalCode: true,
-            items: { select: { name: true, weight: true, priceRon: true, qty: true } },
-        },
+        select: { id: true },
     });
 
     // golim coșul
     await prisma.cartItem.deleteMany({ where: { cartId: cart!.id } });
 
-    // trimitem emailurile (proprietar + client); nu blocăm comanda dacă eșuează
-    try {
-        await sendOrderEmails({
-            id: order.id,
-            email: order.email,
-            fullName: order.fullName ?? "",
-            phone: order.phone ?? "",
-            totalRon: order.totalRon,
-            shippingRon: order.shippingRon,
-            createdAt: order.createdAt,
-            deliveryMethod: order.deliveryMethod,
-            address: order.address,
-            easyboxName: order.easyboxName,
-            easyboxAddress: order.easyboxAddress,
-            easyboxCity: order.easyboxCity,
-            easyboxCounty: order.easyboxCounty,
-            easyboxPostalCode: order.easyboxPostalCode,
-            items: order.items,
-        });
-    } catch (e) {
-        console.error("[checkout] eroare la trimiterea emailurilor", e);
+    if (isCard) {
+        // emailurile pleacă abia după confirmarea plății (IPN NETOPIA)
+        const paymentUrl = await startOrderCardPayment(order.id, req);
+        return NextResponse.redirect(
+            paymentUrl ?? new URL(`/comanda/${order.id}?plata=eroare`, req.url),
+            303,
+        );
     }
+
+    // ramburs: trimitem emailurile (proprietar + client); nu blocăm comanda dacă eșuează
+    await sendOrderEmailsById(order.id);
 
     return NextResponse.redirect(new URL(`/comanda/${order.id}`, req.url), 303);
 }

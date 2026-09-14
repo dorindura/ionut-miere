@@ -8,6 +8,7 @@ export type Products = {
     weight: string;
     images: string[];
     inStock: boolean;
+    popular?: boolean;
     details: {
         origin?: string;
         howItsMade?: string;
@@ -30,6 +31,7 @@ export const products: Products[] = [
         weight: "1000g",
         images: ["/images/mana-de-brad.jpeg"],
         inStock: true,
+        popular: true,
         details: {
             origin:
                 "Specifică zonelor montane cu păduri de conifere din Munții Apuseni, apare doar în anumite condiții climatice favorabile.",
@@ -65,6 +67,7 @@ export const products: Products[] = [
         weight: "500g",
         images: ["/images/miere-mana-de-brad-la-jumatate.jpeg"],
         inStock: true,
+        popular: true,
         details: {
             origin:
                 "Specifică zonelor montane cu păduri de conifere din Munții Apuseni.",

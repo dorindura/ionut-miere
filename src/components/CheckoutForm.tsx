@@ -2,7 +2,7 @@
 
 import Script from "next/script";
 import { useRef, useState } from "react";
-import { SHIPPING_RON } from "@/lib/shipping";
+import { EASYBOX_CARD_ONLY_NOTE, SHIPPING_RON } from "@/lib/shipping";
 
 type CartItemView = {
     id: string;
@@ -45,16 +45,22 @@ export default function CheckoutForm({
                                          subtotalRon,
                                          defaultEmail = "",
                                          errorMessage = "",
+                                         cardEnabled = false,
                                      }: {
     items: CartItemView[];
     subtotalRon: number;
     defaultEmail?: string;
     errorMessage?: string;
+    cardEnabled?: boolean;
 }) {
     const [deliveryMethod, setDeliveryMethod] = useState<"ADDRESS" | "EASYBOX">("ADDRESS");
+    const [paymentMethod, setPaymentMethod] = useState<"CARD" | "CASH_ON_DELIVERY">(
+        cardEnabled ? "CARD" : "CASH_ON_DELIVERY",
+    );
     const [easybox, setEasybox] = useState<Easybox | null>(null);
     const isLockerPluginSubscribed = useRef(false);
 
+    const isCard = cardEnabled && paymentMethod === "CARD";
     const shippingRon = SHIPPING_RON[deliveryMethod];
     const totalRon = subtotalRon + shippingRon;
 
@@ -111,6 +117,7 @@ export default function CheckoutForm({
                     className="rounded-3xl border border-yellow-500/15 bg-neutral-900/30 p-6 grid gap-3"
                 >
                     <input type="hidden" name="deliveryMethod" value={deliveryMethod} />
+                    <input type="hidden" name="paymentMethod" value={isCard ? "CARD" : "CASH_ON_DELIVERY"} />
 
                     <input type="hidden" name="easyboxId" value={easybox?.lockerId ?? ""} />
                     <input type="hidden" name="easyboxName" value={easybox?.name ?? ""} />
@@ -190,14 +197,51 @@ export default function CheckoutForm({
                     </div>
 
                     {deliveryMethod === "ADDRESS" ? (
-                        <label className="grid gap-1 text-sm">
-                            <span className="text-neutral-200">Adresă livrare</span>
-                            <textarea
-                                name="address"
-                                required
-                                className="min-h-[120px] rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60"
-                            />
-                        </label>
+                        <div className="grid gap-3">
+                            <label className="grid gap-1 text-sm">
+                                <span className="text-neutral-200">Adresă livrare *</span>
+                                <textarea
+                                    name="address"
+                                    required
+                                    autoComplete="street-address"
+                                    placeholder="Stradă, număr, bloc, scară, apartament"
+                                    className="min-h-[96px] rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60"
+                                />
+                            </label>
+
+                            {/* min-w-0: altfel lățimea implicită a inputului depășește coloana și câmpurile se suprapun */}
+                            <div className="grid gap-3 sm:grid-cols-3">
+                                <label className="grid min-w-0 gap-1 text-sm">
+                                    <span className="text-neutral-200">Localitate *</span>
+                                    <input
+                                        name="city"
+                                        required
+                                        autoComplete="address-level2"
+                                        className="w-full min-w-0 rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60"
+                                    />
+                                </label>
+
+                                <label className="grid min-w-0 gap-1 text-sm">
+                                    <span className="text-neutral-200">Județ *</span>
+                                    <input
+                                        name="county"
+                                        required
+                                        autoComplete="address-level1"
+                                        className="w-full min-w-0 rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60"
+                                    />
+                                </label>
+
+                                <label className="grid min-w-0 gap-1 text-sm">
+                                    <span className="text-neutral-200">Cod poștal</span>
+                                    <input
+                                        name="postalCode"
+                                        inputMode="numeric"
+                                        autoComplete="postal-code"
+                                        className="w-full min-w-0 rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60"
+                                    />
+                                </label>
+                            </div>
+                        </div>
                     ) : (
                         <div className="rounded-2xl border border-yellow-500/15 bg-neutral-950/50 p-4">
                             <button
@@ -226,16 +270,62 @@ export default function CheckoutForm({
                         </div>
                     )}
 
+                    <div className="grid gap-2 rounded-2xl border border-yellow-500/10 bg-neutral-950/40 p-4">
+                        <p className="text-sm font-semibold text-neutral-100">Metodă de plată</p>
+
+                        {cardEnabled ? (
+                            <label className="flex items-start gap-2 text-sm text-neutral-200">
+                                <input
+                                    type="radio"
+                                    className="mt-1"
+                                    checked={paymentMethod === "CARD"}
+                                    onChange={() => setPaymentMethod("CARD")}
+                                />
+                                <span>
+                                    Card online (Visa / Mastercard)
+                                    <span className="block text-xs text-neutral-400">
+                                        Plată securizată prin NETOPIA Payments. Nu mai plătești nimic la livrare.
+                                    </span>
+                                </span>
+                            </label>
+                        ) : null}
+
+                        <label className="flex items-start gap-2 text-sm text-neutral-200">
+                            <input
+                                type="radio"
+                                className="mt-1"
+                                checked={!isCard}
+                                onChange={() => setPaymentMethod("CASH_ON_DELIVERY")}
+                            />
+                            <span>
+                                Ramburs la livrare
+                                <span className="block text-xs text-neutral-400">
+                                    {deliveryMethod === "EASYBOX"
+                                        ? "Plătești cu cardul la easybox, când ridici coletul."
+                                        : "Plătești la curier, la livrare."}
+                                </span>
+                            </span>
+                        </label>
+
+                        {deliveryMethod === "EASYBOX" && !isCard ? (
+                            <p className="mt-1 rounded-xl border border-yellow-400/40 bg-yellow-500/10 px-3 py-2 text-xs font-semibold text-yellow-200">
+                                ⚠️ {EASYBOX_CARD_ONLY_NOTE}
+                            </p>
+                        ) : null}
+                    </div>
+
                     <button
                         type="submit"
                         disabled={deliveryMethod === "EASYBOX" && !easybox}
                         className="mt-2 rounded-xl bg-yellow-500 px-6 py-3 text-sm font-semibold text-neutral-950 hover:bg-yellow-400 disabled:cursor-not-allowed disabled:opacity-50"
                     >
-                        Plasează comanda
+                        {isCard ? "Continuă spre plata cu cardul" : "Plasează comanda"}
                     </button>
 
                     <p className="text-xs text-neutral-400">
-                        *Ramburs. După confirmare, comanda va fi pregătită pentru livrare.
+                        {isCard
+                            ? "Vei fi redirecționat către pagina securizată NETOPIA Payments. Datele cardului nu ajung la noi."
+                            : "*Ramburs. După confirmare, comanda va fi pregătită pentru livrare."}
                     </p>
                 </form>
 
@@ -273,6 +363,11 @@ export default function CheckoutForm({
                                 </span>
                             </p>
                             <p className="font-semibold text-neutral-100">{shippingRon} RON</p>
+                        </div>
+
+                        <div className="flex items-center justify-between text-sm text-neutral-300">
+                            <p>Plată</p>
+                            <p className="font-semibold text-neutral-100">{isCard ? "card online" : "ramburs"}</p>
                         </div>
 
                         <div className="mt-2 flex items-center justify-between border-t border-yellow-500/10 pt-3">
