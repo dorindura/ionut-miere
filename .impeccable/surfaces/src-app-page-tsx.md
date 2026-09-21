@@ -20,7 +20,7 @@ OWN-WORLD: Limewash-white ground (#F5F6F0) like the house wall; deep forest ink.
 
 STORY: This honey comes from these actual hives in the Apuseni → each variety has a character (colour + taste) → pick one, add to cart, done on the phone.
 
-FIRST VIEWPORT: Full-width headline set big on limewash ("Miere de la stupii noștri din Apuseni"), primary "Alege mierea" yellow button + cart visible; directly beneath, the real hive-row photo cropped wide, and the row of four painted hive fronts (one per variety, with jar + price) standing on a grass strip, overlapping the photo's bottom edge. On phone the row scrolls horizontally, the first front peeking in the first viewport.
+FIRST VIEWPORT: Full-width headline set big on limewash ("Miere de la stupii noștri din Apuseni"), primary "Alege mierea" yellow button + cart visible; directly beneath, the real hive-row photo shown whole and unobstructed (the owner wants it admired in full). Below it, "Sortimentele noastre" as a horizontal slider of painted hive fronts (one per variety, sizes grouped) standing on a grass strip, arrows on desktop, swipe on phone, next hive always peeking.
 
 FORM: Painted Hive Row, own-list position 1 (Impeccable's pick, user-chosen), seed key be1fcd78. Admin: same paints as quiet status chips on a limewash work surface; top row of four "hive" counters (de confirmat, de expediat, card neplătit, ramburs de încasat); orders as a table.
 

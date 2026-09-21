@@ -45,7 +45,7 @@ export default function ShopHive({
             <Link href={`/magazin/${current.slug}`} className="block" aria-label={`${name} ${current.weight} — detalii`}>
                 <HiveWindow
                     src={current.image}
-                    alt={`${name}, borcan de ${current.weight}`}
+                    alt={`${name}, ${current.weight}`}
                     sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 280px"
                     priority={priority}
                     soldOut={!current.inStock}
@@ -98,7 +98,7 @@ export default function ShopHive({
                     </div>
                 </fieldset>
             ) : (
-                <p className="mt-4 text-[0.95rem] font-bold">Borcan de {current.weight}</p>
+                <p className="mt-4 text-[0.95rem] font-bold">{current.weight}</p>
             )}
 
             {/* key: la schimbarea gramajului butonul revine la starea inițială */}

@@ -47,13 +47,23 @@ export type Variety<T extends VariantLike> = {
     number: number;
 };
 
+/**
+ * Numele sortimentului fără gramajul de la final:
+ * „Miere de salcâm 1kg" / „Miere de salcâm 0,5kg" → „Miere de salcâm".
+ */
+export function varietyName(name: string): string {
+    const base = name.replace(/[\s,–-]*\d+(?:[.,]\d+)?\s*(?:kg|g|gr)\.?\s*$/i, "").trim();
+    return base || name;
+}
+
 /** grupează produsele pe sortiment (același nume, gramaje diferite) */
 export function groupByVariety<T extends VariantLike>(products: T[]): Variety<T>[] {
     const map = new Map<string, T[]>();
     for (const p of products) {
-        const list = map.get(p.name) ?? [];
+        const key = varietyName(p.name);
+        const list = map.get(key) ?? [];
         list.push(p);
-        map.set(p.name, list);
+        map.set(key, list);
     }
 
     return [...map.entries()].map(([name, variants], i) => {

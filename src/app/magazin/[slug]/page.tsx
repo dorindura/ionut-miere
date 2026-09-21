@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ImageSlider from "@/components/ImageSlider";
+import HiveSlider from "@/components/HiveSlider";
 import { notFound } from "next/navigation";
 import AddToCartButton from "@/components/AddToCartButton";
 import Link from "next/link";
@@ -7,6 +8,7 @@ import Icon from "@/components/Icon";
 import { HiveFrame, HivePlateRow, HiveWindow } from "@/components/HiveFront";
 import { getPrisma } from "@/lib/db";
 import { getVarieties } from "@/lib/varieties";
+import { varietyName } from "@/lib/hive";
 import { EASYBOX_CARD_ONLY_NOTE, SHIPPING_RON } from "@/lib/shipping";
 
 export const dynamic = "force-dynamic";
@@ -30,7 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const product = await getProduct(slug);
     if (!product) return {};
     return {
-        title: `${product.name} ${product.weight}`,
+        title: `${varietyName(product.name)} ${product.weight}`,
         description: product.shortDescription,
         openGraph: { images: product.images[0]?.url ? [product.images[0].url] : undefined },
     };
@@ -105,13 +107,13 @@ export default async function ProductPage({
                 <div className="md:col-span-6 lg:col-span-5">
                     <HiveFrame paint={paint}>
                         <HivePlateRow number={variety?.number ?? 1} popular={p.popular} />
-                        <ImageSlider images={p.images} alt={`${p.name}, borcan de ${p.weight}`} />
+                        <ImageSlider images={p.images} alt={`${varietyName(p.name)}, ${p.weight}`} />
                     </HiveFrame>
                     <div className="ground-strip" aria-hidden />
                 </div>
 
                 <div className="md:col-span-6 lg:col-span-7 md:pt-4">
-                    <h1 className="text-[clamp(2.3rem,5.4vw,3.8rem)] font-extrabold leading-[1]">{p.name}</h1>
+                    <h1 className="text-[clamp(2.3rem,5.4vw,3.8rem)] font-extrabold leading-[1]">{variety?.name ?? p.name}</h1>
                     <p className="mt-4 max-w-[52ch] text-lg text-ink-2">{p.shortDescription}</p>
 
                     {variety && variety.variants.length > 1 ? (
@@ -148,7 +150,7 @@ export default async function ProductPage({
                         <p className="font-display text-[2.6rem] font-extrabold leading-none tabular-nums">
                             {p.priceRon} lei
                         </p>
-                        <p className="pb-1 text-ink-3">borcan de {p.weight}</p>
+                        <p className="pb-1 text-ink-3">{p.weight}</p>
                     </div>
 
                     <AddToCartButton slug={slug} disabled={!p.inStock} className="mt-5 max-w-md" />
@@ -214,35 +216,28 @@ export default async function ProductPage({
             </section>
 
             {others.length > 0 ? (
-                <section className="mt-16 md:mt-24" aria-labelledby="alte-sortimente">
-                    <div className="mx-auto max-w-6xl px-4">
-                        <h2 id="alte-sortimente" className="text-[clamp(1.8rem,3.6vw,2.6rem)] font-extrabold leading-[1.05]">
-                            Alte sortimente
-                        </h2>
-                        <ul className="no-scrollbar -mx-4 mt-8 flex snap-x gap-4 overflow-x-auto px-4 md:mx-0 md:grid md:grid-cols-4 md:gap-6 md:overflow-visible md:px-0">
-                            {others.map((v) => {
-                                const lead = v.variants[0];
-                                return (
-                                    <li key={v.name} className="w-[58vw] max-w-[240px] shrink-0 snap-start md:w-auto md:max-w-none">
-                                        <Link href={`/magazin/${lead.slug}`} className="hive-link block h-full">
-                                            <HiveFrame paint={v.paint} className="h-full">
-                                                <HivePlateRow number={v.number} />
-                                                <HiveWindow
-                                                    src={lead.images[0]?.url}
-                                                    alt={`${v.name}, borcan de ${lead.weight}`}
-                                                    sizes="(max-width: 768px) 55vw, 240px"
-                                                />
-                                                <p className="mt-3 font-display text-lg font-extrabold leading-tight">{v.name}</p>
-                                                <p className="mt-0.5 text-[0.95rem] opacity-90">
-                                                    de la {Math.min(...v.variants.map((x) => x.priceRon))} lei
-                                                </p>
-                                            </HiveFrame>
-                                        </Link>
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    </div>
+                <section className="mt-16 md:mt-24" aria-label="Alte sortimente">
+                    <HiveSlider label="Alte sortimente">
+                        {others.map((v) => {
+                            const lead = v.variants[0];
+                            return (
+                                <Link key={v.name} href={`/magazin/${lead.slug}`} className="hive-link block h-full w-full">
+                                    <HiveFrame paint={v.paint} className="h-full">
+                                        <HivePlateRow number={v.number} />
+                                        <HiveWindow
+                                            src={lead.images[0]?.url}
+                                            alt={`${v.name}, ${lead.weight}`}
+                                            sizes="(max-width: 768px) 74vw, 268px"
+                                        />
+                                        <p className="mt-3 font-display text-lg font-extrabold leading-tight">{v.name}</p>
+                                        <p className="mt-0.5 text-[0.95rem] opacity-90">
+                                            de la {Math.min(...v.variants.map((x) => x.priceRon))} lei
+                                        </p>
+                                    </HiveFrame>
+                                </Link>
+                            );
+                        })}
+                    </HiveSlider>
                     <div className="ground-strip" aria-hidden />
                 </section>
             ) : null}

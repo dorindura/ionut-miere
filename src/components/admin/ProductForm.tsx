@@ -65,7 +65,7 @@ export default function ProductForm({
                         <label className="label">
                             Nume
                             <input name="name" required defaultValue={values.name} className="field" placeholder="Miere de salcâm" />
-                            <span className="hint">Același nume la toate gramajele = un singur sortiment în magazin.</span>
+                            <span className="hint">Gramajul de la final se ignoră: „Miere de tei 1kg” și „Miere de tei 0,5kg” devin un singur stup în magazin.</span>
                         </label>
                         <label className="label">
                             Slug (adresa paginii)

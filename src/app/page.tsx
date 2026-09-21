@@ -4,6 +4,7 @@ import Link from "next/link";
 import ContactForm from "@/components/ContactForm";
 import Icon from "@/components/Icon";
 import { HiveFrame, HivePlateRow, HiveWindow } from "@/components/HiveFront";
+import HiveSlider from "@/components/HiveSlider";
 import { getVarieties, type VarietyWithProducts } from "@/lib/varieties";
 import { EASYBOX_CARD_ONLY_NOTE, SHIPPING_RON } from "@/lib/shipping";
 
@@ -97,16 +98,15 @@ function RowHive({ v, priority }: { v: VarietyWithProducts; priority?: boolean }
   return (
       <Link
           href={`/magazin/${lead.slug}`}
-          className="hive-link group block h-full focus-visible:outline-offset-4"
+          className="hive-link group block h-full w-full focus-visible:outline-offset-4"
       >
         <HiveFrame paint={v.paint} className="h-full">
           <HivePlateRow number={v.number} popular={v.popular} />
           <HiveWindow
               src={lead.images[0]?.url}
-              alt={`${v.name}, borcan de ${lead.weight}`}
-              sizes="(max-width: 768px) 70vw, 260px"
+              alt={`${v.name}, ${lead.weight}`}
+              sizes="(max-width: 768px) 74vw, 268px"
               priority={priority}
-              aspect="aspect-[4/5] md:aspect-[5/4]"
           />
           <h3 className="mt-4 text-[1.35rem] font-extrabold leading-[1.1]">{v.name}</h3>
           <p className="mt-1 text-[0.95rem] opacity-90">{weights}</p>
@@ -131,8 +131,8 @@ export default async function Page() {
         <JsonLd />
 
         <main>
-          {/* HERO: titlul, apoi dealul cu stupii și rândul de sortimente în fața lui */}
-          <section className="overflow-hidden">
+          {/* HERO: titlul, apoi fotografia stupinei, întreagă */}
+          <section>
             <div className="mx-auto grid max-w-6xl gap-6 px-4 pb-8 pt-9 md:grid-cols-12 md:items-end md:pb-8 md:pt-10">
               <h1 className="rise text-[clamp(2.6rem,7.2vw,5rem)] font-extrabold leading-[0.95] tracking-[-0.035em] md:col-span-8 [font-variation-settings:'opsz'_96]">
                 Miere de la stupii noștri din Apuseni
@@ -162,32 +162,25 @@ export default async function Page() {
                   height={1166}
                   priority
                   sizes="100vw"
-                  className="h-[clamp(240px,46vw,340px)] w-full object-cover object-[50%_70%] md:h-[clamp(300px,28vw,420px)] md:object-[50%_60%]"
+                  className="h-[clamp(260px,62vw,440px)] w-full object-cover object-[50%_65%] md:h-[clamp(420px,44vw,660px)] md:object-[50%_58%]"
               />
               <figcaption className="absolute right-3 top-3 rounded bg-wash/90 px-2 py-1 text-[0.8rem] text-ink-2 md:right-6 md:top-5">
                 Stupina din Gârde, jud. Alba
               </figcaption>
             </figure>
 
-            <div className="relative -mt-16 md:-mt-52">
-              <ul
-                  aria-label="Sortimentele noastre"
-                  className="no-scrollbar mx-auto flex max-w-6xl snap-x snap-mandatory gap-4 overflow-x-auto px-4 pt-2 md:grid md:grid-cols-4 md:gap-6 md:overflow-visible"
-              >
-                {varieties.map((v, i) => (
-                    <li
-                        key={v.name}
-                        className="rise w-[72vw] max-w-[300px] shrink-0 snap-start md:w-auto md:max-w-none"
-                        style={{ animationDelay: `${160 + i * 80}ms` }}
-                    >
-                      <RowHive v={v} priority={i < 2} />
-                    </li>
-                ))}
-              </ul>
-              <div className="ground-strip" aria-hidden />
-            </div>
+          </section>
 
-            <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-5">
+          {/* SORTIMENTE: rândul de stupi pictați, ca slider */}
+          <section className="pt-14 md:pt-20" aria-label="Sortimente">
+            <HiveSlider label="Sortimentele noastre">
+              {varieties.map((v, i) => (
+                  <RowHive key={v.name} v={v} priority={i < 2} />
+              ))}
+            </HiveSlider>
+            <div className="ground-strip" aria-hidden />
+
+            <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-5">
               <p className="inline-flex items-center gap-1.5 text-[0.95rem] text-ink-3 md:hidden">
                 Glisează pentru toate sortimentele
                 <Icon name="arrowRight" size={16} />
