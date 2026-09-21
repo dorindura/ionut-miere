@@ -162,7 +162,7 @@ export default async function Page() {
                   height={1166}
                   priority
                   sizes="100vw"
-                  className="h-[clamp(260px,62vw,440px)] w-full object-cover object-[50%_65%] md:h-[clamp(420px,44vw,660px)] md:object-[50%_58%]"
+                  className="h-[clamp(220px,52vw,320px)] w-full object-cover object-[50%_68%] md:h-[clamp(300px,30vw,440px)] md:object-[50%_62%]"
               />
               <figcaption className="absolute right-3 top-3 rounded bg-wash/90 px-2 py-1 text-[0.8rem] text-ink-2 md:right-6 md:top-5">
                 Stupina din Gârde, jud. Alba
