@@ -1,54 +1,84 @@
-import ProductCard from "@/components/ProductCard";
-import { getPrisma } from "@/lib/db";
+import type { Metadata } from "next";
+import ShopHive from "@/components/ShopHive";
+import Icon from "@/components/Icon";
+import { getVarieties } from "@/lib/varieties";
+import { SHIPPING_RON } from "@/lib/shipping";
 
 export const dynamic = "force-dynamic";
 
+export const metadata: Metadata = {
+    title: "Magazin — miere de salcâm, mană de brad, tei și polifloră",
+    description:
+        "Alege mierea din stupina noastră din Munții Apuseni, în borcan de 500g sau 1000g. Livrare prin curier sau easybox, plata ramburs.",
+};
+
 export default async function MagazinPage() {
-    const prisma = getPrisma();
-
-    const products = await prisma.product.findMany({
-        // produsele marcate "popular" primele
-        orderBy: [{ popular: "desc" }, { createdAt: "desc" }],
-        include: {
-            images: {
-                orderBy: {
-                    sortOrder: "asc",
-                },
-            },
-        },
-    });
-
-    const mappedProducts = products.map((p) => ({
-        ...p,
-        images: p.images.map((x) => x.url),
-        details: {
-            origin: p.origin ?? undefined,
-            howItsMade: p.howItsMade ?? undefined,
-            characteristics: Array.isArray(p.characteristics)
-                ? p.characteristics.map(String)
-                : [],
-            benefits: Array.isArray(p.benefits)
-                ? p.benefits.map(String)
-                : [],
-            consumption: Array.isArray(p.consumption)
-                ? p.consumption.map(String)
-                : [],
-        },
-    }));
+    const varieties = await getVarieties();
 
     return (
-        <main className="mx-auto max-w-6xl px-4 py-12">
-            <h1 className="text-3xl font-black">Magazin</h1>
+        <main className="pb-20">
+            <section className="mx-auto max-w-6xl px-4 pt-10 md:pt-14">
+                <h1 className="max-w-3xl text-[2.6rem] font-extrabold leading-[1.02] md:text-[4rem]">
+                    Alege mierea
+                </h1>
+                <p className="mt-3 max-w-xl text-lg text-ink-2">
+                    Sortimentele din stupina noastră din Gârde. Alegi gramajul și adaugi direct în coș.
+                </p>
 
-            <p className="mt-2 text-neutral-300">
-                Alege sortimentul preferat. Livrare rapidă, ambalare sigură.
-            </p>
+                <dl className="mt-7 grid gap-x-8 gap-y-3 border-y border-rule py-4 text-[0.95rem] sm:grid-cols-3">
+                    <div className="flex items-start gap-2.5">
+                        <Icon name="truck" size={20} className="mt-0.5 text-hive-blue" />
+                        <div>
+                            <dt className="font-bold">Curier la adresă</dt>
+                            <dd className="text-ink-3">{SHIPPING_RON.ADDRESS} lei · de obicei 24–48h</dd>
+                        </div>
+                    </div>
+                    <div className="flex items-start gap-2.5">
+                        <Icon name="box" size={20} className="mt-0.5 text-hive-teal" />
+                        <div>
+                            <dt className="font-bold">easybox</dt>
+                            <dd className="text-ink-3">{SHIPPING_RON.EASYBOX} lei · ramburs doar cu cardul</dd>
+                        </div>
+                    </div>
+                    <div className="flex items-start gap-2.5">
+                        <Icon name="cash" size={20} className="mt-0.5 text-hive-leaf" />
+                        <div>
+                            <dt className="font-bold">Plata la livrare</dt>
+                            <dd className="text-ink-3">Nu ai nevoie de cont</dd>
+                        </div>
+                    </div>
+                </dl>
+            </section>
 
-            <div className="mt-8 grid gap-4 md:grid-cols-3">
-                {mappedProducts.map((p) => (
-                    <ProductCard key={p.id} p={p} />
-                ))}
-            </div>
+            <section aria-label="Sortimente" className="mt-12">
+                <div className="mx-auto max-w-6xl px-4">
+                    <ul className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+                        {varieties.map((v, i) => {
+                            const lead = v.variants[0];
+                            return (
+                                <li key={v.name} className="rise flex" style={{ animationDelay: `${i * 70}ms` }}>
+                                    <ShopHive
+                                        name={v.name}
+                                        shortDescription={lead.shortDescription}
+                                        number={v.number}
+                                        paint={v.paint}
+                                        popular={v.popular}
+                                        priority={i < 2}
+                                        variants={v.variants.map((x) => ({
+                                            slug: x.slug,
+                                            weight: x.weight,
+                                            priceRon: x.priceRon,
+                                            inStock: x.inStock,
+                                            image: x.images[0]?.url,
+                                        }))}
+                                    />
+                                </li>
+                            );
+                        })}
+                    </ul>
+                </div>
+                <div className="ground-strip mt-0 hidden lg:block" aria-hidden />
+            </section>
         </main>
     );
 }

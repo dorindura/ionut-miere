@@ -37,9 +37,9 @@ export default async function OrderPlacedPage({
     const canPay = isCard && ["PENDING", "FAILED", "CANCELLED"].includes(order.paymentStatus);
 
     const title = !isCard
-        ? "Comandă plasată ✅"
+        ? "Comandă plasată"
         : isPaid
-          ? "Plată confirmată ✅"
+          ? "Plată confirmată"
           : isPending
             ? "Plata se procesează…"
             : order.paymentStatus === "REFUNDED"
@@ -48,13 +48,13 @@ export default async function OrderPlacedPage({
 
     return (
         <main className="mx-auto max-w-3xl px-4 py-12">
-            <h1 className="text-3xl font-black">{title}</h1>
-            <p className="mt-2 text-neutral-300">
-                ID comandă: <span className="text-yellow-300 font-semibold">{order.id}</span>
+            <h1 className="text-3xl font-extrabold">{title}</h1>
+            <p className="mt-2 text-ink-2">
+                ID comandă: <span className="text-ink font-semibold">{order.id}</span>
             </p>
 
             {canPay ? (
-                <div className="mt-6 rounded-3xl border border-red-500/25 bg-red-500/5 p-6 text-sm text-neutral-200">
+                <div className="mt-6 rounded-xl border border-hive-red/30 bg-hive-red/5 p-6 text-sm text-ink">
                     <p>
                         {isPending
                             ? "Dacă ai finalizat plata, confirmarea apare în câteva momente. Dacă ai închis pagina de plată, o poți relua."
@@ -67,7 +67,7 @@ export default async function OrderPlacedPage({
                             <input type="hidden" name="orderId" value={order.id} />
                             <button
                                 type="submit"
-                                className="rounded-xl bg-yellow-500 px-6 py-3 text-sm font-semibold text-neutral-950 hover:bg-yellow-400"
+                                className="btn btn-primary"
                             >
                                 {isPending ? "Reia plata cu cardul" : "Plătește cu cardul"}
                             </button>
@@ -75,7 +75,7 @@ export default async function OrderPlacedPage({
                         {isPending ? (
                             <a
                                 href={`/comanda/${order.id}`}
-                                className="rounded-xl border border-yellow-500/25 px-6 py-3 text-sm font-semibold hover:border-yellow-400/60"
+                                className="btn btn-ghost"
                             >
                                 Reîncarcă statusul
                             </a>
@@ -84,41 +84,41 @@ export default async function OrderPlacedPage({
                 </div>
             ) : null}
 
-            <div className="mt-8 rounded-3xl border border-yellow-500/15 bg-neutral-900/30 p-6">
-                <h2 className="text-xl font-black">Sumar</h2>
+            <div className="mt-8 sheet p-6">
+                <h2 className="text-xl font-extrabold">Sumar</h2>
                 <div className="mt-4 grid gap-2">
                     {order.items.map((it) => (
                         <div key={it.id} className="flex justify-between gap-4 text-sm">
-              <span className="text-neutral-200">
+              <span className="text-ink">
                 {it.name} ({it.weight}) • {it.qty} buc
               </span>
-                            <span className="text-yellow-300 font-semibold">{it.qty * it.priceRon} RON</span>
+                            <span className="text-ink font-semibold">{it.qty * it.priceRon} lei</span>
                         </div>
                     ))}
                 </div>
 
-                <div className="mt-6 grid gap-2 border-t border-yellow-500/10 pt-4">
+                <div className="mt-6 grid gap-2 border-t border-rule pt-4">
                     <div className="flex justify-between gap-4 text-sm">
-                        <span className="text-neutral-300">Livrare</span>
-                        <span className="text-neutral-200 font-semibold">
-                            {order.deliveryMethod === "EASYBOX" ? "easybox" : "la adresă"} • {order.shippingRon} RON
+                        <span className="text-ink-2">Livrare</span>
+                        <span className="text-ink font-semibold">
+                            {order.deliveryMethod === "EASYBOX" ? "easybox" : "la adresă"} • {order.shippingRon} lei
                         </span>
                     </div>
 
                     <div className="flex justify-between gap-4 text-sm">
-                        <span className="text-neutral-300">Plată</span>
-                        <span className="text-neutral-200 font-semibold">
+                        <span className="text-ink-2">Plată</span>
+                        <span className="text-ink font-semibold">
                             {!isCard ? "ramburs la livrare" : isPaid ? "card online (plătită)" : "card online (neplătită)"}
                         </span>
                     </div>
 
-                    <div className="mt-1 flex items-center justify-between border-t border-yellow-500/10 pt-3">
-                        <span className="text-neutral-300">Total</span>
-                        <span className="text-2xl font-black text-yellow-300">{order.totalRon} RON</span>
+                    <div className="mt-1 flex items-center justify-between border-t border-rule pt-3">
+                        <span className="text-ink-2">Total</span>
+                        <span className="text-2xl font-extrabold text-ink">{order.totalRon} lei</span>
                     </div>
                 </div>
 
-                <p className="mt-3 text-xs text-neutral-400">
+                <p className="mt-3 text-xs text-ink-3">
                     {!isCard
                         ? "Plată ramburs la livrare. Te contactăm pentru confirmare."
                         : isPaid
@@ -130,8 +130,8 @@ export default async function OrderPlacedPage({
                 </p>
 
                 {!isCard && order.deliveryMethod === "EASYBOX" ? (
-                    <p className="mt-3 rounded-xl border border-yellow-400/40 bg-yellow-500/10 px-3 py-2 text-xs font-semibold text-yellow-200">
-                        ⚠️ {EASYBOX_CARD_ONLY_NOTE}
+                    <p className="mt-3 rounded-lg bg-hive-sun/35 px-3 py-2 text-xs font-semibold text-ink">
+                        {EASYBOX_CARD_ONLY_NOTE}
                     </p>
                 ) : null}
             </div>
@@ -139,14 +139,14 @@ export default async function OrderPlacedPage({
             <div className="mt-8 flex gap-3">
                 <Link
                     href="/magazin"
-                    className="rounded-xl bg-yellow-500 px-6 py-3 text-sm font-semibold text-neutral-950 hover:bg-yellow-400"
+                    className="btn btn-primary"
                 >
                     Înapoi la magazin
                 </Link>
                 {isLoggedIn ? (
                     <Link
                         href="/cont/comenzi"
-                        className="rounded-xl border border-yellow-500/25 px-6 py-3 text-sm font-semibold hover:border-yellow-400/60"
+                        className="btn btn-ghost"
                     >
                         Comenzile mele
                     </Link>

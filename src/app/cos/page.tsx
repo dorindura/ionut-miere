@@ -1,7 +1,10 @@
 import Link from "next/link";
+import Image from "next/image";
 import CartItemActions from "@/components/CartItemActions";
+import Icon from "@/components/Icon";
 import { getPrisma } from "@/lib/db";
 import { getOrCreateCart } from "@/lib/cart";
+import { hivePaint } from "@/lib/hive";
 import { SHIPPING_RON } from "@/lib/shipping";
 
 export const dynamic = "force-dynamic";
@@ -19,76 +22,108 @@ export default async function CartPage() {
         : [];
 
     const totalRon = items.reduce((sum, it) => sum + it.qty * it.product.priceRon, 0);
+    const count = items.reduce((sum, it) => sum + it.qty, 0);
 
     return (
-        <main className="mx-auto max-w-6xl px-4 py-12">
-            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-                <div>
-                    <h1 className="text-3xl font-black">Coș</h1>
-                    <p className="mt-2 text-neutral-300">Produsele tale din coș.</p>
-                </div>
-
-                <Link
-                    href="/magazin"
-                    className="inline-flex rounded-xl border border-yellow-500/25 px-4 py-2 text-sm hover:border-yellow-400/60"
-                >
-                    Continuă cumpărăturile
-                </Link>
-            </div>
+        <main className="mx-auto max-w-6xl px-4 pb-20 pt-8 md:pt-12">
+            <h1 className="text-[2.4rem] font-extrabold leading-none md:text-[3.2rem]">Coșul tău</h1>
 
             {items.length === 0 ? (
-                <div className="mt-10 rounded-3xl border border-yellow-500/15 bg-neutral-900/30 p-6">
-                    <p className="text-neutral-300">Coșul este gol.</p>
+                <div className="mt-8 max-w-xl">
+                    <p className="text-lg text-ink-2">Coșul este gol. Alege un sortiment din magazin — durează un minut.</p>
+                    <Link href="/magazin" className="btn btn-primary mt-6 text-base">
+                        Alege mierea
+                        <Icon name="arrowRight" size={18} />
+                    </Link>
                 </div>
             ) : (
-                <>
-                    <div className="mt-8 grid gap-4">
-                        {items.map((it) => (
-                            <div
-                                key={it.id}
-                                className="rounded-3xl border border-yellow-500/15 bg-neutral-900/30 p-5"
-                            >
-                                <div className="flex items-start justify-between gap-4">
-                                    <div>
-                                        <p className="text-lg font-bold">{it.product.name}</p>
-                                        <p className="text-sm text-neutral-300">
-                                            {it.product.weight} • {it.product.priceRon} RON
-                                        </p>
-                                        <div className="mt-3">
-                                            <p className="text-xs text-neutral-400 mb-2">Cantitate</p>
-                                            <CartItemActions productId={it.productId} qty={it.qty} />
+                <div className="mt-8 grid gap-8 lg:grid-cols-12">
+                    <section aria-label="Produse în coș" className="lg:col-span-7">
+                        <ul className="divide-y divide-rule border-y border-rule">
+                            {items.map((it) => {
+                                const paint = hivePaint(it.product.slug);
+                                return (
+                                    <li key={it.id} className="grid grid-cols-[4.5rem_1fr] gap-4 py-5 sm:grid-cols-[5.5rem_1fr_auto]">
+                                        <Link
+                                            href={`/magazin/${it.product.slug}`}
+                                            className="relative block aspect-[4/5] overflow-hidden rounded-md border-t-[6px] bg-white"
+                                            style={{ borderTopColor: paint.paint }}
+                                        >
+                                            {it.product.images[0]?.url ? (
+                                                <Image
+                                                    src={it.product.images[0].url}
+                                                    alt=""
+                                                    fill
+                                                    sizes="88px"
+                                                    className="object-contain p-1"
+                                                />
+                                            ) : null}
+                                        </Link>
+                                        <div className="min-w-0">
+                                            <Link href={`/magazin/${it.product.slug}`} className="text-lg font-bold leading-tight hover:underline">
+                                                {it.product.name}
+                                            </Link>
+                                            <p className="text-ink-3">
+                                                {it.product.weight} · {it.product.priceRon} lei / buc.
+                                            </p>
+                                            <div className="mt-3">
+                                                <CartItemActions productId={it.productId} qty={it.qty} name={it.product.name} />
+                                            </div>
                                         </div>
-                                    </div>
-
-                                    <div className="text-right">
-                                        <p className="text-sm text-neutral-300">Subtotal</p>
-                                        <p className="text-lg font-black text-yellow-300">
-                                            {it.qty * it.product.priceRon} RON
+                                        <p className="col-start-2 font-display text-xl font-extrabold tabular-nums sm:col-start-auto sm:text-right">
+                                            {it.qty * it.product.priceRon} lei
                                         </p>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                                    </li>
+                                );
+                            })}
+                        </ul>
 
-                    <div className="mt-8 flex flex-col gap-3 rounded-3xl border border-yellow-500/15 bg-neutral-900/30 p-6 md:flex-row md:items-center md:justify-between">
-                        <div>
-                            <p className="text-sm text-neutral-300">Subtotal produse</p>
-                            <p className="text-2xl font-black text-yellow-300">{totalRon} RON</p>
-                            <p className="mt-1 text-xs text-neutral-400">
-                                Plată ramburs la livrare. Taxa de livrare se adaugă la checkout:{" "}
-                                {SHIPPING_RON.EASYBOX} RON easybox, {SHIPPING_RON.ADDRESS} RON la adresă.
-                            </p>
-                        </div>
-
-                        <Link
-                            href="/checkout"
-                            className="rounded-xl bg-yellow-500 px-6 py-3 text-sm font-semibold text-neutral-950 hover:bg-yellow-400 text-center"
-                        >
-                            Mergi la checkout
+                        <Link href="/magazin" className="mt-5 inline-flex items-center gap-1.5 font-bold text-ink-2 hover:text-ink">
+                            <Icon name="arrowLeft" size={18} />
+                            Continuă cumpărăturile
                         </Link>
-                    </div>
-                </>
+                    </section>
+
+                    <aside className="lg:col-span-5">
+                        <div className="sheet overflow-hidden lg:sticky lg:top-24">
+                            <div className="h-2 bg-hive-sun" aria-hidden />
+                            <div className="p-5">
+                                <h2 className="text-xl font-bold">Sumar</h2>
+                                <dl className="mt-4 grid gap-2 text-[0.98rem]">
+                                    <div className="flex justify-between gap-4">
+                                        <dt className="text-ink-2">
+                                            Produse ({count} {count === 1 ? "borcan" : "borcane"})
+                                        </dt>
+                                        <dd className="font-bold tabular-nums">{totalRon} lei</dd>
+                                    </div>
+                                    <div className="flex justify-between gap-4">
+                                        <dt className="text-ink-2">Livrare</dt>
+                                        <dd className="text-right text-ink-2">
+                                            {SHIPPING_RON.EASYBOX} lei easybox
+                                            <br />
+                                            {SHIPPING_RON.ADDRESS} lei curier
+                                        </dd>
+                                    </div>
+                                </dl>
+                                <div className="mt-4 flex items-end justify-between gap-4 border-t-2 border-ink pt-3">
+                                    <span className="font-bold">Subtotal</span>
+                                    <span className="font-display text-[2rem] font-extrabold leading-none tabular-nums">
+                                        {totalRon} lei
+                                    </span>
+                                </div>
+                                <p className="mt-2 text-[0.9rem] text-ink-3">
+                                    Livrarea o alegi la pasul următor. Plata ramburs, la livrare.
+                                </p>
+
+                                <Link href="/checkout" className="btn btn-primary mt-5 w-full text-base">
+                                    Finalizează comanda
+                                    <Icon name="arrowRight" size={18} />
+                                </Link>
+                                <p className="mt-3 text-center text-[0.9rem] text-ink-3">Nu ai nevoie de cont.</p>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
             )}
         </main>
     );

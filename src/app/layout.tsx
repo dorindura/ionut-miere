@@ -1,7 +1,28 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { Big_Shoulders_Stencil, Bricolage_Grotesque, Figtree } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import HideOnAdmin from "@/components/HideOnAdmin";
+
+const display = Bricolage_Grotesque({
+    subsets: ["latin", "latin-ext"],
+    axes: ["opsz", "wdth"],
+    variable: "--font-bricolage",
+    display: "swap",
+});
+
+const body = Figtree({
+    subsets: ["latin", "latin-ext"],
+    variable: "--font-body",
+    display: "swap",
+});
+
+const stencil = Big_Shoulders_Stencil({
+    subsets: ["latin", "latin-ext"],
+    variable: "--font-stencil-face",
+    display: "swap",
+});
 
 const brandName = "Prisaca Apuseni";
 const siteUrl = "https://prisaca-apuseni.com";
@@ -29,17 +50,32 @@ export const metadata: Metadata = {
     },
 };
 
+export const viewport: Viewport = {
+    themeColor: "#f5f6f0",
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="ro">
-        <body className="min-h-screen bg-neutral-950 text-neutral-50 antialiased flex flex-col">
-        <Navbar brandName={brandName} />
+        <html lang="ro" className={`${display.variable} ${body.variable} ${stencil.variable}`}>
+        <body className="flex min-h-screen flex-col antialiased">
+        <a
+            href="#continut"
+            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-ink focus:px-4 focus:py-2 focus:text-wash"
+        >
+            Sari la conținut
+        </a>
 
-        <main className="flex-1">
+        <HideOnAdmin>
+            <Navbar brandName={brandName} />
+        </HideOnAdmin>
+
+        <div id="continut" className="flex-1">
             {children}
-        </main>
+        </div>
 
-        <Footer brandName={brandName} />
+        <HideOnAdmin>
+            <Footer brandName={brandName} />
+        </HideOnAdmin>
         </body>
         </html>
     );

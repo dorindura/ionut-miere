@@ -1,9 +1,13 @@
 // app/page.tsx
 import Image from "next/image";
 import Link from "next/link";
-import {getPrisma} from "@/lib/db";
 import ContactForm from "@/components/ContactForm";
-import PopularBadge from "@/components/PopularBadge";
+import Icon from "@/components/Icon";
+import { HiveFrame, HivePlateRow, HiveWindow } from "@/components/HiveFront";
+import { getVarieties, type VarietyWithProducts } from "@/lib/varieties";
+import { EASYBOX_CARD_ONLY_NOTE, SHIPPING_RON } from "@/lib/shipping";
+
+export const dynamic = "force-dynamic";
 
 const brand = {
   name: "Prisaca Apuseni",
@@ -36,7 +40,7 @@ function JsonLd() {
       {
         "@type": "Offer",
         itemOffered: {
-          "@type": "Products",
+          "@type": "Product",
           name: "Miere de salcâm",
           category: "Honey",
         },
@@ -44,7 +48,7 @@ function JsonLd() {
       {
         "@type": "Offer",
         itemOffered: {
-          "@type": "Products",
+          "@type": "Product",
           name: "Miere polifloră",
           category: "Honey",
         },
@@ -61,195 +65,162 @@ function JsonLd() {
   );
 }
 
+const FAQ = [
+  {
+    q: "Mierea cristalizează?",
+    a: "Da, e normal pentru mierea naturală. Cristalizarea depinde de sortiment și temperatură.",
+  },
+  {
+    q: "Cum păstrez mierea?",
+    a: "La temperatura camerei, ferită de soare direct, cu capacul bine închis.",
+  },
+  {
+    q: "Aveți comenzi corporate / cadouri?",
+    a: "Da. Putem pregăti pachete personalizate și etichete pentru evenimente.",
+  },
+  {
+    q: "În cât timp ajunge comanda?",
+    a: "De obicei 24–48h (în funcție de curier și destinație).",
+  },
+  {
+    q: "Pot plăti cash la easybox?",
+    a: EASYBOX_CARD_ONLY_NOTE + " Dacă vrei să plătești cash, alege livrarea prin curier la adresă.",
+  },
+];
+
+/** fațada unui sortiment în rândul de pe pagina principală */
+function RowHive({ v, priority }: { v: VarietyWithProducts; priority?: boolean }) {
+  const lead = v.variants[0];
+  const minPrice = Math.min(...v.variants.map((x) => x.priceRon));
+  const weights = [...v.variants].reverse().map((x) => x.weight).join(" · ");
+
+  return (
+      <Link
+          href={`/magazin/${lead.slug}`}
+          className="hive-link group block h-full focus-visible:outline-offset-4"
+      >
+        <HiveFrame paint={v.paint} className="h-full">
+          <HivePlateRow number={v.number} popular={v.popular} />
+          <HiveWindow
+              src={lead.images[0]?.url}
+              alt={`${v.name}, borcan de ${lead.weight}`}
+              sizes="(max-width: 768px) 70vw, 260px"
+              priority={priority}
+              aspect="aspect-[4/5] md:aspect-[5/4]"
+          />
+          <h3 className="mt-4 text-[1.35rem] font-extrabold leading-[1.1]">{v.name}</h3>
+          <p className="mt-1 text-[0.95rem] opacity-90">{weights}</p>
+          <p className="mt-3 flex items-center justify-between gap-2 font-display text-lg font-bold">
+            <span>de la {minPrice} lei</span>
+            <Icon
+                name="arrowRight"
+                size={22}
+                className="transition-transform duration-300 ease-[var(--ease-out-expo)] group-hover:translate-x-1"
+            />
+          </p>
+        </HiveFrame>
+      </Link>
+  );
+}
+
 export default async function Page() {
-
-  const prisma = getPrisma();
-
-  const featuredProducts = await prisma.product.findMany({
-    take: 3,
-    // produsele marcate "popular" primele
-    orderBy: [{ popular: "desc" }, { createdAt: "desc" }],
-    include: {
-      images: {
-        orderBy: {
-          sortOrder: "asc",
-        },
-        take: 1,
-      },
-    },
-  });
+  const varieties = await getVarieties();
 
   return (
       <>
         <JsonLd />
 
-        {/* Background accents */}
-        <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
-          <div className="absolute left-[-20%] top-[-30%] h-[520px] w-[520px] rounded-full bg-yellow-500/20 blur-[90px]" />
-          <div className="absolute right-[-20%] top-[10%] h-[520px] w-[520px] rounded-full bg-yellow-400/10 blur-[110px]" />
-        </div>
-
         <main>
-          {/* HERO */}
-          <section className="mx-auto max-w-6xl px-4 pt-14 pb-10">
-            <div className="grid items-center gap-10 md:grid-cols-2">
-              <div>
-                <p className="inline-flex items-center gap-2 rounded-full border border-yellow-500/20 bg-yellow-500/10 px-3 py-1 text-xs text-yellow-200">
-                  <span className="h-1.5 w-1.5 rounded-full bg-yellow-400" />
-                  Stupină locală • loturi mici • calitate constantă
+          {/* HERO: titlul, apoi dealul cu stupii și rândul de sortimente în fața lui */}
+          <section className="overflow-hidden">
+            <div className="mx-auto grid max-w-6xl gap-6 px-4 pb-8 pt-9 md:grid-cols-12 md:items-end md:pb-8 md:pt-10">
+              <h1 className="rise text-[clamp(2.6rem,7.2vw,5rem)] font-extrabold leading-[0.95] tracking-[-0.035em] md:col-span-8 [font-variation-settings:'opsz'_96]">
+                Miere de la stupii noștri din Apuseni
+              </h1>
+              <div className="rise md:col-span-4 md:pb-2" style={{ animationDelay: "90ms" }}>
+                <p className="text-lg leading-relaxed text-ink-2">
+                  Salcâm, mană de brad, tei și polifloră de munte, de la stupina noastră din Gârde, comuna Bistra.
+                  Tată și fiu, direct de la apicultor.
                 </p>
-
-                <h1 className="mt-4 text-4xl font-black leading-tight md:text-5xl">
-                  Miere naturală, autentică —{" "}
-                  <span className="text-yellow-400">direct din inima Munților Apuseni</span>.
-                </h1>
-
-                <p className="mt-4 text-base leading-relaxed text-neutral-300">
-                  Miere din Munții Apuseni (salcâm, mană de brad, tei, polifloră) + pachete cadou.
-                  Etichetare clară, livrare rapidă și suport prietenos.
-                </p>
-
-                <div className="mt-6 flex flex-wrap gap-3">
-                  <Link
-                      href="/magazin"
-                      className="rounded-xl bg-yellow-500 px-5 py-3 text-sm font-semibold text-neutral-950 hover:bg-yellow-400 transition-colors"
-                  >
-                    Vezi produsele
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <Link href="/magazin" className="btn btn-primary text-base">
+                    Alege mierea
+                    <Icon name="arrowRight" size={18} />
                   </Link>
-                  <a
-                      href="#contact"
-                      className="rounded-xl border border-yellow-500/25 px-5 py-3 text-sm font-semibold text-neutral-100 hover:border-yellow-400/60 transition-colors"
-                  >
-                    Contact rapid
+                  <a href="#stupina" className="btn btn-ghost">
+                    Stupina noastră
                   </a>
                 </div>
-
-                <dl className="mt-8 grid grid-cols-3 gap-4">
-                  {[
-                    { k: "100%", v: "Natural" },
-                    { k: "24–48h", v: "Livrare" },
-                    { k: "★ 5.0", v: "Recenzii" },
-                  ].map((x) => (
-                      <div
-                          key={x.v}
-                          className="rounded-2xl border border-yellow-500/15 bg-neutral-900/40 p-4"
-                      >
-                        <dt className="text-lg font-black text-yellow-300">{x.k}</dt>
-                        <dd className="text-xs text-neutral-300">{x.v}</dd>
-                      </div>
-                  ))}
-                </dl>
               </div>
+            </div>
 
-              <div className="relative">
-                <div className="absolute -inset-4 rounded-2xl border border-yellow-500/15 bg-gradient-to-b from-yellow-500/10 to-transparent blur-0" />
-                <div className="relative overflow-hidden rounded-2xl border border-yellow-500/15 bg-neutral-900/30">
+            <figure className="relative">
+              <Image
+                  src="/images/stupina-garde-rand.jpg"
+                  alt="Rândul de stupi pictați în albastru, verde, galben și portocaliu, pe dealul de lângă casa noastră din Gârde"
+                  width={2400}
+                  height={1166}
+                  priority
+                  sizes="100vw"
+                  className="h-[clamp(240px,46vw,340px)] w-full object-cover object-[50%_70%] md:h-[clamp(300px,28vw,420px)] md:object-[50%_60%]"
+              />
+              <figcaption className="absolute right-3 top-3 rounded bg-wash/90 px-2 py-1 text-[0.8rem] text-ink-2 md:right-6 md:top-5">
+                Stupina din Gârde, jud. Alba
+              </figcaption>
+            </figure>
+
+            <div className="relative -mt-16 md:-mt-52">
+              <ul
+                  aria-label="Sortimentele noastre"
+                  className="no-scrollbar mx-auto flex max-w-6xl snap-x snap-mandatory gap-4 overflow-x-auto px-4 pt-2 md:grid md:grid-cols-4 md:gap-6 md:overflow-visible"
+              >
+                {varieties.map((v, i) => (
+                    <li
+                        key={v.name}
+                        className="rise w-[72vw] max-w-[300px] shrink-0 snap-start md:w-auto md:max-w-none"
+                        style={{ animationDelay: `${160 + i * 80}ms` }}
+                    >
+                      <RowHive v={v} priority={i < 2} />
+                    </li>
+                ))}
+              </ul>
+              <div className="ground-strip" aria-hidden />
+            </div>
+
+            <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-5">
+              <p className="inline-flex items-center gap-1.5 text-[0.95rem] text-ink-3 md:hidden">
+                Glisează pentru toate sortimentele
+                <Icon name="arrowRight" size={16} />
+              </p>
+              <Link href="/magazin" className="ml-auto inline-flex items-center gap-1.5 font-bold underline underline-offset-4">
+                Toate gramajele în magazin
+                <Icon name="arrowRight" size={18} />
+              </Link>
+            </div>
+          </section>
+
+          {/* STUPINA: pe albastrul stupilor */}
+          <section id="stupina" className="bg-hive-blue text-white">
+            <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 md:grid-cols-12 md:items-center md:py-24">
+              <div className="md:col-span-5">
+                <div className="relative mx-auto max-w-sm md:max-w-none">
+                  <div className="h-3 bg-[#1b4577]" aria-hidden />
                   <Image
                       src="/images/horica_bucea.jpg"
-                      alt="Borcan cu miere naturală și fagure"
-                      width={1200}
-                      height={900}
-                      priority
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      className="h-[440px] w-full object-cover"
+                      alt="Apicultor la unul dintre stupii noștri, cu pădurile Apusenilor în spate"
+                      width={1500}
+                      height={2000}
+                      sizes="(max-width: 768px) 90vw, 40vw"
+                      className="aspect-[4/5] w-full object-cover"
                   />
-                  <div className="absolute bottom-4 left-4 right-4 rounded-1xl border border-yellow-500/20 bg-neutral-950/70 p-4 backdrop-blur">
-                    <p className="text-sm font-semibold">
-                      Gust curat. Textură perfectă. Etichete moderne.
-                    </p>
-                  </div>
                 </div>
               </div>
-            </div>
-          </section>
 
-          {/* BENEFICII */}
-          <section id="support" className="mx-auto max-w-6xl px-4 py-10">
-            <h2 className="text-2xl font-black">De ce Prisaca Apuseni</h2>
-
-            <div className="mt-6 grid gap-4 md:grid-cols-3">
-              {[
-                {
-                  title: "Calitate verificată",
-                  desc: "Loturi mici, trasabilitate și focus pe consistență.",
-                },
-                {
-                  title: "Livrare rapidă",
-                  desc: "Ambalare sigură, expediere 24–48h (după caz).",
-                },
-                {
-                  title: "Suport prietenos",
-                  desc: "Recomandări pentru utilizare, cadouri și comenzi mari.",
-                },
-              ].map((c) => (
-                  <article
-                      key={c.title}
-                      className="rounded-3xl border border-yellow-500/15 bg-neutral-900/30 p-6"
-                  >
-                    <h3 className="text-lg font-bold text-yellow-200">{c.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-neutral-300">{c.desc}</p>
-                  </article>
-              ))}
-            </div>
-          </section>
-
-          {/* MAGAZIN PREVIEW */}
-          <section id="magazin" className="mx-auto max-w-6xl px-4 py-10">
-            <h2 className="text-2xl font-black">Produse populare</h2>
-
-            <div className="mt-6 grid gap-4 md:grid-cols-3">
-              {featuredProducts.map((p) => (
-                  <article
-                      key={p.id}
-                      className="group rounded-3xl border border-yellow-500/15 bg-neutral-900/30 overflow-hidden"
-                  >
-                    <div className="relative h-80">
-                      <Image
-                          src={p.images?.[0]?.url || "/images/placeholder.jpg"}
-                          alt={`${p.name} ${p.weight}`}
-                          width={1200}
-                          height={900}
-                          sizes="(max-width: 768px) 100vw, 33vw"
-                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                      />
-
-                      <span className="absolute left-4 top-4 rounded-full bg-neutral-950/70 px-3 py-1 text-xs text-yellow-200 border border-yellow-500/20">
-            {p.weight}
-        </span>
-                      {p.popular ? <PopularBadge className="absolute right-4 top-4" /> : null}
-                    </div>
-
-                    <div className="p-5">
-                      <h3 className="text-lg font-bold">{p.name}</h3>
-
-                      <p className="mt-1 text-sm text-neutral-300">
-                        {p.shortDescription}
-                      </p>
-
-                      <div className="mt-4 flex items-center justify-between">
-            <span className="text-sm text-neutral-300">
-                Preț: {p.priceRon} RON
-            </span>
-
-                        <Link
-                            href={`/magazin/${p.slug}`}
-                            className="rounded-xl bg-yellow-500 px-4 py-2 text-sm font-semibold text-neutral-950 hover:bg-yellow-400 transition-colors"
-                        >
-                          Vezi produs
-                        </Link>
-                      </div>
-                    </div>
-                  </article>
-              ))}
-            </div>
-          </section>
-
-          {/* POVESTE */}
-          <section className="mx-auto max-w-6xl px-4 py-10">
-            <div className="grid gap-8 md:grid-cols-2 md:items-center">
-              <div className="rounded-3xl border border-yellow-500/15 bg-neutral-900/30 p-6">
-                <h2 className="text-2xl font-black">Stupina noastră</h2>
-                <p className="mt-3 text-sm leading-relaxed text-neutral-300">
+              <div className="md:col-span-7 md:pl-6">
+                <h2 className="text-[clamp(2.2rem,5vw,3.6rem)] font-extrabold leading-[1]">
+                  Stupina noastră
+                </h2>
+                <p className="mt-6 max-w-[62ch] text-lg leading-relaxed text-[#e4ecf7]">
                   În comuna Bistra, în inima Munților Apuseni, avem grijă de albinele noastre
                   ca de o familie. Lucrăm împreună, tată și fiu, cu respect pentru natură și
                   tradiție, urmărind fiecare detaliu din stupină. Mierea este recoltată cu grijă,
@@ -257,97 +228,133 @@ export default async function Page() {
                   borcan reflectă munca, răbdarea și pasiunea noastră pentru apicultură.
                 </p>
 
-              </div>
-
-              <div className="overflow-hidden rounded-3xl border border-yellow-500/15 bg-neutral-900/30">
-                <Image
-                    src="/images/poza_cu_stupii_departare.jpg"
-                    alt="Stupină și peisaj natural"
-                    width={1000}
-                    height={500}
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="h-[205px] w-full object-cover"
-                    loading="lazy"
-                />
+                <dl className="mt-10 grid gap-6 border-t border-white/25 pt-6 sm:grid-cols-3">
+                  <div>
+                    <dt className="text-[0.85rem] font-bold text-hive-sun">Unde</dt>
+                    <dd className="mt-1 text-[1.05rem]">Gârde, comuna Bistra, județul Alba</dd>
+                  </div>
+                  <div>
+                    <dt className="text-[0.85rem] font-bold text-hive-sun">Cine</dt>
+                    <dd className="mt-1 text-[1.05rem]">Tată și fiu, apicultori</dd>
+                  </div>
+                  <div>
+                    <dt className="text-[0.85rem] font-bold text-hive-sun">Ce recoltăm</dt>
+                    <dd className="mt-1 text-[1.05rem]">Salcâm, mană de brad, tei, polifloră de munte</dd>
+                  </div>
+                </dl>
               </div>
             </div>
+          </section>
+
+          {/* LIVRARE */}
+          <section id="livrare" className="mx-auto max-w-6xl px-4 py-16 md:py-24">
+            <h2 className="max-w-2xl text-[clamp(2rem,4.4vw,3.2rem)] font-extrabold leading-[1.02]">
+              Cum ajunge mierea la tine
+            </h2>
+
+            <ol className="mt-10 grid gap-8 md:grid-cols-3 md:gap-10">
+              <li className="border-t-[3px] border-ink pt-5">
+                <span className="plate bg-hive-sun text-lg">1</span>
+                <h3 className="mt-4 text-xl font-bold">Alegi sortimentul</h3>
+                <p className="mt-2 text-ink-2">
+                  Borcan de 500g sau 1000g. Adaugi în coș direct din magazin.
+                </p>
+              </li>
+              <li className="border-t-[3px] border-ink pt-5">
+                <span className="plate bg-hive-sun text-lg">2</span>
+                <h3 className="mt-4 text-xl font-bold">Comanzi fără cont</h3>
+                <p className="mt-2 text-ink-2">
+                  Completezi numele, telefonul și adresa. Plătești ramburs, la livrare.
+                </p>
+              </li>
+              <li className="border-t-[3px] border-ink pt-5">
+                <span className="plate bg-hive-sun text-lg">3</span>
+                <h3 className="mt-4 text-xl font-bold">Primești coletul</h3>
+                <p className="mt-2 text-ink-2">
+                  Curier la adresă ({SHIPPING_RON.ADDRESS} lei) sau easybox ({SHIPPING_RON.EASYBOX} lei), de obicei în 24–48h.
+                </p>
+              </li>
+            </ol>
+
+            <p className="mt-10 flex items-start gap-3 rounded-lg bg-hive-sun/35 px-4 py-3 text-[0.98rem]">
+              <Icon name="card" size={22} className="mt-0.5 text-ink" />
+              <span>
+                <strong>Atenție la easybox:</strong> {EASYBOX_CARD_ONLY_NOTE}
+              </span>
+            </p>
           </section>
 
           {/* FAQ */}
-          <section className="mx-auto max-w-6xl px-4 py-10">
-            <h2 className="text-2xl font-black">Întrebări frecvente</h2>
-            <div className="mt-6 grid gap-4 md:grid-cols-2">
-              {[
-                {
-                  q: "Mierea cristalizează?",
-                  a: "Da, e normal pentru mierea naturală. Cristalizarea depinde de sortiment și temperatură.",
-                },
-                {
-                  q: "Cum păstrez mierea?",
-                  a: "La temperatura camerei, ferită de soare direct, cu capacul bine închis.",
-                },
-                {
-                  q: "Aveți comenzi corporate / cadouri?",
-                  a: "Da. Putem pregăti pachete personalizate și etichete pentru evenimente.",
-                },
-                {
-                  q: "În cât timp ajunge comanda?",
-                  a: "De obicei 24–48h (în funcție de curier și destinație).",
-                },
-              ].map((x) => (
-                  <details
-                      key={x.q}
-                      className="rounded-2xl border border-yellow-500/15 bg-neutral-900/30 p-5"
-                  >
-                    <summary className="cursor-pointer list-none font-semibold text-yellow-200">
-                      {x.q}
-                    </summary>
-                    <p className="mt-2 text-sm text-neutral-300 leading-relaxed">{x.a}</p>
-                  </details>
-              ))}
+          <section className="border-t border-rule">
+            <div className="mx-auto grid max-w-6xl gap-8 px-4 py-16 md:grid-cols-12 md:py-24">
+              <h2 className="text-[clamp(2rem,4.4vw,3.2rem)] font-extrabold leading-[1.02] md:col-span-4">
+                Întrebări frecvente
+              </h2>
+              <div className="md:col-span-8">
+                {FAQ.map((x) => (
+                    <details key={x.q} className="group border-b border-rule first:border-t">
+                      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-lg font-bold [&::-webkit-details-marker]:hidden">
+                        {x.q}
+                        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-wash-2 transition-transform duration-300 group-open:rotate-45">
+                          <Icon name="plus" size={18} />
+                        </span>
+                      </summary>
+                      <p className="max-w-[62ch] pb-6 text-ink-2">{x.a}</p>
+                    </details>
+                ))}
+              </div>
             </div>
           </section>
 
-          <section id="contact" className="mx-auto max-w-6xl px-4 py-12">
-            <div className="rounded-[32px] border border-yellow-500/15 bg-neutral-900/30 p-6 md:p-10">
-              <div className="grid gap-8 md:grid-cols-2">
-                <div>
-                  <h2 className="text-2xl font-black">Contact</h2>
-                  <p className="mt-2 mb-2 text-neutral-300">
-                    Lasă un mesaj și revenim rapid.
-                  </p>
+          {/* CONTACT: pe galbenul stupilor */}
+          <section id="contact" className="bg-hive-sun">
+            <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 md:grid-cols-2 md:py-24">
+              <div>
+                <h2 className="text-[clamp(2.2rem,5vw,3.6rem)] font-extrabold leading-[1]">
+                  Sună-ne sau scrie-ne
+                </h2>
+                <p className="mt-4 max-w-md text-lg">
+                  Pentru comenzi mari, cadouri sau întrebări despre sortimente. Revenim rapid.
+                </p>
 
-                  <div className="grid gap-3">
-                    <a
-                        href={`tel:${brand.phone.replace(/\s/g, "")}`}
-                        className="rounded-2xl border border-yellow-500/15 bg-neutral-950/50 p-4 hover:border-yellow-400/50 transition-colors"
-                    >
-                      <p className="text-xs text-neutral-400">Telefon</p>
-                      <p className="mt-1 text-lg font-bold text-yellow-300">
-                        {brand.phone}
-                      </p>
+                <ul className="mt-8 grid gap-5">
+                  <li>
+                    <a href={`tel:${brand.phone.replace(/\s/g, "")}`} className="group inline-flex items-center gap-3">
+                      <span className="grid h-12 w-12 place-items-center rounded-full bg-ink text-hive-sun">
+                        <Icon name="phone" size={20} />
+                      </span>
+                      <span>
+                        <span className="block text-[0.85rem] font-bold">Telefon</span>
+                        <span className="block font-display text-2xl font-extrabold tabular-nums group-hover:underline">
+                          {brand.phone}
+                        </span>
+                      </span>
                     </a>
-
-                    <a
-                        href={`mailto:${brand.email}`}
-                        className="rounded-2xl border border-yellow-500/15 bg-neutral-950/50 p-4 hover:border-yellow-400/50 transition-colors"
-                    >
-                      <p className="text-xs text-neutral-400">Email</p>
-                      <p className="mt-1 text-lg font-bold text-yellow-300">
-                        {brand.email}
-                      </p>
+                  </li>
+                  <li>
+                    <a href={`mailto:${brand.email}`} className="group inline-flex min-w-0 items-center gap-3">
+                      <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-ink text-hive-sun">
+                        <Icon name="mail" size={20} />
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block text-[0.85rem] font-bold">Email</span>
+                        <span className="block break-all text-lg font-bold group-hover:underline">{brand.email}</span>
+                      </span>
                     </a>
+                  </li>
+                  <li className="inline-flex items-center gap-3">
+                    <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-ink text-hive-sun">
+                      <Icon name="pin" size={20} />
+                    </span>
+                    <span>
+                      <span className="block text-[0.85rem] font-bold">Adresă</span>
+                      <span className="block text-lg font-bold">Gârde, comuna Bistra, județul Alba</span>
+                    </span>
+                  </li>
+                </ul>
+              </div>
 
-                    <div className="rounded-2xl border border-yellow-500/15 bg-neutral-950/50 p-4">
-                      <p className="text-xs text-neutral-400">Adresă</p>
-
-                      <p className="mt-1 text-lg font-bold text-yellow-300">
-                        {brand.address}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
+              <div className="rounded-xl bg-paper p-5 md:p-7">
                 <ContactForm />
               </div>
             </div>
