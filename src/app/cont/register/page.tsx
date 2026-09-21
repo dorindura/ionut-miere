@@ -41,27 +41,27 @@ export default function RegisterPage() {
     }
 
     return (
-        <main className="flex min-h-screen items-center justify-center bg-neutral-950 px-4">
+        <main className="flex min-h-[70vh] items-center justify-center py-16 px-4">
             <form
                 onSubmit={onSubmit}
-                className="w-full max-w-md rounded-3xl border border-yellow-500/15 bg-neutral-900/40 p-8"
+                className="w-full max-w-md sheet p-8"
             >
-                <h1 className="text-2xl font-black text-yellow-300">Creează cont</h1>
+                <h1 className="text-2xl font-extrabold text-ink">Creează cont</h1>
 
                 <div className="mt-6 grid gap-4">
-                    <input name="name" placeholder="Nume" className="rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60" />
-                    <input name="email" type="email" required placeholder="Email" className="rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60" />
-                    <input name="password" type="password" required placeholder="Parolă (min 8)" className="rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60" />
+                    <input name="name" placeholder="Nume" className="field" />
+                    <input name="email" type="email" required placeholder="Email" className="field" />
+                    <input name="password" type="password" required placeholder="Parolă (min 8)" className="field" />
                 </div>
 
-                {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
+                {error && <p className="mt-4 text-sm text-hive-red">{error}</p>}
 
-                <button className="mt-6 w-full rounded-xl bg-yellow-500 px-5 py-3 text-sm font-semibold text-neutral-950 hover:bg-yellow-400">
+                <button className="mt-6 w-full btn btn-primary">
                     Creează cont
                 </button>
 
-                <p className="mt-4 text-sm text-neutral-300">
-                    Ai deja cont? <a className="text-yellow-300 hover:underline" href="/cont/login">Autentifică-te</a>
+                <p className="mt-4 text-sm text-ink-2">
+                    Ai deja cont? <a className="text-hive-blue underline" href="/cont/login">Autentifică-te</a>
                 </p>
             </form>
         </main>

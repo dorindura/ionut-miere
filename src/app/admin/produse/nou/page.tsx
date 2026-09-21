@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import Icon from "@/components/Icon";
+import ProductForm, { EMPTY_PRODUCT } from "@/components/admin/ProductForm";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { getPrisma } from "@/lib/db";
@@ -15,6 +17,12 @@ export default async function AdminCreateProductPage() {
 
     async function createProduct(formData: FormData) {
         "use server";
+
+        // server action = endpoint public -> verificăm rolul admin aici
+        const session = await getServerSession(authOptions);
+        if (!session || (session as any).role !== "ADMIN") {
+            redirect("/admin/login");
+        }
 
         const prisma = getPrisma();
 
@@ -75,166 +83,17 @@ export default async function AdminCreateProductPage() {
     }
 
     return (
-        <main className="mx-auto max-w-6xl px-4 py-12">
-            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-                <div>
-                    <h1 className="text-3xl font-black">Adaugă produs</h1>
+        <main className="mx-auto max-w-6xl px-4 py-8 md:py-10">
+            <Link href="/admin/produse" className="inline-flex items-center gap-1.5 py-1 font-bold text-ink-2 hover:text-ink">
+                <Icon name="arrowLeft" size={18} />
+                Produse
+            </Link>
+            <h1 className="mt-3 text-3xl font-extrabold md:text-4xl">Produs nou</h1>
+            <p className="mt-1 text-ink-3">
+                Pentru un gramaj nou al unui sortiment existent, folosește exact același nume.
+            </p>
 
-                    <p className="mt-2 text-neutral-300">
-                        Creează un produs nou în magazin.
-                    </p>
-                </div>
-
-                <Link
-                    href="/admin/produse"
-                    className="rounded-xl border border-yellow-500/25 px-4 py-2 text-sm hover:border-yellow-400/60"
-                >
-                    Înapoi
-                </Link>
-            </div>
-
-            <form
-                action={createProduct}
-                className="mt-8 grid gap-4 rounded-3xl border border-yellow-500/15 bg-neutral-900/30 p-6"
-            >
-                <div className="grid gap-4 md:grid-cols-2">
-                    <label className="grid gap-1 text-sm">
-                        <span>Nume</span>
-
-                        <input
-                            name="name"
-                            required
-                            className="rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3"
-                        />
-                    </label>
-
-                    <label className="grid gap-1 text-sm">
-                        <span>Slug</span>
-
-                        <input
-                            name="slug"
-                            required
-                            className="rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3"
-                        />
-                    </label>
-
-                    <label className="grid gap-1 text-sm">
-                        <span>Gramaj</span>
-
-                        <input
-                            name="weight"
-                            required
-                            className="rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3"
-                        />
-                    </label>
-
-                    <label className="grid gap-1 text-sm">
-                        <span>Preț</span>
-
-                        <input
-                            name="priceRon"
-                            type="number"
-                            required
-                            className="rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3"
-                        />
-                    </label>
-
-                    <label className="flex items-center gap-3 rounded-2xl border border-yellow-500/15 bg-neutral-950/40 px-4 py-3 text-sm">
-                        <input type="checkbox" name="inStock" defaultChecked />
-                        <span>În stoc</span>
-                    </label>
-
-                    <label className="flex items-center gap-3 rounded-2xl border border-yellow-500/15 bg-neutral-950/40 px-4 py-3 text-sm">
-                        <input type="checkbox" name="popular" />
-                        <span>Produs popular (badge + afișat primul)</span>
-                    </label>
-                </div>
-
-                <label className="grid gap-1 text-sm">
-                    <span>Short description</span>
-
-                    <textarea
-                        name="shortDescription"
-                        required
-                        className="min-h-[90px] rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3"
-                    />
-                </label>
-
-                <label className="grid gap-1 text-sm">
-                    <span>Description</span>
-
-                    <textarea
-                        name="description"
-                        required
-                        className="min-h-[120px] rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3"
-                    />
-                </label>
-
-                <div className="grid gap-4 md:grid-cols-2">
-                    <label className="grid gap-1 text-sm">
-                        <span>Origine</span>
-
-                        <textarea
-                            name="origin"
-                            className="min-h-[120px] rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3"
-                        />
-                    </label>
-
-                    <label className="grid gap-1 text-sm">
-                        <span>Cum se formează</span>
-
-                        <textarea
-                            name="howItsMade"
-                            className="min-h-[120px] rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3"
-                        />
-                    </label>
-                </div>
-
-                <div className="grid gap-4 md:grid-cols-3">
-                    <label className="grid gap-1 text-sm">
-                        <span>Caracteristici</span>
-
-                        <textarea
-                            name="characteristics"
-                            className="min-h-[160px] rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3"
-                        />
-                    </label>
-
-                    <label className="grid gap-1 text-sm">
-                        <span>Beneficii</span>
-
-                        <textarea
-                            name="benefits"
-                            className="min-h-[160px] rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3"
-                        />
-                    </label>
-
-                    <label className="grid gap-1 text-sm">
-                        <span>Consum</span>
-
-                        <textarea
-                            name="consumption"
-                            className="min-h-[160px] rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3"
-                        />
-                    </label>
-                </div>
-
-                <label className="grid gap-1 text-sm">
-                    <span>Imagini (1 URL / linie)</span>
-
-                    <textarea
-                        name="images"
-                        className="min-h-[140px] rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3"
-                    />
-                </label>
-
-                <button
-                    type="submit"
-                    className="rounded-xl bg-yellow-500 px-5 py-3 text-sm font-semibold text-neutral-950 hover:bg-yellow-400"
-                >
-                    Creează produs
-                </button>
-            </form>
+            <ProductForm action={createProduct} values={EMPTY_PRODUCT} submitLabel="Creează produsul" />
         </main>
     );
 }

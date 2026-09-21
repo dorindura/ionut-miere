@@ -3,10 +3,10 @@ import type { PaymentMethod, PaymentStatus } from "@prisma/client";
 type Tone = "paid" | "cash" | "pending" | "failed";
 
 const TONE_CLASSES: Record<Tone, string> = {
-    paid: "border-emerald-500/30 bg-emerald-500/10 text-emerald-300",
-    cash: "border-yellow-500/30 bg-yellow-500/10 text-yellow-200",
-    pending: "border-sky-500/30 bg-sky-500/10 text-sky-300",
-    failed: "border-red-500/30 bg-red-500/10 text-red-300",
+    paid: "bg-hive-leaf/12 text-hive-leaf",
+    cash: "bg-hive-sun/35 text-[#6b4d00]",
+    pending: "bg-hive-blue/12 text-hive-blue",
+    failed: "bg-hive-red/12 text-hive-red",
 };
 
 export function paymentLabel(method: PaymentMethod, status: PaymentStatus): { label: string; tone: Tone } {
@@ -29,9 +29,5 @@ export function paymentLabel(method: PaymentMethod, status: PaymentStatus): { la
 export default function PaymentBadge({ method, status }: { method: PaymentMethod; status: PaymentStatus }) {
     const { label, tone } = paymentLabel(method, status);
 
-    return (
-        <span className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${TONE_CLASSES[tone]}`}>
-            {label}
-        </span>
-    );
+    return <span className={`chip ${TONE_CLASSES[tone]}`}>{label}</span>;
 }

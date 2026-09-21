@@ -4,18 +4,21 @@ import { authOptions } from "@/auth";
 import { getPrisma } from "@/lib/db";
 import { getOrCreateCart } from "@/lib/cart";
 import LogoutButton from "@/components/LogoutButton";
+import MobileMenu from "@/components/MobileMenu";
+import Icon, { HiveMark } from "@/components/Icon";
 
 type Props = {
     brandName: string;
-    ctaHref?: string;
-    ctaLabel?: string;
 };
 
-export default async function Navbar({
-                                         brandName,
-                                         ctaHref = "/magazin",
-                                         ctaLabel = "Comandă acum",
-                                     }: Props) {
+const LINKS = [
+    { href: "/magazin", label: "Magazin" },
+    { href: "/#stupina", label: "Stupina" },
+    { href: "/#livrare", label: "Livrare" },
+    { href: "/#contact", label: "Contact" },
+];
+
+export default async function Navbar({ brandName }: Props) {
     const session = await getServerSession(authOptions);
     const prisma = getPrisma();
 
@@ -30,60 +33,71 @@ export default async function Navbar({
         : [];
     const cartCount = cartItems.reduce((sum, it) => sum + it.qty, 0);
 
+    const links = isAdmin ? [...LINKS, { href: "/admin", label: "Admin" }] : LINKS;
+
     return (
-        <header className="sticky top-0 z-50 border-b border-yellow-500/15 bg-neutral-950/70 backdrop-blur">
-            <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-                <Link href="/" className="group inline-flex items-center gap-2">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-yellow-500 text-neutral-950 font-black">
-            🍯
-          </span>
-                    <span className="text-sm font-semibold tracking-wide">
-            {brandName}
-                        <span className="block text-[11px] text-neutral-300/80">Miere din Munții Apuseni • România</span>
-          </span>
+        <header className="sticky top-0 z-50 border-b border-rule bg-wash">
+            <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 md:h-[4.5rem]">
+                <Link href="/" className="inline-flex items-center gap-2.5" aria-label={`${brandName} — acasă`}>
+                    <HiveMark size={32} />
+                    <span className="leading-none">
+                        <span className="block whitespace-nowrap font-display text-[1.05rem] font-extrabold tracking-[-0.02em] sm:text-[1.15rem]">
+                            {brandName}
+                        </span>
+                        <span className="mt-1 hidden text-[0.78rem] text-ink-3 sm:block">Gârde · Munții Apuseni</span>
+                    </span>
                 </Link>
 
-                <nav className="hidden items-center gap-6 md:flex">
-                    <Link href="/magazin" className="text-sm text-neutral-200 hover:text-yellow-300">Magazin</Link>
-                    <Link href="/#contact" className="text-sm text-neutral-200 hover:text-yellow-300">Contact</Link>
-
-                    {isAdmin && (
-                        <Link href="/admin" className="text-sm text-yellow-200 hover:text-yellow-300">
-                            Admin
+                <nav aria-label="Principal" className="hidden items-center gap-1 md:flex">
+                    {links.map((l) => (
+                        <Link
+                            key={l.href}
+                            href={l.href}
+                            className="rounded-lg px-3 py-2 text-[0.95rem] font-semibold text-ink-2 transition-colors hover:bg-wash-2 hover:text-ink"
+                        >
+                            {l.label}
                         </Link>
-                    )}
+                    ))}
                 </nav>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
+                    <div className="hidden items-center gap-1.5 md:flex">
+                        {isLoggedIn ? (
+                            <>
+                                <Link
+                                    href="/cont/comenzi"
+                                    className="rounded-lg px-3 py-2 text-[0.95rem] font-semibold text-ink-2 hover:bg-wash-2 hover:text-ink"
+                                >
+                                    Comenzile mele
+                                </Link>
+                                <LogoutButton />
+                            </>
+                        ) : (
+                            <Link
+                                href="/cont/login"
+                                className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-[0.95rem] font-semibold text-ink-2 hover:bg-wash-2 hover:text-ink"
+                            >
+                                <Icon name="user" size={18} />
+                                Contul meu
+                            </Link>
+                        )}
+                    </div>
+
                     <Link
                         href="/cos"
-                        className="inline-flex items-center rounded-xl border border-yellow-500/25 px-3 py-2 text-sm hover:border-yellow-400/60"
+                        className="relative inline-flex h-11 items-center gap-2 rounded-lg bg-ink pl-3 pr-3.5 font-bold text-wash transition-colors hover:bg-forest"
+                        aria-label={cartCount > 0 ? `Coș, ${cartCount} produse` : "Coș, gol"}
                     >
-                        Coș
+                        <Icon name="cart" size={19} />
+                        <span className="hidden text-[0.95rem] min-[400px]:inline">Coș</span>
                         {cartCount > 0 && (
-                            <span className="ml-2 rounded-full bg-yellow-500 px-2 py-0.5 text-xs font-black text-neutral-950">
-                  {cartCount}
-                </span>
+                            <span className="grid h-6 min-w-6 place-items-center rounded-full bg-hive-sun px-1.5 text-[0.8rem] font-extrabold tabular-nums text-ink">
+                                {cartCount}
+                            </span>
                         )}
                     </Link>
 
-                    {!isLoggedIn ? (
-                        <Link
-                            href="/cont/login"
-                            className="hidden sm:inline-flex rounded-xl border border-yellow-500/25 px-3 py-2 text-sm hover:border-yellow-400/60"
-                        >
-                            Login
-                        </Link>
-                    ) : (
-                        <LogoutButton />
-                    )}
-
-                    <Link
-                        href={ctaHref}
-                        className="rounded-xl bg-yellow-500 px-4 py-2 text-sm font-semibold text-neutral-950 hover:bg-yellow-400 transition-colors"
-                    >
-                        {ctaLabel}
-                    </Link>
+                    <MobileMenu links={links} isLoggedIn={isLoggedIn} />
                 </div>
             </div>
         </header>

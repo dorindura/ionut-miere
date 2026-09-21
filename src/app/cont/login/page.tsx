@@ -32,13 +32,13 @@ export default function AdminLoginPage() {
     }
 
     return (
-        <main className="flex min-h-screen items-center justify-center bg-neutral-950 px-4">
+        <main className="flex min-h-[70vh] items-center justify-center py-16 px-4">
             <form
                 onSubmit={onSubmit}
-                className="w-full max-w-md rounded-3xl border border-yellow-500/15 bg-neutral-900/40 p-8"
+                className="w-full max-w-md sheet p-8"
             >
-                <h1 className="text-2xl font-black text-yellow-300">User Login</h1>
-                <p className="mt-2 text-sm text-neutral-300">
+                <h1 className="text-2xl font-extrabold text-ink">User Login</h1>
+                <p className="mt-2 text-sm text-ink-2">
                     Autentificare pentru magazin.
                 </p>
 
@@ -49,7 +49,7 @@ export default function AdminLoginPage() {
                         placeholder="Email"
                         required
                         autoComplete="email"
-                        className="rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60"
+                        className="field"
                     />
                     <input
                         name="password"
@@ -57,22 +57,22 @@ export default function AdminLoginPage() {
                         placeholder="Parolă"
                         required
                         autoComplete="current-password"
-                        className="rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60"
+                        className="field"
                     />
                 </div>
 
-                {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
+                {error && <p className="mt-4 text-sm text-hive-red">{error}</p>}
 
-                <p className="mt-4 text-sm text-neutral-300">
+                <p className="mt-4 text-sm text-ink-2">
                     Nu ai cont?{" "}
-                    <a href="/cont/register" className="text-yellow-300 hover:underline">
+                    <a href="/cont/register" className="text-hive-blue underline">
                         Creează unul
                     </a>
                 </p>
 
                 <button
                     type="submit"
-                    className="mt-6 w-full rounded-xl bg-yellow-500 px-5 py-3 text-sm font-semibold text-neutral-950 hover:bg-yellow-400 transition-colors"
+                    className="mt-6 w-full btn btn-primary"
                 >
                     Intră în cont
                 </button>

@@ -1,0 +1,481 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-21T06:38:50.340Z",
+  "title": "Design System: Prisaca Apuseni",
+  "extensions": {
+    "colorMeta": {
+      "wash": {
+        "role": "neutral",
+        "displayName": "Limewash",
+        "canonical": "#f5f6f0",
+        "oklch": "oklch(97.1% 0.008 114.2)",
+        "tonalRamp": [
+          "oklch(15% 0.008 114.2)",
+          "oklch(26% 0.008 114.2)",
+          "oklch(37% 0.008 114.2)",
+          "oklch(48% 0.008 114.2)",
+          "oklch(59% 0.008 114.2)",
+          "oklch(70% 0.008 114.2)",
+          "oklch(82% 0.008 114.2)",
+          "oklch(95% 0.003 114.2)"
+        ]
+      },
+      "wash-2": {
+        "role": "neutral",
+        "displayName": "Limewash Shade",
+        "canonical": "#eceee4",
+        "oklch": "oklch(94.5% 0.013 115.8)",
+        "tonalRamp": [
+          "oklch(15% 0.013 115.8)",
+          "oklch(26% 0.013 115.8)",
+          "oklch(37% 0.013 115.8)",
+          "oklch(48% 0.013 115.8)",
+          "oklch(59% 0.013 115.8)",
+          "oklch(70% 0.013 115.8)",
+          "oklch(82% 0.013 115.8)",
+          "oklch(95% 0.005 115.8)"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "#ffffff",
+        "oklch": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "oklch(15% 0.000 89.9)",
+          "oklch(26% 0.000 89.9)",
+          "oklch(37% 0.000 89.9)",
+          "oklch(48% 0.000 89.9)",
+          "oklch(59% 0.000 89.9)",
+          "oklch(70% 0.000 89.9)",
+          "oklch(82% 0.000 89.9)",
+          "oklch(95% 0.000 89.9)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Forest Ink",
+        "canonical": "#1c2a21",
+        "oklch": "oklch(26.9% 0.025 156.1)",
+        "tonalRamp": [
+          "oklch(15% 0.025 156.1)",
+          "oklch(26% 0.025 156.1)",
+          "oklch(37% 0.025 156.1)",
+          "oklch(48% 0.025 156.1)",
+          "oklch(59% 0.025 156.1)",
+          "oklch(70% 0.025 156.1)",
+          "oklch(82% 0.025 156.1)",
+          "oklch(95% 0.009 156.1)"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Moss Ink",
+        "canonical": "#45554a",
+        "oklch": "oklch(43.2% 0.027 155.1)",
+        "tonalRamp": [
+          "oklch(15% 0.027 155.1)",
+          "oklch(26% 0.027 155.1)",
+          "oklch(37% 0.027 155.1)",
+          "oklch(48% 0.027 155.1)",
+          "oklch(59% 0.027 155.1)",
+          "oklch(70% 0.027 155.1)",
+          "oklch(82% 0.027 155.1)",
+          "oklch(95% 0.009 155.1)"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Lichen Ink",
+        "canonical": "#5c6a60",
+        "oklch": "oklch(50.9% 0.023 154.4)",
+        "tonalRamp": [
+          "oklch(15% 0.023 154.4)",
+          "oklch(26% 0.023 154.4)",
+          "oklch(37% 0.023 154.4)",
+          "oklch(48% 0.023 154.4)",
+          "oklch(59% 0.023 154.4)",
+          "oklch(70% 0.023 154.4)",
+          "oklch(82% 0.023 154.4)",
+          "oklch(95% 0.008 154.4)"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Rule",
+        "canonical": "#d3d8ca",
+        "oklch": "oklch(87.4% 0.020 122.9)",
+        "tonalRamp": [
+          "oklch(15% 0.020 122.9)",
+          "oklch(26% 0.020 122.9)",
+          "oklch(37% 0.020 122.9)",
+          "oklch(48% 0.020 122.9)",
+          "oklch(59% 0.020 122.9)",
+          "oklch(70% 0.020 122.9)",
+          "oklch(82% 0.020 122.9)",
+          "oklch(95% 0.007 122.9)"
+        ]
+      },
+      "rule-strong": {
+        "role": "neutral",
+        "displayName": "Strong Rule",
+        "canonical": "#b7bfae",
+        "oklch": "oklch(79.4% 0.025 127.7)",
+        "tonalRamp": [
+          "oklch(15% 0.025 127.7)",
+          "oklch(26% 0.025 127.7)",
+          "oklch(37% 0.025 127.7)",
+          "oklch(48% 0.025 127.7)",
+          "oklch(59% 0.025 127.7)",
+          "oklch(70% 0.025 127.7)",
+          "oklch(82% 0.025 127.7)",
+          "oklch(95% 0.009 127.7)"
+        ]
+      },
+      "hive-sun": {
+        "role": "primary",
+        "displayName": "Sunflower Hive Yellow",
+        "canonical": "#f2c230",
+        "oklch": "oklch(83.4% 0.158 89.0)",
+        "tonalRamp": [
+          "oklch(15% 0.158 89.0)",
+          "oklch(26% 0.158 89.0)",
+          "oklch(37% 0.158 89.0)",
+          "oklch(48% 0.158 89.0)",
+          "oklch(59% 0.158 89.0)",
+          "oklch(70% 0.158 89.0)",
+          "oklch(82% 0.158 89.0)",
+          "oklch(95% 0.055 89.0)"
+        ]
+      },
+      "hive-blue": {
+        "role": "secondary",
+        "displayName": "Hive Blue",
+        "canonical": "#2a64ad",
+        "oklch": "oklch(50.3% 0.131 255.7)",
+        "tonalRamp": [
+          "oklch(15% 0.131 255.7)",
+          "oklch(26% 0.131 255.7)",
+          "oklch(37% 0.131 255.7)",
+          "oklch(48% 0.131 255.7)",
+          "oklch(59% 0.131 255.7)",
+          "oklch(70% 0.131 255.7)",
+          "oklch(82% 0.131 255.7)",
+          "oklch(95% 0.046 255.7)"
+        ]
+      },
+      "hive-teal": {
+        "role": "tertiary",
+        "displayName": "Turquoise Hive",
+        "canonical": "#137a75",
+        "oklch": "oklch(52.5% 0.086 189.6)",
+        "tonalRamp": [
+          "oklch(15% 0.086 189.6)",
+          "oklch(26% 0.086 189.6)",
+          "oklch(37% 0.086 189.6)",
+          "oklch(48% 0.086 189.6)",
+          "oklch(59% 0.086 189.6)",
+          "oklch(70% 0.086 189.6)",
+          "oklch(82% 0.086 189.6)",
+          "oklch(95% 0.030 189.6)"
+        ]
+      },
+      "hive-leaf": {
+        "role": "tertiary",
+        "displayName": "Leaf Hive Green",
+        "canonical": "#2f7a3a",
+        "oklch": "oklch(51.7% 0.122 146.3)",
+        "tonalRamp": [
+          "oklch(15% 0.122 146.3)",
+          "oklch(26% 0.122 146.3)",
+          "oklch(37% 0.122 146.3)",
+          "oklch(48% 0.122 146.3)",
+          "oklch(59% 0.122 146.3)",
+          "oklch(70% 0.122 146.3)",
+          "oklch(82% 0.122 146.3)",
+          "oklch(95% 0.043 146.3)"
+        ]
+      },
+      "hive-orange": {
+        "role": "tertiary",
+        "displayName": "Marigold Hive Orange",
+        "canonical": "#e06a26",
+        "oklch": "oklch(65.6% 0.166 46.3)",
+        "tonalRamp": [
+          "oklch(15% 0.160 46.3)",
+          "oklch(26% 0.160 46.3)",
+          "oklch(37% 0.160 46.3)",
+          "oklch(48% 0.160 46.3)",
+          "oklch(59% 0.160 46.3)",
+          "oklch(70% 0.160 46.3)",
+          "oklch(82% 0.160 46.3)",
+          "oklch(95% 0.056 46.3)"
+        ]
+      },
+      "hive-red": {
+        "role": "tertiary",
+        "displayName": "Warning Red",
+        "canonical": "#b8322a",
+        "oklch": "oklch(52.2% 0.172 28.1)",
+        "tonalRamp": [
+          "oklch(15% 0.160 28.1)",
+          "oklch(26% 0.160 28.1)",
+          "oklch(37% 0.160 28.1)",
+          "oklch(48% 0.160 28.1)",
+          "oklch(59% 0.160 28.1)",
+          "oklch(70% 0.160 28.1)",
+          "oklch(82% 0.160 28.1)",
+          "oklch(95% 0.056 28.1)"
+        ]
+      },
+      "grass": {
+        "role": "tertiary",
+        "displayName": "Grass",
+        "canonical": "#5e9e3a",
+        "oklch": "oklch(63.4% 0.149 136.0)",
+        "tonalRamp": [
+          "oklch(15% 0.149 136.0)",
+          "oklch(26% 0.149 136.0)",
+          "oklch(37% 0.149 136.0)",
+          "oklch(48% 0.149 136.0)",
+          "oklch(59% 0.149 136.0)",
+          "oklch(70% 0.149 136.0)",
+          "oklch(82% 0.149 136.0)",
+          "oklch(95% 0.052 136.0)"
+        ]
+      },
+      "forest": {
+        "role": "neutral",
+        "displayName": "Deep Forest",
+        "canonical": "#1d3826",
+        "oklch": "oklch(31.3% 0.047 153.7)",
+        "tonalRamp": [
+          "oklch(15% 0.047 153.7)",
+          "oklch(26% 0.047 153.7)",
+          "oklch(37% 0.047 153.7)",
+          "oklch(48% 0.047 153.7)",
+          "oklch(59% 0.047 153.7)",
+          "oklch(70% 0.047 153.7)",
+          "oklch(82% 0.047 153.7)",
+          "oklch(95% 0.016 153.7)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The single page headline; Bricolage Grotesque 800 at opsz 96."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section heads; band sections step up to clamp(2.2rem,5vw,3.6rem)."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Hive-front variety names, sheet headers, wordmark."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text in Figtree; chosen over Atkinson Hyperlegible Next because its slashed zeros read badly in prices, weights and phone numbers."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Form labels, nav links (600), definition terms; sentence case."
+      },
+      "plate": {
+        "displayName": "Stencil Plate",
+        "purpose": "Big Shoulders Stencil on white or yellow plates only: hive numbers, step numbers, admin counter values."
+      }
+    },
+    "shadows": [
+      {
+        "name": "paint-lip",
+        "value": "inset 0 -3px 0 color-mix(in oklab, var(--color-hive-sun) 70%, #7a4d00)",
+        "purpose": "Bottom lip of the yellow primary button only."
+      },
+      {
+        "name": "focus-halo",
+        "value": "0 0 0 3px color-mix(in oklab, var(--color-hive-blue) 22%, transparent)",
+        "purpose": "Field focus."
+      },
+      {
+        "name": "selected-option",
+        "value": "inset 0 0 0 1px var(--color-ink)",
+        "purpose": "Checked delivery/payment option card."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "All transitions and entrances."
+      },
+      {
+        "name": "state",
+        "value": "160ms",
+        "purpose": "Button colour and press; fields 140ms."
+      },
+      {
+        "name": "hive-lift",
+        "value": "translateY(-6px) 280ms",
+        "purpose": "Hover lift of hive fronts and admin counters (hover-capable pointers only)."
+      },
+      {
+        "name": "rise",
+        "value": "translateY(18px)→0, 700ms, 80ms stagger",
+        "purpose": "Entrance of headline, lead and hive row; removed under prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
+    ],
+    "focus": {
+      "value": "3px solid var(--color-hive-blue), offset 2px, radius 6px"
+    }
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Sunflower-yellow painted board with ink label and bottom lip; the one primary action per view.",
+      "html": "<button class=\"ds-btn ds-btn-primary\">Alege mierea <svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h14m-6-6 6 6-6 6\"/></svg></button>",
+      "css": ":host{--color-wash:#f5f6f0;--color-wash-2:#eceee4;--color-paper:#fff;--color-ink:#1c2a21;--color-ink-2:#45554a;--color-ink-3:#5c6a60;--color-rule:#d3d8ca;--color-rule-strong:#b7bfae;--color-hive-blue:#2a64ad;--color-hive-teal:#137a75;--color-hive-leaf:#2f7a3a;--color-hive-sun:#f2c230;--color-hive-orange:#e06a26;--color-hive-red:#b8322a;--color-grass:#5e9e3a;--color-forest:#1d3826;--ease-out-expo:cubic-bezier(0.16,1,0.3,1);font-family:Figtree,ui-sans-serif,system-ui,sans-serif;color:var(--color-ink);}.ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:3rem;padding:0 1.25rem;border-radius:.625rem;border:0;font:700 .975rem/1.1 Figtree,ui-sans-serif,system-ui,sans-serif;white-space:nowrap;cursor:pointer;transition:background-color 160ms var(--ease-out-expo),border-color 160ms var(--ease-out-expo),transform 160ms var(--ease-out-expo);} .ds-btn:active{transform:translateY(1px);} .ds-btn:focus-visible{outline:3px solid var(--color-hive-blue);outline-offset:2px;} .ds-btn-primary{background:var(--color-hive-sun);color:var(--color-ink);box-shadow:inset 0 -3px 0 color-mix(in oklab,var(--color-hive-sun) 70%,#7a4d00);} .ds-btn-primary:hover{background:color-mix(in oklab,var(--color-hive-sun) 88%,#fff);}"
+    },
+    {
+      "name": "Ink Button",
+      "kind": "button",
+      "refersTo": "button-ink",
+      "description": "Forest-ink button for form submits and the cart.",
+      "html": "<button class=\"ds-btn ds-btn-ink\">Trimite mesajul</button>",
+      "css": ":host{--color-wash:#f5f6f0;--color-wash-2:#eceee4;--color-paper:#fff;--color-ink:#1c2a21;--color-ink-2:#45554a;--color-ink-3:#5c6a60;--color-rule:#d3d8ca;--color-rule-strong:#b7bfae;--color-hive-blue:#2a64ad;--color-hive-teal:#137a75;--color-hive-leaf:#2f7a3a;--color-hive-sun:#f2c230;--color-hive-orange:#e06a26;--color-hive-red:#b8322a;--color-grass:#5e9e3a;--color-forest:#1d3826;--ease-out-expo:cubic-bezier(0.16,1,0.3,1);font-family:Figtree,ui-sans-serif,system-ui,sans-serif;color:var(--color-ink);}.ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:3rem;padding:0 1.25rem;border-radius:.625rem;border:0;font:700 .975rem/1.1 Figtree,ui-sans-serif,system-ui,sans-serif;white-space:nowrap;cursor:pointer;transition:background-color 160ms var(--ease-out-expo),border-color 160ms var(--ease-out-expo),transform 160ms var(--ease-out-expo);} .ds-btn:active{transform:translateY(1px);} .ds-btn:focus-visible{outline:3px solid var(--color-hive-blue);outline-offset:2px;} .ds-btn-ink{background:var(--color-ink);color:var(--color-wash);} .ds-btn-ink:hover{background:color-mix(in oklab,var(--color-ink) 85%,var(--color-hive-leaf));}"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary action: transparent with a 1.5px strong-rule stroke.",
+      "html": "<button class=\"ds-btn ds-btn-ghost\">Stupina noastră</button>",
+      "css": ":host{--color-wash:#f5f6f0;--color-wash-2:#eceee4;--color-paper:#fff;--color-ink:#1c2a21;--color-ink-2:#45554a;--color-ink-3:#5c6a60;--color-rule:#d3d8ca;--color-rule-strong:#b7bfae;--color-hive-blue:#2a64ad;--color-hive-teal:#137a75;--color-hive-leaf:#2f7a3a;--color-hive-sun:#f2c230;--color-hive-orange:#e06a26;--color-hive-red:#b8322a;--color-grass:#5e9e3a;--color-forest:#1d3826;--ease-out-expo:cubic-bezier(0.16,1,0.3,1);font-family:Figtree,ui-sans-serif,system-ui,sans-serif;color:var(--color-ink);}.ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:3rem;padding:0 1.25rem;border-radius:.625rem;border:0;font:700 .975rem/1.1 Figtree,ui-sans-serif,system-ui,sans-serif;white-space:nowrap;cursor:pointer;transition:background-color 160ms var(--ease-out-expo),border-color 160ms var(--ease-out-expo),transform 160ms var(--ease-out-expo);} .ds-btn:active{transform:translateY(1px);} .ds-btn:focus-visible{outline:3px solid var(--color-hive-blue);outline-offset:2px;} .ds-btn-ghost{background:transparent;color:var(--color-ink);border:1.5px solid var(--color-rule-strong);} .ds-btn-ghost:hover{border-color:var(--color-ink);background:var(--color-paper);}"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Destructive admin actions only.",
+      "html": "<button class=\"ds-btn ds-btn-danger\">Șterge comanda</button>",
+      "css": ":host{--color-wash:#f5f6f0;--color-wash-2:#eceee4;--color-paper:#fff;--color-ink:#1c2a21;--color-ink-2:#45554a;--color-ink-3:#5c6a60;--color-rule:#d3d8ca;--color-rule-strong:#b7bfae;--color-hive-blue:#2a64ad;--color-hive-teal:#137a75;--color-hive-leaf:#2f7a3a;--color-hive-sun:#f2c230;--color-hive-orange:#e06a26;--color-hive-red:#b8322a;--color-grass:#5e9e3a;--color-forest:#1d3826;--ease-out-expo:cubic-bezier(0.16,1,0.3,1);font-family:Figtree,ui-sans-serif,system-ui,sans-serif;color:var(--color-ink);}.ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:3rem;padding:0 1.25rem;border-radius:.625rem;border:0;font:700 .975rem/1.1 Figtree,ui-sans-serif,system-ui,sans-serif;white-space:nowrap;cursor:pointer;transition:background-color 160ms var(--ease-out-expo),border-color 160ms var(--ease-out-expo),transform 160ms var(--ease-out-expo);} .ds-btn:active{transform:translateY(1px);} .ds-btn:focus-visible{outline:3px solid var(--color-hive-blue);outline-offset:2px;} .ds-btn-danger{background:var(--color-hive-red);color:#fff;} .ds-btn-danger:hover{background:color-mix(in oklab,var(--color-hive-red) 88%,#000);}"
+    },
+    {
+      "name": "Field with Label",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Paper field, 1.5px stroke, 10px corners, blue focus halo; bold label with optional hint.",
+      "html": "<label class=\"ds-label\">Nume <input class=\"ds-field\" placeholder=\"Numele tău\"><span class=\"ds-hint\">Așa cum apare pe colet</span></label>",
+      "css": ":host{--color-wash:#f5f6f0;--color-wash-2:#eceee4;--color-paper:#fff;--color-ink:#1c2a21;--color-ink-2:#45554a;--color-ink-3:#5c6a60;--color-rule:#d3d8ca;--color-rule-strong:#b7bfae;--color-hive-blue:#2a64ad;--color-hive-teal:#137a75;--color-hive-leaf:#2f7a3a;--color-hive-sun:#f2c230;--color-hive-orange:#e06a26;--color-hive-red:#b8322a;--color-grass:#5e9e3a;--color-forest:#1d3826;--ease-out-expo:cubic-bezier(0.16,1,0.3,1);font-family:Figtree,ui-sans-serif,system-ui,sans-serif;color:var(--color-ink);} .ds-label{display:grid;gap:.375rem;font-size:.95rem;font-weight:700;color:var(--color-ink);max-width:320px;} .ds-hint{font-weight:400;font-size:.85rem;color:var(--color-ink-3);} .ds-field{min-height:3rem;padding:.7rem .9rem;border-radius:.625rem;border:1.5px solid var(--color-rule-strong);background:var(--color-paper);color:var(--color-ink);font:400 1rem Figtree,ui-sans-serif,sans-serif;transition:border-color 140ms var(--ease-out-expo);} .ds-field::placeholder{color:var(--color-ink-3);} .ds-field:hover{border-color:var(--color-ink-3);} .ds-field:focus{outline:none;border-color:var(--color-hive-blue);box-shadow:0 0 0 3px color-mix(in oklab,var(--color-hive-blue) 22%,transparent);}"
+    },
+    {
+      "name": "Status Chips",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Order status as paint tinted 12-15% with full-strength text and a dot.",
+      "html": "<span class=\"ds-chip ds-new\">Nouă</span> <span class=\"ds-chip ds-conf\">Confirmată</span> <span class=\"ds-chip ds-ship\">Expediată</span> <span class=\"ds-chip ds-done\">Livrată</span> <span class=\"ds-chip ds-canc\">Anulată</span>",
+      "css": ":host{--color-wash:#f5f6f0;--color-wash-2:#eceee4;--color-paper:#fff;--color-ink:#1c2a21;--color-ink-2:#45554a;--color-ink-3:#5c6a60;--color-rule:#d3d8ca;--color-rule-strong:#b7bfae;--color-hive-blue:#2a64ad;--color-hive-teal:#137a75;--color-hive-leaf:#2f7a3a;--color-hive-sun:#f2c230;--color-hive-orange:#e06a26;--color-hive-red:#b8322a;--color-grass:#5e9e3a;--color-forest:#1d3826;--ease-out-expo:cubic-bezier(0.16,1,0.3,1);font-family:Figtree,ui-sans-serif,system-ui,sans-serif;color:var(--color-ink);} .ds-chip{display:inline-flex;align-items:center;gap:.375rem;padding:.2rem .6rem;border-radius:999px;font:700 .8rem/1.3 Figtree,ui-sans-serif,sans-serif;white-space:nowrap;} .ds-chip::before{content:'';width:.45rem;height:.45rem;border-radius:999px;background:currentColor;} .ds-new{background:color-mix(in oklab,var(--color-hive-orange) 15%,transparent);color:#9a4210;} .ds-conf{background:color-mix(in oklab,var(--color-hive-blue) 12%,transparent);color:var(--color-hive-blue);} .ds-ship{background:color-mix(in oklab,var(--color-hive-teal) 12%,transparent);color:var(--color-hive-teal);} .ds-done{background:color-mix(in oklab,var(--color-hive-leaf) 12%,transparent);color:var(--color-hive-leaf);} .ds-canc{background:var(--color-wash-2);color:var(--color-ink-3);}"
+    },
+    {
+      "name": "Sheet",
+      "kind": "card",
+      "refersTo": "sheet",
+      "description": "White working surface on limewash: 1px rule, 14px corners, no shadow.",
+      "html": "<div class=\"ds-wrap\"><section class=\"ds-sheet\"><header class=\"ds-sheet-h\">Ultimele comenzi <a href=\"#\">Toate comenzile</a></header><div class=\"ds-sheet-row\"><b>Maria Pop</b><span>225 lei</span></div></section></div>",
+      "css": ":host{--color-wash:#f5f6f0;--color-wash-2:#eceee4;--color-paper:#fff;--color-ink:#1c2a21;--color-ink-2:#45554a;--color-ink-3:#5c6a60;--color-rule:#d3d8ca;--color-rule-strong:#b7bfae;--color-hive-blue:#2a64ad;--color-hive-teal:#137a75;--color-hive-leaf:#2f7a3a;--color-hive-sun:#f2c230;--color-hive-orange:#e06a26;--color-hive-red:#b8322a;--color-grass:#5e9e3a;--color-forest:#1d3826;--ease-out-expo:cubic-bezier(0.16,1,0.3,1);font-family:Figtree,ui-sans-serif,system-ui,sans-serif;color:var(--color-ink);} .ds-wrap{background:var(--color-wash);padding:24px;} .ds-sheet{background:var(--color-paper);border:1px solid var(--color-rule);border-radius:.875rem;max-width:420px;} .ds-sheet-h{display:flex;justify-content:space-between;padding:16px;border-bottom:1px solid var(--color-rule);font:800 1.1rem 'Bricolage Grotesque',ui-sans-serif,sans-serif;letter-spacing:-.02em;} .ds-sheet-h a{font:700 .9rem Figtree,sans-serif;color:var(--color-hive-blue);text-decoration:none;} .ds-sheet-h a:hover{text-decoration:underline;} .ds-sheet-row{display:flex;justify-content:space-between;padding:16px;}"
+    },
+    {
+      "name": "Hive Front",
+      "kind": "custom",
+      "refersTo": "hive-front",
+      "description": "Signature: a variety as a painted hive with lid, stencil plate, white jar window, entrance slot and landing board; lifts 6px on hover.",
+      "html": "<div class=\"ds-row\"><a class=\"ds-hive\" href=\"#\"><span class=\"ds-lid\"></span><span class=\"ds-body\"><span class=\"ds-plate\">Nr. 02</span><span class=\"ds-window\"></span><span class=\"ds-name\">Miere de salcâm</span><span class=\"ds-meta\">500g · 1000g</span><span class=\"ds-price\">de la 45 lei</span><span class=\"ds-entrance\"></span></span></a><div class=\"ds-ground\"></div></div>",
+      "css": ":host{--color-wash:#f5f6f0;--color-wash-2:#eceee4;--color-paper:#fff;--color-ink:#1c2a21;--color-ink-2:#45554a;--color-ink-3:#5c6a60;--color-rule:#d3d8ca;--color-rule-strong:#b7bfae;--color-hive-blue:#2a64ad;--color-hive-teal:#137a75;--color-hive-leaf:#2f7a3a;--color-hive-sun:#f2c230;--color-hive-orange:#e06a26;--color-hive-red:#b8322a;--color-grass:#5e9e3a;--color-forest:#1d3826;--ease-out-expo:cubic-bezier(0.16,1,0.3,1);font-family:Figtree,ui-sans-serif,system-ui,sans-serif;color:var(--color-ink);} .ds-row{width:240px;} .ds-hive{--paint:var(--color-hive-blue);--paint-fg:#fff;--lid:color-mix(in oklab,var(--paint) 72%,#0b140e);display:flex;flex-direction:column;margin:0 12px;color:var(--paint-fg);text-decoration:none;transition:transform 280ms var(--ease-out-expo);} .ds-hive:hover{transform:translateY(-6px);} .ds-hive:focus-visible{outline:3px solid var(--color-hive-blue);outline-offset:2px;} .ds-lid{height:.9rem;margin:0 -.5rem;background:var(--lid);border-radius:3px 3px 0 0;} .ds-body{display:flex;flex-direction:column;background:var(--paint);padding:.875rem .875rem 0;} .ds-plate{align-self:flex-start;margin-bottom:.75rem;padding:.15rem .5rem .1rem;background:#fff;color:var(--color-ink);border-radius:3px;font:800 .95rem/1.2 'Big Shoulders Stencil','Bricolage Grotesque',sans-serif;letter-spacing:.06em;font-variant-numeric:tabular-nums;} .ds-window{aspect-ratio:4/5;background:#fff;border-radius:4px;} .ds-name{margin-top:.75rem;font:800 1.2rem/1.2 'Bricolage Grotesque',sans-serif;letter-spacing:-.02em;} .ds-meta{font-size:.9rem;opacity:.9;} .ds-price{margin-top:.5rem;font-weight:800;} .ds-entrance{position:relative;height:2.1rem;} .ds-entrance::before{content:'';position:absolute;left:50%;bottom:.9rem;width:42%;height:.5rem;transform:translateX(-50%);background:#0f1a13;border-radius:999px;} .ds-entrance::after{content:'';position:absolute;left:50%;bottom:0;width:58%;height:.6rem;transform:translateX(-50%);background:var(--lid);border-radius:2px 2px 0 0;} .ds-ground{height:1rem;background:var(--color-grass);} @media (prefers-reduced-motion:reduce){.ds-hive{transition:none;}}"
+    },
+    {
+      "name": "Storefront Nav",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Limewash header with hive mark, moss-ink links with wash-2 hover, ink cart button with yellow count.",
+      "html": "<header class=\"ds-nav\"><span class=\"ds-brand\"><svg viewBox=\"0 0 36 36\" width=\"32\" height=\"32\"><rect x=\"2\" y=\"5\" width=\"32\" height=\"6\" rx=\"1.5\" fill=\"#1b4577\"/><rect x=\"5\" y=\"11\" width=\"26\" height=\"21\" fill=\"#2a64ad\"/><rect x=\"11\" y=\"25.5\" width=\"14\" height=\"3\" rx=\"1.5\" fill=\"#0f1a13\"/><rect x=\"9\" y=\"30\" width=\"18\" height=\"3\" fill=\"#f2c230\"/></svg>Prisaca Apuseni</span><nav><a href=\"#\">Magazin</a><a href=\"#\">Stupina</a><a href=\"#\">Livrare</a></nav><a class=\"ds-cart\" href=\"#\">Coș <span>2</span></a></header>",
+      "css": ":host{--color-wash:#f5f6f0;--color-wash-2:#eceee4;--color-paper:#fff;--color-ink:#1c2a21;--color-ink-2:#45554a;--color-ink-3:#5c6a60;--color-rule:#d3d8ca;--color-rule-strong:#b7bfae;--color-hive-blue:#2a64ad;--color-hive-teal:#137a75;--color-hive-leaf:#2f7a3a;--color-hive-sun:#f2c230;--color-hive-orange:#e06a26;--color-hive-red:#b8322a;--color-grass:#5e9e3a;--color-forest:#1d3826;--ease-out-expo:cubic-bezier(0.16,1,0.3,1);font-family:Figtree,ui-sans-serif,system-ui,sans-serif;color:var(--color-ink);} .ds-nav{display:flex;align-items:center;justify-content:space-between;gap:16px;height:4.5rem;padding:0 16px;background:var(--color-wash);border-bottom:1px solid var(--color-rule);} .ds-brand{display:inline-flex;align-items:center;gap:10px;font:800 1.1rem 'Bricolage Grotesque',sans-serif;letter-spacing:-.02em;} .ds-nav nav{display:flex;gap:4px;} .ds-nav nav a{padding:8px 12px;border-radius:8px;font-weight:600;font-size:.95rem;color:var(--color-ink-2);text-decoration:none;transition:background-color 160ms;} .ds-nav nav a:hover{background:var(--color-wash-2);color:var(--color-ink);} .ds-nav a:focus-visible{outline:3px solid var(--color-hive-blue);outline-offset:2px;} .ds-cart{display:inline-flex;align-items:center;gap:8px;height:2.75rem;padding:0 14px 0 12px;border-radius:8px;background:var(--color-ink);color:var(--color-wash);font-weight:700;text-decoration:none;} .ds-cart:hover{background:var(--color-forest);} .ds-cart span{display:grid;place-items:center;min-width:1.5rem;height:1.5rem;padding:0 6px;border-radius:999px;background:var(--color-hive-sun);color:var(--color-ink);font-size:.8rem;font-weight:800;}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Painted Hive Row",
+    "overview": "The shop is the row of enamel-painted hives on the Gârde slope. Every honey variety stands as its own hive front: a flat box of paint with an overhanging darker lid, a stamped number plate, a white window showing the jar, and a dark entrance slot over a landing board. The fronts stand on a strip of grass. Everything else sits on a limewash ground, like the wall of the house beside the hives, and is written in deep forest ink.\n\nDepth comes from flat planes that overlap. The hive row overlaps the bottom edge of the real hive-row photograph, the lid overhangs the body, and the white sheet sits on the limewash. The paints are named roles, not decoration: sunflower yellow carries the primary action, blue carries links and focus, and each variety keeps the same paint on every surface. The admin uses the same paints as quiet status chips and as four small painted hive counters on a limewash work surface. Density is generous on the storefront and compact but calm in the admin.\n\nThe system rejects two stock honey looks: the dark-gold luxury page and the cream-and-serif artisan page. There are no gradients and no glass, and no drop shadows fall onto the ground.",
+    "keyCharacteristics": [
+      "Limewash ground, forest-ink text, white paper sheets for working surfaces.",
+      "Flat enamel hive paints as named colour roles, one paint per honey variety.",
+      "The hive front (lid, painted body, plate, window, entrance) is the signature container.",
+      "A sturdy variable grotesque display, a legible humanist body, and stencil numerals on plates.",
+      "Depth only from overlapping flat planes. The one lip under the yellow button and the focus halo are the only shadows.",
+      "An authored 2px-stroke line icon set. The logo mark is a small painted hive."
+    ],
+    "rules": [
+      {
+        "name": "The One Paint Per Honey Rule",
+        "body": "Each variety keeps its paint on every surface: salcâm blue, mană de brad leaf, tei teal, polifloră orange, polen sun. New products take the next paint in the rotation (sun, blue, teal, orange, leaf). Red is never a variety paint.",
+        "section": "colors"
+      },
+      {
+        "name": "The Yellow Means Go Rule",
+        "body": "Sunflower yellow fills the one primary action on a view. Ink sits on yellow and orange. White sits on blue, teal, leaf, and red.",
+        "section": "colors"
+      },
+      {
+        "name": "The Quiet Status Rule",
+        "body": "In lists and tables, status is shown by the paint at 12–15% tint with full-strength text and a dot. Only the four admin counters use full paint.",
+        "section": "colors"
+      },
+      {
+        "name": "The Stencil Is Stamped Rule",
+        "body": "The stencil face only appears on a white or yellow plate. It is never used for headings or running text.",
+        "section": "typography"
+      },
+      {
+        "name": "The Sentence Case Rule",
+        "body": "Labels, chips, and nav are in sentence case at their natural tracking. The system has no uppercase tracked labels.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Planes Rule",
+        "body": "Nothing casts a shadow onto the ground. To separate a surface, overlap it, give it a darker lid, or put it on paper with a 1px rule.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** give every new variety a hive front in its own paint from the rotation (sun, blue, teal, orange, leaf), with a \"Nr. 0X\" stencil plate.",
+      "**Do** use sunflower yellow with ink text for the single primary action on a view.",
+      "**Do** separate surfaces with overlap, a darker lid, or white paper with a 1px rule (#d3d8ca).",
+      "**Do** show order and payment status as tinted chips with a dot. Keep full paint for the admin counters.",
+      "**Do** keep buttons and fields 48px tall with 10px corners, and focus in hive blue (3px outline, 2px offset).",
+      "**Do** use the real hive-row and apiary photographs as the only imagery beside product jars."
+    ],
+    "donts": [
+      "**Don't** add drop shadows, gradients, or glass. Only the three recorded insets and halos are allowed.",
+      "**Don't** use hive red as a variety paint. It means danger or an unpaid card.",
+      "**Don't** put white text on sunflower yellow or marigold orange.",
+      "**Don't** use the stencil face outside a plate.",
+      "**Don't** drift toward the dark-gold luxury honey page or a cream-and-serif artisan page.",
+      "**Don't** use emoji or font glyphs as icons. Use the authored 2px-stroke set."
+    ]
+  }
+}

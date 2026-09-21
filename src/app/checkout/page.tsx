@@ -40,9 +40,9 @@ export default async function CheckoutPage({
     const cardEnabled = isCardPaymentEnabled();
 
     return (
-        <main className="mx-auto max-w-6xl px-4 py-12">
-            <h1 className="text-3xl font-black">Finalizare comandă</h1>
-            <p className="mt-2 text-neutral-300">
+        <main className="mx-auto max-w-6xl px-4 pb-20 pt-8 md:pt-12">
+            <h1 className="text-[2.4rem] font-extrabold leading-none md:text-[3.2rem]">Finalizare comandă</h1>
+            <p className="mt-2 text-ink-2">
                 {cardEnabled ? "Plătești online cu cardul sau ramburs la livrare." : "Plată ramburs la livrare."}{" "}
                 Nu ai nevoie de cont pentru a comanda.
             </p>

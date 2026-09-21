@@ -110,11 +110,11 @@ export default function CheckoutForm({
                 strategy="afterInteractive"
             />
 
-            <div className="mt-8 grid gap-6 md:grid-cols-2">
+            <div className="mt-8 grid gap-6 lg:grid-cols-12 lg:items-start">
                 <form
                     action="/api/checkout"
                     method="POST"
-                    className="rounded-3xl border border-yellow-500/15 bg-neutral-900/30 p-6 grid gap-3"
+                    className="sheet grid gap-4 p-5 md:p-6 lg:col-span-7"
                 >
                     <input type="hidden" name="deliveryMethod" value={deliveryMethod} />
                     <input type="hidden" name="paymentMethod" value={isCard ? "CARD" : "CASH_ON_DELIVERY"} />
@@ -127,27 +127,27 @@ export default function CheckoutForm({
                     <input type="hidden" name="easyboxPostalCode" value={easybox?.postalCode ?? ""} />
 
                     {errorMessage ? (
-                        <p className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+                        <p className="rounded-lg bg-hive-red/10 px-4 py-3 text-[0.95rem] text-hive-red">
                             {errorMessage}
                         </p>
                     ) : null}
 
-                    <p className="text-xs font-semibold uppercase tracking-wide text-yellow-300/80">
+                    <p className="text-lg font-bold">
                         Date facturare
                     </p>
 
-                    <label className="grid gap-1 text-sm">
-                        <span className="text-neutral-200">Nume complet *</span>
+                    <label className="label">
+                        Nume complet *
                         <input
                             name="fullName"
                             required
                             autoComplete="name"
-                            className="rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60"
+                            className="field"
                         />
                     </label>
 
-                    <label className="grid gap-1 text-sm">
-                        <span className="text-neutral-200">Email *</span>
+                    <label className="label">
+                        Email *
                         <input
                             name="email"
                             type="email"
@@ -155,27 +155,28 @@ export default function CheckoutForm({
                             autoComplete="email"
                             defaultValue={defaultEmail}
                             placeholder="exemplu@email.com"
-                            className="rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60"
+                            className="field"
                         />
                     </label>
 
-                    <label className="grid gap-1 text-sm">
-                        <span className="text-neutral-200">Telefon *</span>
+                    <label className="label">
+                        Telefon *
                         <input
                             name="phone"
                             type="tel"
                             required
                             autoComplete="tel"
                             placeholder="07xx xxx xxx"
-                            className="rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60"
+                            className="field"
                         />
                     </label>
 
-                    <div className="grid gap-2 rounded-2xl border border-yellow-500/10 bg-neutral-950/40 p-4">
-                        <p className="text-sm font-semibold text-neutral-100">Metodă livrare</p>
+                    <div className="grid gap-2">
+                        <p className="font-bold">Metodă livrare</p>
 
-                        <label className="flex items-center gap-2 text-sm text-neutral-200">
+                        <label className="flex min-h-12 items-center cursor-pointer gap-3 rounded-lg border-[1.5px] border-rule-strong bg-paper px-3 py-3 font-semibold transition-colors hover:border-ink-3 has-[:checked]:border-ink has-[:checked]:shadow-[inset_0_0_0_1px_var(--color-ink)]">
                             <input
+                                className="h-5 w-5 shrink-0"
                                 type="radio"
                                 checked={deliveryMethod === "ADDRESS"}
                                 onChange={() => {
@@ -183,123 +184,124 @@ export default function CheckoutForm({
                                     setEasybox(null);
                                 }}
                             />
-                            Livrare la adresă (+{SHIPPING_RON.ADDRESS} RON)
+                            Livrare la adresă (+{SHIPPING_RON.ADDRESS} lei)
                         </label>
 
-                        <label className="flex items-center gap-2 text-sm text-neutral-200">
+                        <label className="flex min-h-12 items-center cursor-pointer gap-3 rounded-lg border-[1.5px] border-rule-strong bg-paper px-3 py-3 font-semibold transition-colors hover:border-ink-3 has-[:checked]:border-ink has-[:checked]:shadow-[inset_0_0_0_1px_var(--color-ink)]">
                             <input
+                                className="h-5 w-5 shrink-0"
                                 type="radio"
                                 checked={deliveryMethod === "EASYBOX"}
                                 onChange={() => setDeliveryMethod("EASYBOX")}
                             />
-                            Livrare la easybox (+{SHIPPING_RON.EASYBOX} RON)
+                            Livrare la easybox (+{SHIPPING_RON.EASYBOX} lei)
                         </label>
                     </div>
 
                     {deliveryMethod === "ADDRESS" ? (
                         <div className="grid gap-3">
-                            <label className="grid gap-1 text-sm">
-                                <span className="text-neutral-200">Adresă livrare *</span>
+                            <label className="label">
+                                Adresă livrare *
                                 <textarea
                                     name="address"
                                     required
                                     autoComplete="street-address"
                                     placeholder="Stradă, număr, bloc, scară, apartament"
-                                    className="min-h-[96px] rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60"
+                                    className="field !min-h-24"
                                 />
                             </label>
 
                             {/* min-w-0: altfel lățimea implicită a inputului depășește coloana și câmpurile se suprapun */}
                             <div className="grid gap-3 sm:grid-cols-3">
-                                <label className="grid min-w-0 gap-1 text-sm">
-                                    <span className="text-neutral-200">Localitate *</span>
+                                <label className="label min-w-0">
+                                    Localitate *
                                     <input
                                         name="city"
                                         required
                                         autoComplete="address-level2"
-                                        className="w-full min-w-0 rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60"
+                                        className="field"
                                     />
                                 </label>
 
-                                <label className="grid min-w-0 gap-1 text-sm">
-                                    <span className="text-neutral-200">Județ *</span>
+                                <label className="label min-w-0">
+                                    Județ *
                                     <input
                                         name="county"
                                         required
                                         autoComplete="address-level1"
-                                        className="w-full min-w-0 rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60"
+                                        className="field"
                                     />
                                 </label>
 
-                                <label className="grid min-w-0 gap-1 text-sm">
-                                    <span className="text-neutral-200">Cod poștal</span>
+                                <label className="label min-w-0">
+                                    Cod poștal
                                     <input
                                         name="postalCode"
                                         inputMode="numeric"
                                         autoComplete="postal-code"
-                                        className="w-full min-w-0 rounded-xl border border-yellow-500/15 bg-neutral-950/60 px-4 py-3 outline-none focus:border-yellow-400/60"
+                                        className="field"
                                     />
                                 </label>
                             </div>
                         </div>
                     ) : (
-                        <div className="rounded-2xl border border-yellow-500/15 bg-neutral-950/50 p-4">
+                        <div className="rounded-lg bg-wash p-4">
                             <button
                                 type="button"
                                 onClick={openEasyboxPicker}
-                                className="rounded-xl bg-yellow-500 px-4 py-3 text-sm font-semibold text-neutral-950 hover:bg-yellow-400"
+                                className="btn btn-primary"
                             >
                                 Alege easybox
                             </button>
 
                             {easybox ? (
-                                <div className="mt-4 text-sm text-neutral-200">
-                                    <p className="font-semibold text-yellow-300">{easybox.name}</p>
-                                    <p className="mt-1 text-neutral-300">{easybox.address}</p>
-                                    <p className="text-neutral-400">
+                                <div className="mt-4 text-[0.95rem] text-ink">
+                                    <p className="font-semibold text-ink">{easybox.name}</p>
+                                    <p className="mt-1 text-ink-2">{easybox.address}</p>
+                                    <p className="text-ink-3">
                                         {[easybox.city, easybox.county, easybox.postalCode]
                                             .filter(Boolean)
                                             .join(", ")}
                                     </p>
                                 </div>
                             ) : (
-                                <p className="mt-3 text-xs text-neutral-400">
+                                <p className="mt-3 text-[0.85rem] text-ink-3">
                                     Selectează un easybox pentru livrare.
                                 </p>
                             )}
                         </div>
                     )}
 
-                    <div className="grid gap-2 rounded-2xl border border-yellow-500/10 bg-neutral-950/40 p-4">
-                        <p className="text-sm font-semibold text-neutral-100">Metodă de plată</p>
+                    <div className="grid gap-2">
+                        <p className="font-bold">Metodă de plată</p>
 
                         {cardEnabled ? (
-                            <label className="flex items-start gap-2 text-sm text-neutral-200">
+                            <label className="flex items-start cursor-pointer gap-3 rounded-lg border-[1.5px] border-rule-strong bg-paper px-3 py-3 font-semibold transition-colors hover:border-ink-3 has-[:checked]:border-ink has-[:checked]:shadow-[inset_0_0_0_1px_var(--color-ink)]">
                                 <input
                                     type="radio"
-                                    className="mt-1"
+                                    className="mt-0.5 h-5 w-5 shrink-0"
                                     checked={paymentMethod === "CARD"}
                                     onChange={() => setPaymentMethod("CARD")}
                                 />
                                 <span>
                                     Card online (Visa / Mastercard)
-                                    <span className="block text-xs text-neutral-400">
+                                    <span className="block text-[0.85rem] text-ink-3">
                                         Plată securizată prin NETOPIA Payments. Nu mai plătești nimic la livrare.
                                     </span>
                                 </span>
                             </label>
                         ) : null}
 
-                        <label className="flex items-start gap-2 text-sm text-neutral-200">
+                        <label className="flex items-start cursor-pointer gap-3 rounded-lg border-[1.5px] border-rule-strong bg-paper px-3 py-3 font-semibold transition-colors hover:border-ink-3 has-[:checked]:border-ink has-[:checked]:shadow-[inset_0_0_0_1px_var(--color-ink)]">
                             <input
                                 type="radio"
-                                className="mt-1"
+                                className="mt-0.5 h-5 w-5 shrink-0"
                                 checked={!isCard}
                                 onChange={() => setPaymentMethod("CASH_ON_DELIVERY")}
                             />
                             <span>
                                 Ramburs la livrare
-                                <span className="block text-xs text-neutral-400">
+                                <span className="block text-[0.85rem] text-ink-3">
                                     {deliveryMethod === "EASYBOX"
                                         ? "Plătești cu cardul la easybox, când ridici coletul."
                                         : "Plătești la curier, la livrare."}
@@ -308,8 +310,8 @@ export default function CheckoutForm({
                         </label>
 
                         {deliveryMethod === "EASYBOX" && !isCard ? (
-                            <p className="mt-1 rounded-xl border border-yellow-400/40 bg-yellow-500/10 px-3 py-2 text-xs font-semibold text-yellow-200">
-                                ⚠️ {EASYBOX_CARD_ONLY_NOTE}
+                            <p className="mt-1 rounded-lg bg-hive-sun/35 px-3 py-2 text-[0.85rem] font-semibold text-ink">
+                                {EASYBOX_CARD_ONLY_NOTE}
                             </p>
                         ) : null}
                     </div>
@@ -317,62 +319,62 @@ export default function CheckoutForm({
                     <button
                         type="submit"
                         disabled={deliveryMethod === "EASYBOX" && !easybox}
-                        className="mt-2 rounded-xl bg-yellow-500 px-6 py-3 text-sm font-semibold text-neutral-950 hover:bg-yellow-400 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="btn btn-primary mt-2 w-full text-base"
                     >
                         {isCard ? "Continuă spre plata cu cardul" : "Plasează comanda"}
                     </button>
 
-                    <p className="text-xs text-neutral-400">
+                    <p className="text-[0.85rem] text-ink-3">
                         {isCard
                             ? "Vei fi redirecționat către pagina securizată NETOPIA Payments. Datele cardului nu ajung la noi."
                             : "*Ramburs. După confirmare, comanda va fi pregătită pentru livrare."}
                     </p>
                 </form>
 
-                <aside className="rounded-3xl border border-yellow-500/15 bg-neutral-900/30 p-6">
-                    <h2 className="text-xl font-black">Sumar</h2>
+                <aside className="sheet p-5 md:p-6 lg:sticky lg:top-24 lg:col-span-5">
+                    <h2 className="text-xl font-extrabold">Sumar</h2>
 
                     <div className="mt-4 grid gap-3">
                         {items.map((it) => (
                             <div key={it.id} className="flex items-start justify-between gap-4">
                                 <div>
                                     <p className="font-semibold">{it.product.name}</p>
-                                    <p className="text-sm text-neutral-300">
-                                        {it.product.weight} • {it.qty} x {it.product.priceRon} RON
+                                    <p className="text-[0.95rem] text-ink-2">
+                                        {it.product.weight} • {it.qty} x {it.product.priceRon} lei
                                     </p>
                                 </div>
 
-                                <p className="font-semibold text-yellow-300">
-                                    {it.qty * it.product.priceRon} RON
+                                <p className="font-semibold text-ink">
+                                    {it.qty * it.product.priceRon} lei
                                 </p>
                             </div>
                         ))}
                     </div>
 
-                    <div className="mt-6 grid gap-2 border-t border-yellow-500/10 pt-4">
-                        <div className="flex items-center justify-between text-sm text-neutral-300">
+                    <div className="mt-6 grid gap-2 border-t border-rule pt-4">
+                        <div className="flex items-center justify-between text-[0.95rem] text-ink-2">
                             <p>Subtotal produse</p>
-                            <p className="font-semibold text-neutral-100">{subtotalRon} RON</p>
+                            <p className="font-semibold text-ink">{subtotalRon} lei</p>
                         </div>
 
-                        <div className="flex items-center justify-between text-sm text-neutral-300">
+                        <div className="flex items-center justify-between text-[0.95rem] text-ink-2">
                             <p>
                                 Livrare{" "}
-                                <span className="text-neutral-400">
+                                <span className="text-ink-3">
                                     ({deliveryMethod === "EASYBOX" ? "easybox" : "la adresă"})
                                 </span>
                             </p>
-                            <p className="font-semibold text-neutral-100">{shippingRon} RON</p>
+                            <p className="font-semibold text-ink">{shippingRon} lei</p>
                         </div>
 
-                        <div className="flex items-center justify-between text-sm text-neutral-300">
+                        <div className="flex items-center justify-between text-[0.95rem] text-ink-2">
                             <p>Plată</p>
-                            <p className="font-semibold text-neutral-100">{isCard ? "card online" : "ramburs"}</p>
+                            <p className="font-semibold text-ink">{isCard ? "card online" : "ramburs"}</p>
                         </div>
 
-                        <div className="mt-2 flex items-center justify-between border-t border-yellow-500/10 pt-3">
-                            <p className="text-sm text-neutral-300">Total</p>
-                            <p className="text-2xl font-black text-yellow-300">{totalRon} RON</p>
+                        <div className="mt-2 flex items-center justify-between border-t border-rule pt-3">
+                            <p className="text-[0.95rem] text-ink-2">Total</p>
+                            <p className="text-2xl font-extrabold text-ink">{totalRon} lei</p>
                         </div>
                     </div>
                 </aside>
