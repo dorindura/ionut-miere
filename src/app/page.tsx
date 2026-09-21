@@ -110,7 +110,7 @@ function RowHive({ v, priority }: { v: VarietyWithProducts; priority?: boolean }
           />
           <h3 className="mt-4 text-[1.35rem] font-extrabold leading-[1.1]">{v.name}</h3>
           <p className="mt-1 text-[0.95rem] opacity-90">{weights}</p>
-          <p className="mt-3 flex items-center justify-between gap-2 font-display text-lg font-bold">
+          <p className="hive-bottom flex items-center justify-between gap-2 pt-3 font-display text-lg font-bold">
             <span>de la {minPrice} lei</span>
             <Icon
                 name="arrowRight"

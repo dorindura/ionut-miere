@@ -305,6 +305,14 @@ a {
     height: 2.1rem;
     margin-top: auto;
 }
+
+/* prețul / acțiunile stau mereu jos, lipite de urdiniș, indiferent cât de lung e numele */
+.hive-bottom {
+    margin-top: auto;
+}
+.hive-bottom ~ .hive-entrance {
+    margin-top: 0;
+}
 .hive-entrance::before {
     content: "";
     position: absolute;

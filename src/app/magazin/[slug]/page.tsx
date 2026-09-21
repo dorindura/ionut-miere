@@ -230,7 +230,7 @@ export default async function ProductPage({
                                             sizes="(max-width: 768px) 74vw, 268px"
                                         />
                                         <p className="mt-3 font-display text-lg font-extrabold leading-tight">{v.name}</p>
-                                        <p className="mt-0.5 text-[0.95rem] opacity-90">
+                                        <p className="hive-bottom pt-1 text-[0.95rem] opacity-90">
                                             de la {Math.min(...v.variants.map((x) => x.priceRon))} lei
                                         </p>
                                     </HiveFrame>

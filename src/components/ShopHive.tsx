@@ -65,52 +65,55 @@ export default function ShopHive({
             </div>
             <p className="mt-1.5 text-[0.95rem] leading-snug opacity-90">{shortDescription}</p>
 
-            {variants.length > 1 ? (
-                <fieldset className="mt-4">
-                    <legend className="sr-only">Alege gramajul</legend>
-                    <div className="flex gap-2">
-                        {variants.map((v) => {
-                            const checked = v.slug === slug;
-                            return (
-                                <label
-                                    key={v.slug}
-                                    className={`relative flex min-h-11 flex-1 cursor-pointer flex-col items-center justify-center rounded-lg border-2 px-2 py-1 text-center transition-colors has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-white ${
-                                        checked
-                                            ? "border-white bg-white text-ink"
-                                            : "border-white/55 hover:border-white"
-                                    }`}
-                                >
-                                    <input
-                                        type="radio"
-                                        name={groupName}
-                                        value={v.slug}
-                                        checked={checked}
-                                        onChange={() => setSlug(v.slug)}
-                                        className="sr-only"
-                                    />
-                                    <span className="text-[0.95rem] font-bold leading-tight">{v.weight}</span>
-                                    <span className={`text-[0.78rem] leading-tight ${checked ? "text-ink-3" : "opacity-85"}`}>
-                                        {v.inStock ? `${v.priceRon} lei` : "epuizat"}
-                                    </span>
-                                </label>
-                            );
-                        })}
-                    </div>
-                </fieldset>
-            ) : (
-                <p className="mt-4 text-[0.95rem] font-bold">{current.weight}</p>
-            )}
+            {/* gramaj, coș și link: mereu jos, aliniate între stupi */}
+            <div className="hive-bottom flex flex-col pt-1">
+                {variants.length > 1 ? (
+                    <fieldset className="mt-4">
+                        <legend className="sr-only">Alege gramajul</legend>
+                        <div className="flex gap-2">
+                            {variants.map((v) => {
+                                const checked = v.slug === slug;
+                                return (
+                                    <label
+                                        key={v.slug}
+                                        className={`relative flex min-h-11 flex-1 cursor-pointer flex-col items-center justify-center rounded-lg border-2 px-2 py-1 text-center transition-colors has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-white ${
+                                            checked
+                                                ? "border-white bg-white text-ink"
+                                                : "border-white/55 hover:border-white"
+                                        }`}
+                                    >
+                                        <input
+                                            type="radio"
+                                            name={groupName}
+                                            value={v.slug}
+                                            checked={checked}
+                                            onChange={() => setSlug(v.slug)}
+                                            className="sr-only"
+                                        />
+                                        <span className="text-[0.95rem] font-bold leading-tight">{v.weight}</span>
+                                        <span className={`text-[0.78rem] leading-tight ${checked ? "text-ink-3" : "opacity-85"}`}>
+                                            {v.inStock ? `${v.priceRon} lei` : "epuizat"}
+                                        </span>
+                                    </label>
+                                );
+                            })}
+                        </div>
+                    </fieldset>
+                ) : (
+                    <p className="mt-4 text-[0.95rem] font-bold">{current.weight}</p>
+                )}
 
-            {/* key: la schimbarea gramajului butonul revine la starea inițială */}
-            <AddToCartButton key={current.slug} slug={current.slug} disabled={!current.inStock} tone="onPaint" className="mt-3" />
+                {/* key: la schimbarea gramajului butonul revine la starea inițială */}
+                <AddToCartButton key={current.slug} slug={current.slug} disabled={!current.inStock} tone="onPaint" className="mt-3" />
 
-            <Link
-                href={`/magazin/${current.slug}`}
-                className="mt-2 inline-flex items-center gap-1 self-start py-1 text-[0.9rem] font-bold underline-offset-4 hover:underline"
-            >
-                Gust, origine, beneficii
-                <Icon name="arrowRight" size={16} />
-            </Link>
+                <Link
+                    href={`/magazin/${current.slug}`}
+                    className="mt-2 inline-flex items-center gap-1 self-start py-1 text-[0.9rem] font-bold underline-offset-4 hover:underline"
+                >
+                    Gust, origine, beneficii
+                    <Icon name="arrowRight" size={16} />
+                </Link>
+            </div>
         </HiveFrame>
     );
 }
