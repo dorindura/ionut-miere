@@ -9,7 +9,8 @@ import { HiveFrame, HivePlateRow, HiveWindow } from "@/components/HiveFront";
 import { getPrisma } from "@/lib/db";
 import { getVarieties } from "@/lib/varieties";
 import { varietyName } from "@/lib/hive";
-import { EASYBOX_CARD_ONLY_NOTE, SHIPPING_RON } from "@/lib/shipping";
+import { RETURN_DAYS, SITE, absoluteUrl } from "@/lib/site";
+import { EASYBOX_CARD_ONLY_NOTE, SHIPPING_RON, type DeliveryMethod } from "@/lib/shipping";
 
 export const dynamic = "force-dynamic";
 
@@ -31,11 +32,109 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const { slug } = await params;
     const product = await getProduct(slug);
     if (!product) return {};
+    const title = `${varietyName(product.name)} ${product.weight}`;
+    // gramajul și prețul în descriere: paginile de 500g și 1000g nu mai arată identic pentru Google
+    const description = `${product.shortDescription.trim()} Borcan de ${product.weight}, ${product.priceRon} lei, direct de la stupina noastră din Munții Apuseni.`;
     return {
-        title: `${varietyName(product.name)} ${product.weight}`,
-        description: product.shortDescription,
-        openGraph: { images: product.images[0]?.url ? [product.images[0].url] : undefined },
+        title,
+        description,
+        alternates: { canonical: `/magazin/${slug}` },
+        openGraph: {
+            title: `${title} | ${SITE.name}`,
+            description,
+            url: `/magazin/${slug}`,
+            siteName: SITE.name,
+            locale: "ro_RO",
+            type: "website",
+            images: product.images[0]?.url ? [product.images[0].url] : undefined,
+        },
     };
+}
+
+type JsonLdVariant = { slug: string; name: string; weight: string; priceRon: number; inStock: boolean; images: { url: string }[] };
+
+const SHIPPING_LABEL: Record<DeliveryMethod, string> = { ADDRESS: "Curier la adresă", EASYBOX: "easybox" };
+
+function offerFor(v: JsonLdVariant) {
+    return {
+        "@type": "Offer",
+        url: absoluteUrl(`/magazin/${v.slug}`),
+        price: v.priceRon,
+        priceCurrency: "RON",
+        availability: v.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+        itemCondition: "https://schema.org/NewCondition",
+        seller: { "@id": `${SITE.url}/#prisaca` },
+        hasMerchantReturnPolicy: {
+            "@type": "MerchantReturnPolicy",
+            applicableCountry: "RO",
+            returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+            merchantReturnDays: RETURN_DAYS,
+            returnMethod: "https://schema.org/ReturnByMail",
+            returnFees: "https://schema.org/FreeReturn",
+            refundType: "https://schema.org/FullRefund",
+            merchantReturnLink: absoluteUrl("/retur"),
+        },
+        shippingDetails: (Object.keys(SHIPPING_RON) as DeliveryMethod[]).map((method) => ({
+            "@type": "OfferShippingDetails",
+            shippingLabel: SHIPPING_LABEL[method],
+            shippingRate: { "@type": "MonetaryAmount", value: SHIPPING_RON[method], currency: "RON" },
+            shippingDestination: { "@type": "DefinedRegion", addressCountry: "RO" },
+            deliveryTime: {
+                "@type": "ShippingDeliveryTime",
+                handlingTime: { "@type": "QuantitativeValue", minValue: 0, maxValue: 1, unitCode: "DAY" },
+                transitTime: { "@type": "QuantitativeValue", minValue: 1, maxValue: 2, unitCode: "DAY" },
+            },
+        })),
+    };
+}
+
+/**
+ * Date structurate pentru Google (preț, stoc, livrare). Gramajele aceluiași sortiment
+ * sunt variante ale unui ProductGroup, fiecare cu pagina ei.
+ */
+function ProductJsonLd({
+    name,
+    description,
+    variants,
+    images,
+}: {
+    name: string;
+    description: string;
+    variants: JsonLdVariant[];
+    images: string[];
+}) {
+    const brand = { "@type": "Brand", name: SITE.name };
+    const variantLd = variants.map((v) => ({
+        "@type": "Product",
+        "@id": absoluteUrl(`/magazin/${v.slug}`),
+        sku: v.slug,
+        name: `${name} ${v.weight}`,
+        weight: v.weight,
+        brand,
+        image: (v.images.length ? v.images.map((i) => i.url) : images).map(absoluteUrl),
+        offers: offerFor(v),
+    }));
+
+    const data =
+        variants.length > 1
+            ? {
+                  "@context": "https://schema.org",
+                  "@type": "ProductGroup",
+                  name,
+                  description,
+                  brand,
+                  productGroupID: variants[variants.length - 1].slug,
+                  variesBy: "https://schema.org/weight",
+                  hasVariant: variantLd,
+              }
+            : { "@context": "https://schema.org", ...variantLd[0], description };
+
+    return (
+        <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, "\\u003c") }}
+        />
+    );
 }
 
 function DetailRow({ title, children }: { title: string; children: React.ReactNode }) {
@@ -96,6 +195,12 @@ export default async function ProductPage({
 
     return (
         <main className="pb-20">
+            <ProductJsonLd
+                name={variety?.name ?? varietyName(p.name)}
+                description={p.description || p.shortDescription}
+                variants={variety?.variants ?? [{ ...p, images: product.images }]}
+                images={p.images}
+            />
             <div className="mx-auto max-w-6xl px-4 pt-6">
                 <Link href="/magazin" className="inline-flex items-center gap-1.5 py-2 font-bold text-ink-2 hover:text-ink">
                     <Icon name="arrowLeft" size={18} />
@@ -168,6 +273,15 @@ export default async function ProductPage({
                             <span>
                                 <strong>easybox, {SHIPPING_RON.EASYBOX} lei.</strong>{" "}
                                 <span className="text-ink-2">{EASYBOX_CARD_ONLY_NOTE}</span>
+                            </span>
+                        </li>
+                        <li className="flex items-start gap-3">
+                            <Icon name="check" size={20} className="mt-0.5 text-hive-leaf" />
+                            <span>
+                                <strong>Retur gratuit în {RETURN_DAYS} zile.</strong>{" "}
+                                <Link href="/retur" className="text-ink-2 underline hover:text-ink">
+                                    Cum funcționează
+                                </Link>
                             </span>
                         </li>
                     </ul>
