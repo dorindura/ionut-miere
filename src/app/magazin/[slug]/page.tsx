@@ -9,7 +9,7 @@ import { HiveFrame, HivePlateRow, HiveWindow } from "@/components/HiveFront";
 import { getPrisma } from "@/lib/db";
 import { getVarieties } from "@/lib/varieties";
 import { varietyName } from "@/lib/hive";
-import { SITE, absoluteUrl } from "@/lib/site";
+import { RETURN_DAYS, SITE, absoluteUrl } from "@/lib/site";
 import { EASYBOX_CARD_ONLY_NOTE, SHIPPING_RON, type DeliveryMethod } from "@/lib/shipping";
 
 export const dynamic = "force-dynamic";
@@ -64,6 +64,16 @@ function offerFor(v: JsonLdVariant) {
         availability: v.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
         itemCondition: "https://schema.org/NewCondition",
         seller: { "@id": `${SITE.url}/#prisaca` },
+        hasMerchantReturnPolicy: {
+            "@type": "MerchantReturnPolicy",
+            applicableCountry: "RO",
+            returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+            merchantReturnDays: RETURN_DAYS,
+            returnMethod: "https://schema.org/ReturnByMail",
+            returnFees: "https://schema.org/FreeReturn",
+            refundType: "https://schema.org/FullRefund",
+            merchantReturnLink: absoluteUrl("/retur"),
+        },
         shippingDetails: (Object.keys(SHIPPING_RON) as DeliveryMethod[]).map((method) => ({
             "@type": "OfferShippingDetails",
             shippingLabel: SHIPPING_LABEL[method],
@@ -263,6 +273,15 @@ export default async function ProductPage({
                             <span>
                                 <strong>easybox, {SHIPPING_RON.EASYBOX} lei.</strong>{" "}
                                 <span className="text-ink-2">{EASYBOX_CARD_ONLY_NOTE}</span>
+                            </span>
+                        </li>
+                        <li className="flex items-start gap-3">
+                            <Icon name="check" size={20} className="mt-0.5 text-hive-leaf" />
+                            <span>
+                                <strong>Retur gratuit în {RETURN_DAYS} zile.</strong>{" "}
+                                <Link href="/retur" className="text-ink-2 underline hover:text-ink">
+                                    Cum funcționează
+                                </Link>
                             </span>
                         </li>
                     </ul>

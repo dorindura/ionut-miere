@@ -8,7 +8,7 @@ import { HiveFrame, HivePlateRow, HiveWindow } from "@/components/HiveFront";
 import HiveSlider from "@/components/HiveSlider";
 import { getVarieties, type VarietyWithProducts } from "@/lib/varieties";
 import { EASYBOX_CARD_ONLY_NOTE, SHIPPING_RON } from "@/lib/shipping";
-import { SITE, absoluteUrl } from "@/lib/site";
+import { RETURN_DAYS, SITE, absoluteUrl } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
@@ -80,6 +80,10 @@ const FAQ = [
   {
     q: "Pot plăti cash la easybox?",
     a: EASYBOX_CARD_ONLY_NOTE + " Dacă vrei să plătești cash, alege livrarea prin curier la adresă.",
+  },
+  {
+    q: "Pot returna mierea?",
+    a: `Da, în ${RETURN_DAYS} zile de la primire, dacă borcanul e nedesfăcut. Trimitem noi curierul și îți dăm toți banii înapoi, inclusiv livrarea. Detalii pe pagina Retur și rambursare.`,
   },
 ];
 

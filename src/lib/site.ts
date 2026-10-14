@@ -12,6 +12,9 @@ export const SITE = {
     },
 };
 
+/** zile în care clientul poate returna produsele; returul îl plătește prisaca */
+export const RETURN_DAYS = 14;
+
 /** URL absolut pentru o cale relativă („/images/x.jpg") sau lasă neschimbat un URL complet */
 export function absoluteUrl(path: string): string {
     return new URL(path, SITE.url).toString();

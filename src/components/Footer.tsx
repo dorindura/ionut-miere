@@ -45,6 +45,7 @@ export default function Footer({ brandName }: { brandName: string }) {
                             <li><Link className="hover:text-white hover:underline" href="/magazin">Toate sortimentele</Link></li>
                             <li><Link className="hover:text-white hover:underline" href="/#stupina">Stupina noastră</Link></li>
                             <li><Link className="hover:text-white hover:underline" href="/#livrare">Livrare și plată</Link></li>
+                            <li><Link className="hover:text-white hover:underline" href="/retur">Retur și rambursare</Link></li>
                             <li><Link className="hover:text-white hover:underline" href="/#contact">Contact</Link></li>
                         </ul>
                     </nav>
