@@ -3,6 +3,9 @@ import { getPrisma } from "@/lib/db";
 
 const siteUrl = "https://prisaca-apuseni.com";
 
+// generat la cerere, ca restul paginilor: build-ul nu are nevoie de baza de date
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const prisma = getPrisma();
 
