@@ -1,4 +1,5 @@
 // app/page.tsx
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import ContactForm from "@/components/ContactForm";
@@ -7,61 +8,54 @@ import { HiveFrame, HivePlateRow, HiveWindow } from "@/components/HiveFront";
 import HiveSlider from "@/components/HiveSlider";
 import { getVarieties, type VarietyWithProducts } from "@/lib/varieties";
 import { EASYBOX_CARD_ONLY_NOTE, SHIPPING_RON } from "@/lib/shipping";
+import { SITE, absoluteUrl } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
-const brand = {
-  name: "Prisaca Apuseni",
-  siteUrl: "https://prisaca-apuseni.com",
-  phone: "+40 752 819 170",
-  email: "buceadariusionut@gmail.com",
-  address: "România (Comuna Bistra / Alba)",
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
 };
 
-function JsonLd() {
+/** date structurate pentru Google: prisaca și ce vinde, cu prețuri reale din magazin */
+function JsonLd({ varieties }: { varieties: VarietyWithProducts[] }) {
   const data = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    name: brand.name,
-    url: brand.siteUrl,
-    telephone: brand.phone,
-    email: brand.email,
+    "@id": `${SITE.url}/#prisaca`,
+    name: SITE.name,
+    url: SITE.url,
+    telephone: SITE.phone,
+    email: SITE.email,
     address: {
       "@type": "PostalAddress",
-      addressCountry: "RO",
-      streetAddress: brand.address,
+      addressLocality: SITE.address.locality,
+      addressRegion: SITE.address.region,
+      addressCountry: SITE.address.country,
     },
-    image: `${brand.siteUrl}/images/horica_bucea.jpg`,
-    sameAs: [
-      // adaugă aici link-uri reale când le aveți
-      // "https://www.facebook.com/....",
-      // "https://www.instagram.com/...."
-    ],
-    makesOffer: [
-      {
-        "@type": "Offer",
-        itemOffered: {
-          "@type": "Product",
-          name: "Miere de salcâm",
-          category: "Honey",
-        },
-      },
-      {
-        "@type": "Offer",
-        itemOffered: {
-          "@type": "Product",
-          name: "Miere polifloră",
-          category: "Honey",
-        },
-      },
-    ],
+    areaServed: { "@type": "Country", name: "România" },
+    image: absoluteUrl("/images/horica_bucea.jpg"),
+    sameAs: [SITE.facebook],
+    makesOffer: varieties.flatMap((v) =>
+        v.variants.map((x) => ({
+          "@type": "Offer",
+          url: absoluteUrl(`/magazin/${x.slug}`),
+          price: x.priceRon,
+          priceCurrency: "RON",
+          availability: x.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+          itemOffered: {
+            "@type": "Product",
+            name: `${v.name} ${x.weight}`,
+            image: x.images[0]?.url ? absoluteUrl(x.images[0].url) : undefined,
+          },
+        })),
+    ),
   };
 
   return (
       <script
           type="application/ld+json"
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, "\\u003c") }}
       />
   );
 }
@@ -128,7 +122,7 @@ export default async function Page() {
 
   return (
       <>
-        <JsonLd />
+        <JsonLd varieties={varieties} />
 
         <main>
           {/* HERO: titlul, apoi fotografia stupinei, întreagă */}
@@ -312,26 +306,26 @@ export default async function Page() {
 
                 <ul className="mt-8 grid gap-5">
                   <li>
-                    <a href={`tel:${brand.phone.replace(/\s/g, "")}`} className="group inline-flex items-center gap-3">
+                    <a href={`tel:${SITE.phone.replace(/\s/g, "")}`} className="group inline-flex items-center gap-3">
                       <span className="grid h-12 w-12 place-items-center rounded-full bg-ink text-hive-sun">
                         <Icon name="phone" size={20} />
                       </span>
                       <span>
                         <span className="block text-[0.85rem] font-bold">Telefon</span>
                         <span className="block font-display text-2xl font-extrabold tabular-nums group-hover:underline">
-                          {brand.phone}
+                          {SITE.phone}
                         </span>
                       </span>
                     </a>
                   </li>
                   <li>
-                    <a href={`mailto:${brand.email}`} className="group inline-flex min-w-0 items-center gap-3">
+                    <a href={`mailto:${SITE.email}`} className="group inline-flex min-w-0 items-center gap-3">
                       <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-ink text-hive-sun">
                         <Icon name="mail" size={20} />
                       </span>
                       <span className="min-w-0">
                         <span className="block text-[0.85rem] font-bold">Email</span>
-                        <span className="block break-all text-lg font-bold group-hover:underline">{brand.email}</span>
+                        <span className="block break-all text-lg font-bold group-hover:underline">{SITE.email}</span>
                       </span>
                     </a>
                   </li>
@@ -343,6 +337,17 @@ export default async function Page() {
                       <span className="block text-[0.85rem] font-bold">Adresă</span>
                       <span className="block text-lg font-bold">Gârde, comuna Bistra, județul Alba</span>
                     </span>
+                  </li>
+                  <li>
+                    <a href={SITE.facebook} target="_blank" rel="noopener" className="group inline-flex items-center gap-3">
+                      <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-ink text-hive-sun">
+                        <Icon name="facebook" size={20} />
+                      </span>
+                      <span>
+                        <span className="block text-[0.85rem] font-bold">Facebook</span>
+                        <span className="block text-lg font-bold group-hover:underline">Urmărește stupina</span>
+                      </span>
+                    </a>
                   </li>
                 </ul>
               </div>

@@ -7,7 +7,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const prisma = getPrisma();
 
     const products = await prisma.product.findMany({
-        select: { slug: true, updatedAt: true },
+        select: { slug: true, updatedAt: true, images: { select: { url: true }, orderBy: { sortOrder: "asc" } } },
     });
 
     const staticRoutes: MetadataRoute.Sitemap = [
@@ -20,6 +20,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: p.updatedAt,
         changeFrequency: "weekly",
         priority: 0.6,
+        // pozele borcanelor apar și în Google Imagini
+        images: p.images.map((i) => new URL(i.url, siteUrl).toString()),
     }));
 
     return [...staticRoutes, ...productRoutes];

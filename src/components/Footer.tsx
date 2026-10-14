@@ -1,10 +1,6 @@
 import Link from "next/link";
 import { HiveMark } from "@/components/Icon";
-
-const CONTACT = {
-    phone: "+40 752 819 170",
-    email: "buceadariusionut@gmail.com",
-};
+import { SITE } from "@/lib/site";
 
 export default function Footer({ brandName }: { brandName: string }) {
     return (
@@ -28,12 +24,17 @@ export default function Footer({ brandName }: { brandName: string }) {
                             Miere de la stupii noștri din Gârde, comuna Bistra, în Munții Apuseni.
                         </p>
                         <p className="mt-5 text-[0.9rem] text-[#aebcaa]">
-                            <a className="underline hover:text-white" href={`tel:${CONTACT.phone.replace(/\s/g, "")}`}>
-                                {CONTACT.phone}
+                            <a className="underline hover:text-white" href={`tel:${SITE.phone.replace(/\s/g, "")}`}>
+                                {SITE.phone}
                             </a>
                             {" · "}
-                            <a className="underline hover:text-white" href={`mailto:${CONTACT.email}`}>
-                                {CONTACT.email}
+                            <a className="underline hover:text-white" href={`mailto:${SITE.email}`}>
+                                {SITE.email}
+                            </a>
+                        </p>
+                        <p className="mt-2 text-[0.9rem] text-[#aebcaa]">
+                            <a className="underline hover:text-white" href={SITE.facebook} target="_blank" rel="noopener">
+                                Urmărește-ne pe Facebook
                             </a>
                         </p>
                     </div>

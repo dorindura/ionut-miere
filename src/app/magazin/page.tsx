@@ -10,6 +10,8 @@ export const metadata: Metadata = {
     title: "Magazin — miere de salcâm, mană de brad, tei și polifloră",
     description:
         "Alege mierea din stupina noastră din Munții Apuseni, în borcan de 500g sau 1000g. Livrare prin curier sau easybox, plata ramburs.",
+    alternates: { canonical: "/magazin" },
+    openGraph: { url: "/magazin", type: "website", siteName: "Prisaca Apuseni", locale: "ro_RO", images: ["/images/poza_cu_stupii.jpg"] },
 };
 
 export default async function MagazinPage() {
