@@ -243,3 +243,107 @@ export async function sendOrderEmails(order: OrderEmailData): Promise<void> {
         }
     }
 }
+
+export type WithdrawalRequest = {
+    fullName: string;
+    email: string;
+    phone: string;
+    orderId: string;
+    products: string;
+    receivedDate: string;
+    iban: string;
+    details: string;
+};
+
+function simpleShellHtml(title: string, bodyHtml: string): string {
+    return `
+  <div style="background:#f5f6f0;padding:24px;font-family:Arial,Helvetica,sans-serif;">
+    <div style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #d3d8ca;border-radius:16px;overflow:hidden;">
+      <div style="padding:22px 26px;border-bottom:1px solid #d3d8ca;">
+        <p style="margin:0;color:#45554a;font-size:12px;letter-spacing:2px;text-transform:uppercase;">Prisaca Apuseni</p>
+        <h1 style="margin:6px 0 0;color:#1c2a21;font-size:21px;">${escapeHtml(title)}</h1>
+      </div>
+      <div style="padding:22px 26px;color:#45554a;font-size:14px;line-height:1.6;">${bodyHtml}</div>
+    </div>
+  </div>`;
+}
+
+/**
+ * Cerere de retragere (OUG 34/2014): notificare către proprietar + confirmare de primire către
+ * client pe suport durabil (email) - obligatorie când cererea vine prin formularul online.
+ * Întoarce false dacă notificarea către proprietar nu a putut fi trimisă.
+ */
+export async function sendWithdrawalEmails(req: WithdrawalRequest): Promise<boolean> {
+    const client = getResend();
+    if (!client) {
+        console.warn("[email] RESEND_API_KEY lipsește - cererea de retragere nu poate fi trimisă");
+        return false;
+    }
+
+    const receivedAt = new Intl.DateTimeFormat("ro-RO", {
+        dateStyle: "long",
+        timeStyle: "short",
+        timeZone: "Europe/Bucharest",
+    }).format(new Date());
+
+    const rows = (
+        [
+            ["Nume", req.fullName],
+            ["Email", req.email],
+            ["Telefon", req.phone || "—"],
+            ["Număr comandă", req.orderId],
+            ["Produse returnate", req.products],
+            ["Data primirii coletului", req.receivedDate || "—"],
+            ["IBAN pentru rambursare", req.iban || "—"],
+            ["Alte detalii", req.details || "—"],
+        ] as const
+    )
+        .map(
+            ([label, value]) => `
+        <tr>
+          <td style="padding:6px 12px 6px 0;color:#5c6a60;vertical-align:top;white-space:nowrap;">${label}</td>
+          <td style="padding:6px 0;color:#1c2a21;">${escapeHtml(value).replace(/\n/g, "<br/>")}</td>
+        </tr>`,
+        )
+        .join("");
+    const table = `<table style="width:100%;border-collapse:collapse;margin:8px 0 0;">${rows}</table>`;
+
+    try {
+        const { error } = await client.emails.send({
+            from: FROM,
+            to: [OWNER_EMAIL],
+            replyTo: req.email,
+            subject: `Cerere de retragere - comanda ${req.orderId}`,
+            html: simpleShellHtml(
+                "Cerere de retragere din contract",
+                `<p style="margin:0 0 12px;">Un client a trimis o cerere de retragere prin formularul de pe site, la ${escapeHtml(receivedAt)}. Banii trebuie returnați în cel mult 14 zile de la această dată.</p>${table}`,
+            ),
+        });
+        if (error) {
+            console.error("[email] Resend a respins cererea de retragere:", error);
+            return false;
+        }
+    } catch (e) {
+        console.error("[email] excepție la trimiterea cererii de retragere:", e);
+        return false;
+    }
+
+    try {
+        const { error } = await client.emails.send({
+            from: FROM,
+            to: [req.email],
+            subject: `Confirmare cerere de retragere - comanda ${req.orderId}`,
+            html: simpleShellHtml(
+                "Am primit cererea ta de retragere",
+                `<p style="margin:0 0 12px;">Confirmăm că am primit, la ${escapeHtml(receivedAt)}, cererea ta de retragere din contract pentru comanda <strong>${escapeHtml(req.orderId)}</strong>.</p>
+                 <p style="margin:0 0 12px;">Te sunăm ca să programăm ridicarea coletului - <strong>curierul pentru retur îl plătim noi</strong>. Îți returnăm prețul produselor și taxa de livrare în cel mult 14 zile de la primirea coletului înapoi.</p>
+                 <p style="margin:0 0 4px;color:#1c2a21;font-weight:700;">Datele trimise</p>${table}`,
+            ),
+        });
+        if (error) console.error("[email] Resend a respins confirmarea de retragere către client:", error);
+    } catch (e) {
+        console.error("[email] excepție la trimiterea confirmării de retragere către client:", e);
+    }
+
+    return true;
+}

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Icon from "@/components/Icon";
+import WithdrawalForm from "@/components/WithdrawalForm";
 import { RETURN_DAYS, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -66,6 +67,18 @@ export default function ReturPage() {
                         </li>
                     </ul>
                 </div>
+
+                <section id="formular" className="mt-12 scroll-mt-24 border-t border-rule pt-8">
+                    <h2 className="text-xl font-bold">Formular de retragere</h2>
+                    <p className="mt-2 max-w-[60ch] text-ink-2">
+                        Poți cere returul și de aici, fără să ne suni. Primești imediat pe email confirmarea de
+                        primire a cererii, apoi te sunăm ca să programăm ridicarea coletului.
+                    </p>
+
+                    <div className="sheet mt-6 p-5 md:p-6">
+                        <WithdrawalForm contactEmail={SITE.email} />
+                    </div>
+                </section>
 
                 <p className="mt-10 rounded-xl bg-wash-2 p-5">
                     <strong>Pentru retur:</strong>{" "}
