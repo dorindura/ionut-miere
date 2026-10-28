@@ -1,12 +1,14 @@
 "use client";
 
 import Script from "next/script";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { EASYBOX_CARD_ONLY_NOTE, SHIPPING_RON } from "@/lib/shipping";
+import { trackBeginCheckout } from "@/lib/analytics";
 
 type CartItemView = {
     id: string;
     product: {
+        slug: string;
         name: string;
         weight: string;
         priceRon: number;
@@ -53,6 +55,22 @@ export default function CheckoutForm({
     errorMessage?: string;
     cardEnabled?: boolean;
 }) {
+    // ajungerea pe pagina de finalizare = începerea checkout-ului
+    useEffect(() => {
+        trackBeginCheckout(
+            items.map((it) => ({
+                slug: it.product.slug,
+                name: it.product.name,
+                weight: it.product.weight,
+                priceRon: it.product.priceRon,
+                qty: it.qty,
+            })),
+            subtotalRon,
+        );
+        // o singură dată, la deschiderea paginii
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     const [deliveryMethod, setDeliveryMethod] = useState<"ADDRESS" | "EASYBOX">("ADDRESS");
     const [paymentMethod, setPaymentMethod] = useState<"CARD" | "CASH_ON_DELIVERY">(
         cardEnabled ? "CARD" : "CASH_ON_DELIVERY",

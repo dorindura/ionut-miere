@@ -4,6 +4,8 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HideOnAdmin from "@/components/HideOnAdmin";
+import Analytics from "@/components/Analytics";
+import CookieConsent from "@/components/CookieConsent";
 
 const display = Bricolage_Grotesque({
     subsets: ["latin", "latin-ext"],
@@ -75,6 +77,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <HideOnAdmin>
             <Footer brandName={brandName} />
+        </HideOnAdmin>
+
+        {/* măsurarea traficului: nimic nu se încarcă fără acordul vizitatorului */}
+        <HideOnAdmin>
+            <Analytics />
+            <CookieConsent />
         </HideOnAdmin>
         </body>
         </html>

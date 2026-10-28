@@ -51,6 +51,7 @@ export default async function CheckoutPage({
                 items={items.map((it) => ({
                     id: it.id,
                     product: {
+                        slug: it.product.slug,
                         name: it.product.name,
                         weight: it.product.weight,
                         priceRon: it.product.priceRon,

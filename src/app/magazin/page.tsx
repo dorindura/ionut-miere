@@ -68,6 +68,7 @@ export default async function MagazinPage() {
                                         priority={i < 2}
                                         variants={v.variants.map((x) => ({
                                             slug: x.slug,
+                                            productName: x.name,
                                             weight: x.weight,
                                             priceRon: x.priceRon,
                                             inStock: x.inStock,

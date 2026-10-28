@@ -9,6 +9,8 @@ import Icon from "@/components/Icon";
 
 export type ShopVariant = {
     slug: string;
+    /** numele din baza de date („Miere de salcâm 1kg"), folosit la măsurare */
+    productName: string;
     weight: string;
     priceRon: number;
     inStock: boolean;
@@ -104,7 +106,14 @@ export default function ShopHive({
                 )}
 
                 {/* key: la schimbarea gramajului butonul revine la starea inițială */}
-                <AddToCartButton key={current.slug} slug={current.slug} disabled={!current.inStock} tone="onPaint" className="mt-3" />
+                <AddToCartButton
+                    key={current.slug}
+                    slug={current.slug}
+                    disabled={!current.inStock}
+                    tone="onPaint"
+                    className="mt-3"
+                    item={{ name: current.productName, weight: current.weight, priceRon: current.priceRon }}
+                />
 
                 <Link
                     href={`/magazin/${current.slug}`}
