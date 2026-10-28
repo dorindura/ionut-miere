@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Icon from "@/components/Icon";
+import { trackAddToCart } from "@/lib/analytics";
 
 export default function AddToCartButton({
     slug,
@@ -11,6 +12,7 @@ export default function AddToCartButton({
     disabled = false,
     tone = "primary",
     className = "",
+    item,
 }: {
     slug: string;
     qty?: number;
@@ -18,6 +20,8 @@ export default function AddToCartButton({
     /** „onPaint" = buton alb pe fațada vopsită a stupului */
     tone?: "primary" | "onPaint";
     className?: string;
+    /** numele, gramajul și prețul borcanului, pentru GA4 și Meta */
+    item?: { name: string; weight: string; priceRon: number };
 }) {
     const router = useRouter();
     const [state, setState] = useState<"idle" | "loading" | "added" | "error">("idle");
@@ -41,6 +45,7 @@ export default function AddToCartButton({
         }
 
         setState("added");
+        if (item) trackAddToCart({ slug, qty, ...item });
         router.refresh();
     }
 

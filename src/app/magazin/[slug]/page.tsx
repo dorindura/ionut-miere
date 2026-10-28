@@ -3,6 +3,7 @@ import ImageSlider from "@/components/ImageSlider";
 import HiveSlider from "@/components/HiveSlider";
 import { notFound } from "next/navigation";
 import AddToCartButton from "@/components/AddToCartButton";
+import TrackViewItem from "@/components/TrackViewItem";
 import Link from "next/link";
 import Icon from "@/components/Icon";
 import { HiveFrame, HivePlateRow, HiveWindow } from "@/components/HiveFront";
@@ -195,6 +196,7 @@ export default async function ProductPage({
 
     return (
         <main className="pb-20">
+            <TrackViewItem item={{ slug, name: p.name, weight: p.weight, priceRon: p.priceRon }} />
             <ProductJsonLd
                 name={variety?.name ?? varietyName(p.name)}
                 description={p.description || p.shortDescription}
@@ -258,7 +260,12 @@ export default async function ProductPage({
                         <p className="pb-1 text-ink-3">{p.weight}</p>
                     </div>
 
-                    <AddToCartButton slug={slug} disabled={!p.inStock} className="mt-5 max-w-md" />
+                    <AddToCartButton
+                        slug={slug}
+                        disabled={!p.inStock}
+                        className="mt-5 max-w-md"
+                        item={{ name: p.name, weight: p.weight, priceRon: p.priceRon }}
+                    />
 
                     <ul className="mt-7 grid max-w-md gap-3 border-t border-rule pt-5 text-[0.95rem]">
                         <li className="flex items-start gap-3">

@@ -5,6 +5,7 @@ import { authOptions } from "@/lib/authOptions";
 import { getPrisma } from "@/lib/db";
 import { refreshCardPaymentStatus } from "@/lib/orders";
 import { EASYBOX_CARD_ONLY_NOTE } from "@/lib/shipping";
+import TrackPurchase from "@/components/TrackPurchase";
 
 export const dynamic = "force-dynamic";
 
@@ -31,6 +32,13 @@ export default async function OrderPlacedPage({
 
     if (!order) return notFound();
 
+    // OrderItem ține doar productId, iar GA4 și Meta au nevoie de slug
+    const products = await prisma.product.findMany({
+        where: { id: { in: order.items.map((it) => it.productId) } },
+        select: { id: true, slug: true },
+    });
+    const slugById = new Map(products.map((x) => [x.id, x.slug]));
+
     const isCard = order.paymentMethod === "CARD";
     const isPaid = order.paymentStatus === "PAID";
     const isPending = isCard && order.paymentStatus === "PENDING";
@@ -46,8 +54,26 @@ export default async function OrderPlacedPage({
               ? "Plată rambursată"
               : "Plata nu a fost finalizată";
 
+    // comanda cu cardul se numără abia după confirmarea plății
+    const countsAsSale = !isCard || isPaid;
+
     return (
         <main className="mx-auto max-w-3xl px-4 py-12">
+            {countsAsSale ? (
+                <TrackPurchase
+                    orderId={order.id}
+                    valueRon={order.totalRon}
+                    shippingRon={order.shippingRon}
+                    items={order.items.map((it) => ({
+                        slug: slugById.get(it.productId) ?? it.productId,
+                        name: it.name,
+                        weight: it.weight,
+                        priceRon: it.priceRon,
+                        qty: it.qty,
+                    }))}
+                />
+            ) : null}
+
             <h1 className="text-3xl font-extrabold">{title}</h1>
             <p className="mt-2 text-ink-2">
                 ID comandă: <span className="text-ink font-semibold">{order.id}</span>
